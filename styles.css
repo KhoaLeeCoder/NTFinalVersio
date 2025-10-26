@@ -55,6 +55,11 @@ body{
   top:0;
   overflow:auto;
   transition:transform .32s ease;
+  z-index: 1000;
+}
+.banner, .main-content {
+  position: relative;
+  z-index: 1;
 }
 .logo{font-weight:700;font-size:18px}
 .sidebar-subtitle{font-size:13px;opacity:.95;margin-top:6px;margin-bottom:16px}
