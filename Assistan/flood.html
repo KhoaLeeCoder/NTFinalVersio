@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Hướng Dẫn Phòng Chống Lũ Lụt</title>
+    <!-- Tải Tailwind CSS cho thiết kế đáp ứng và hiện đại --><script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Thiết lập font Inter cho toàn bộ trang web */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Màu nền nhẹ hơn, hiện đại hơn */
+            color: #2d3748; /* Màu chữ tối hơn */
+        }
+        /* Đảm bảo scroll mượt khi dùng menu */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Tùy chỉnh màu sắc Tailwind */
+        .primary-color { background-color: #1a4a8f; } /* Xanh dương đậm hơn */
+        .primary-text { color: #1a4a8f; }
+        .accent-color { background-color: #f6ad55; } /* Cam nhạt */
+        .section-padding { padding: 5rem 1.5rem; }
+        @media (min-width: 640px) {
+            .section-padding { padding: 6rem 2rem; }
+        }
+        /* CSS cho thanh menu cố định */
+        .nav-fixed {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        /* Hiệu ứng gạch chân cho navigation */
+        .nav-link {
+            position: relative;
+            padding-bottom: 0.25rem;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1a4a8f;
+            transition: width 0.3s ease-in-out;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        /* Đảm bảo hình ảnh chất lượng cao và dễ nhìn */
+        .icon-container {
+            width: 4rem; /* Kích thước icon lớn hơn */
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background-color: rgba(26, 74, 143, 0.1); /* Màu nền nhẹ của icon */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        /* Card hiệu ứng hover */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+        .transition-all {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation Bar --><header class="bg-white shadow-md nav-fixed">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Tiêu đề lớn và logo/icon --><div class="flex-shrink-0">
+                    <h1 class="text-2xl font-extrabold primary-text">
+                        <span data-i18n="headerTitle">Phòng Chống Lũ Lụt</span>
+                    </h1>
+                </div>
+
+                <!-- Thanh menu (dùng cho mobile và desktop) --><nav class="hidden md:flex space-x-8">
+                    <a href="#flood-concept" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navConcept">Khái niệm</a>
+                    <a href="#causes" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navCauses">Nguyên nhân</a>
+                    <a href="#prevention" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navBefore">Trước lũ</a>
+                    <a href="#during" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navDuring">Trong lũ</a>
+                    <a href="#recovery" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navAfter">Khắc phục</a>
+                </nav>
+
+                <!-- Nút dịch thuật: Tên sẽ được cập nhật bằng JavaScript --><button id="translateButton" class="px-4 py-2 rounded-full text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 transition duration-150 ease-in-out shadow-lg">
+                    VI / EN
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section (Phần Giới thiệu) --><section class="primary-color text-white section-padding rounded-b-[4rem] shadow-2xl relative overflow-hidden">
+        <!-- Background Gradient Overlay --><div class="absolute inset-0 bg-gradient-to-br from-blue-900 to-blue-600 opacity-90"></div>
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <div class="mb-8">
+                <!-- Image for Hero Section --><img src="image/Generated Image October 26,2025 - 6_13PM.png" alt="image" class="mx-auto rounded-3xl shadow-xl w-full max-w-4xl h-auto object-cover border-4 border-white">
+            </div>
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight" data-i18n="heroHeadline">
+                Bảo vệ Gia Đình và Cộng Đồng khỏi Lũ Lụt
+            </h2>
+            <p class="text-xl sm:text-2xl opacity-90 mb-8" data-i18n="heroSubtitle">
+                Thông tin thiết yếu để chuẩn bị, ứng phó và khắc phục sau thiên tai.
+            </p>
+            <div>
+                <a href="#prevention" class="inline-flex items-center justify-center px-10 py-4 border-2 border-white text-lg font-semibold rounded-full text-blue-800 bg-white hover:bg-gray-100 transition-all duration-300 shadow-xl transform hover:scale-105" data-i18n="heroCTA">
+                    Bắt đầu Chuẩn bị Ngay &rarr;
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Sections --><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+        <!-- 1. Khái niệm về Lũ lụt (Concept of Flooding) --><section id="flood-concept" class="mb-20 pt-8">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="conceptTitle">
+                1. Khái niệm về Lũ lụt 
+            </h3>
+            <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover">
+                <p class="mb-4 text-gray-700 leading-relaxed text-lg" data-i18n="conceptP1">
+                    Lũ lụt là hiện tượng mực nước dâng cao tạm thời hoặc tràn ngập một khu vực thường khô ráo. Đây là một trong những thảm họa tự nhiên phổ biến và gây thiệt hại nặng nề nhất trên toàn thế giới.
+                </p>
+                <p class="text-gray-700 leading-relaxed text-lg" data-i18n="conceptP2">
+                    Lũ có thể xảy ra nhanh chóng (lũ quét) hoặc từ từ (lũ sông). Điều quan trọng là phải nhận biết các loại lũ và rủi ro tại khu vực sinh sống của bạn.
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. Nguyên nhân (Causes) --><section id="causes" class="mb-20 pt-8">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="causesTitle">
+                2. Nguyên nhân Gây ra Lũ lụt
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Nguyên nhân 1 --><div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover flex flex-col items-center text-center">
+                    <div class="icon-container mb-6">
+                        <svg class="w-10 h-10 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-2.828l-4.243 4.243m0 0L9.414 16.657m0 0A1.998 1.998 0 016.586 14L2 9.414m17 0l-4.586 4.586M17.657 16.657l-4.243-4.243m0 0L9.414 16.657"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4" data-i18n="causeHeavyRainTitle">Mưa lớn kéo dài</h4>
+                    <p class="text-gray-600 leading-relaxed" data-i18n="causeHeavyRainDesc">
+                        Đây là nguyên nhân phổ biến nhất. Lượng mưa vượt quá khả năng thoát nước của đất và hệ thống thoát nước.
+                    </p>
+                </div>
+                <!-- Nguyên nhân 2 --><div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover flex flex-col items-center text-center">
+                    <div class="icon-container mb-6">
+                        <svg class="w-10 h-10 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4" data-i18n="causeDamTitle">Sự cố đê/đập</h4>
+                    <p class="text-gray-600 leading-relaxed" data-i18n="causeDamDesc">
+                        Đê hoặc đập bị vỡ do kết cấu yếu hoặc do lượng nước quá lớn, gây ra lũ quét dữ dội.
+                    </p>
+                </div>
+                <!-- Nguyên nhân 3 --><div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover flex flex-col items-center text-center">
+                    <div class="icon-container mb-6">
+                        <svg class="w-10 h-10 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4" data-i18n="causeHumanTitle">Tác động của con người</h4>
+                    <p class="text-gray-600 leading-relaxed" data-i18n="causeHumanDesc">
+                        Phá rừng, đô thị hóa quá mức làm bê tông hóa bề mặt đất, và hệ thống thoát nước bị tắc nghẽn làm giảm khả năng thấm hút nước tự nhiên.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Phòng chống trước khi xảy ra (Prevention before it happens) --><section id="prevention" class="mb-20 pt-8 bg-blue-50 p-10 rounded-3xl shadow-inner">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="beforeTitle">
+                3. Chuẩn bị: Trước khi Lũ lụt xảy ra
+            </h3>
+            <ul class="space-y-6 text-gray-700 text-lg">
+                <li class="flex items-start">
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="beforeP1">
+                        **Xây dựng Kế hoạch Gia đình:** Thiết lập các tuyến đường sơ tán, nơi gặp mặt an toàn, và đảm bảo mọi người đều biết cách liên lạc trong trường hợp khẩn cấp.
+                    </span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="beforeP2">
+                        **Chuẩn bị Túi Cứu sinh (Emergency Kit):** Gồm nước uống, thức ăn khô, đèn pin, đài radio chạy bằng pin, pin dự phòng, bộ sơ cứu, thuốc men và bản sao giấy tờ tùy thân quan trọng.
+                    </span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="beforeP3">
+                        **Nâng cấp Nhà ở:** Lắp đặt van một chiều trong đường ống thoát nước để ngăn nước lũ trào ngược, di dời thiết bị điện lên cao.
+                    </span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="beforeP4">
+                        **Theo dõi Thông tin:** Luôn cập nhật tin tức thời tiết và cảnh báo lũ lụt từ các nguồn đáng tin cậy.
+                    </span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 4. Trong lúc xảy ra (During the flood) --><section id="during" class="mb-20 pt-8">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="duringTitle">
+                4. Ứng phó: Trong lúc Lũ lụt xảy ra 
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover">
+                    <h4 class="text-2xl font-bold accent-color mb-4" data-i18n="duringDangerTitle">Nhiệm vụ Quan trọng Nhất: Sơ tán</h4>
+                    <ul class="space-y-4 text-gray-700 list-disc pl-6 text-lg">
+                        <li data-i18n="duringP1">
+                            **TUYỆT ĐỐI** không lái xe hoặc đi bộ qua vùng nước lũ. Chỉ cần 15cm nước chảy xiết có thể làm bạn ngã, và 60cm có thể cuốn trôi xe ô tô.
+                        </li>
+                        <li data-i18n="duringP2">
+                            Nếu được yêu cầu sơ tán, hãy tắt tất cả các thiết bị điện và ga trước khi rời khỏi nhà.
+                        </li>
+                        <li data-i18n="duringP3">
+                            Nếu bị mắc kẹt, hãy lên tầng cao nhất hoặc mái nhà, tránh xa các đường dây điện.
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover">
+                    <h4 class="text-2xl font-bold accent-color mb-4" data-i18n="duringInsideTitle">An toàn khi ở trong nhà</h4>
+                    <ul class="space-y-4 text-gray-700 list-disc pl-6 text-lg">
+                        <li data-i18n="duringP4">
+                            Sử dụng đài radio chạy bằng pin để nhận thông tin cập nhật từ cơ quan chức năng.
+                        </li>
+                        <li data-i18n="duringP5">
+                            Tránh xa ổ cắm điện, dây điện bị đứt và không sử dụng các thiết bị điện tử. Nước lũ có thể dẫn điện.
+                        </li>
+                        <li data-i18n="duringP6">
+                            Chỉ uống nước đóng chai hoặc nước đã được đun sôi kỹ lưỡng. Nước lũ bị ô nhiễm nặng.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Cách khắc phục hậu quả (Post-flood recovery) --><section id="recovery" class="pt-8 bg-blue-50 p-10 rounded-3xl shadow-inner">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="afterTitle">
+                5. Khắc phục: Cách khắc phục Hậu quả sau Lũ lụt 
+            </h3>
+            <ul class="space-y-6 text-gray-700 text-lg">
+                <li class="flex items-start">
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="afterP1">
+                        **Kiểm tra An toàn:** Không vào nhà nếu chưa được kiểm tra an toàn. Coi chừng các mối nguy hiểm như dây điện đứt, rò rỉ ga, hoặc cấu trúc nhà yếu.
+                    </span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="afterP2">
+                        **Vệ sinh và Khử trùng:** Nước lũ mang theo bùn đất và vi khuẩn. Phải đeo găng tay và ủng khi dọn dẹp. Vệ sinh và khử trùng tất cả các bề mặt bị ngập nước để ngăn ngừa nấm mốc và dịch bệnh.
+                    </span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="afterP3">
+                        **Ghi lại Thiệt hại:** Chụp ảnh mọi thiệt hại cho mục đích bảo hiểm hoặc hỗ trợ. Không vứt bỏ các vật dụng bị hư hỏng nặng cho đến khi đã được cơ quan chức năng kiểm tra.
+                    </span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
+                    <span data-i18n="afterP4">
+                        **Tìm kiếm Hỗ trợ:** Liên hệ với cơ quan cứu trợ địa phương hoặc các tổ chức nhân đạo để được hỗ trợ về lương thực, chỗ ở và y tế.
+                    </span>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Footer --><footer class="primary-color py-10 mt-20 rounded-t-[4rem] text-white text-center shadow-2xl">
+        <p class="text-lg mb-2" data-i18n="footerText">
+            Đây là dự án hướng dẫn cộng đồng. Hãy luôn tuân theo hướng dẫn của chính quyền địa phương.
+        </p>
+        <p class="mt-4 text-base opacity-80">&copy; 2025 Hướng Dẫn An Toàn. Mọi quyền được bảo lưu.</p>
+    </footer>
+
+    <!-- JavaScript for Translation Logic --><script>
+        // Dữ liệu dịch thuật
+        const translations = {
+            vi: {
+                pageTitle: "Hướng Dẫn Phòng Chống Lũ Lụt",
+                headerTitle: "Phòng Chống Lũ Lụt",
+                navConcept: "Khái niệm",
+                navCauses: "Nguyên nhân",
+                navBefore: "Trước lũ",
+                navDuring: "Trong lũ",
+                navAfter: "Khắc phục",
+                heroHeadline: "Bảo vệ Gia Đình và Cộng Đồng khỏi Lũ Lụt",
+                heroSubtitle: "Thông tin thiết yếu để chuẩn bị, ứng phó và khắc phục sau thiên tai.",
+                heroCTA: "Bắt đầu Chuẩn bị Ngay",
+
+                // 1. Concept
+                conceptTitle: "1. Khái niệm về Lũ lụt",
+                conceptP1: "Lũ lụt là hiện tượng mực nước dâng cao tạm thời hoặc tràn ngập một khu vực thường khô ráo. Đây là một trong những thảm họa tự nhiên phổ biến và gây thiệt hại nặng nề nhất trên toàn thế giới.",
+                conceptP2: "Lũ có thể xảy ra nhanh chóng (lũ quét) hoặc từ từ (lũ sông). Điều quan trọng là phải nhận biết các loại lũ và rủi ro tại khu vực sinh sống của bạn.",
+
+                // 2. Causes
+                causesTitle: "2. Nguyên nhân Gây ra Lũ lụt",
+                causeHeavyRainTitle: "Mưa lớn kéo dài",
+                causeHeavyRainDesc: "Đây là nguyên nhân phổ biến nhất. Lượng mưa vượt quá khả năng thoát nước của đất và hệ thống thoát nước.",
+                causeDamTitle: "Sự cố đê/đập",
+                causeDamDesc: "Đê hoặc đập bị vỡ do kết cấu yếu hoặc do lượng nước quá lớn, gây ra lũ quét dữ dội.",
+                causeHumanTitle: "Tác động của con người",
+                causeHumanDesc: "Phá rừng, đô thị hóa quá mức làm bê tông hóa bề mặt đất, và hệ thống thoát nước bị tắc nghẽn làm giảm khả năng thấm hút nước tự nhiên.",
+
+                // 3. Before
+                beforeTitle: "3. Chuẩn bị: Trước khi Lũ lụt xảy ra",
+                beforeP1: "**Xây dựng Kế hoạch Gia đình:** Thiết lập các tuyến đường sơ tán, nơi gặp mặt an toàn, và đảm bảo mọi người đều biết cách liên lạc trong trường hợp khẩn cấp.",
+                beforeP2: "**Chuẩn bị Túi Cứu sinh (Emergency Kit):** Gồm nước uống, thức ăn khô, đèn pin, đài radio chạy bằng pin, pin dự phòng, bộ sơ cứu, thuốc men và bản sao giấy tờ tùy thân quan trọng.",
+                beforeP3: "**Nâng cấp Nhà ở:** Lắp đặt van một chiều trong đường ống thoát nước để ngăn nước lũ trào ngược, di dời thiết bị điện lên cao.",
+                beforeP4: "**Theo dõi Thông tin:** Luôn cập nhật tin tức thời tiết và cảnh báo lũ lụt từ các nguồn đáng tin cậy.",
+
+                // 4. During
+                duringTitle: "4. Ứng phó: Trong lúc Lũ lụt xảy ra",
+                duringDangerTitle: "Nhiệm vụ Quan trọng Nhất: Sơ tán",
+                duringP1: "**TUYỆT ĐỐI** không lái xe hoặc đi bộ qua vùng nước lũ. Chỉ cần 15cm nước chảy xiết có thể làm bạn ngã, và 60cm có thể cuốn trôi xe ô tô.",
+                duringP2: "Nếu được yêu cầu sơ tán, hãy tắt tất cả các thiết bị điện và ga trước khi rời khỏi nhà.",
+                duringP3: "Nếu bị mắc kẹt, hãy lên tầng cao nhất hoặc mái nhà, tránh xa các đường dây điện.",
+                duringInsideTitle: "An toàn khi ở trong nhà",
+                duringP4: "Sử dụng đài radio chạy bằng pin để nhận thông tin cập nhật từ cơ quan chức năng.",
+                duringP5: "Tránh xa ổ cắm điện, dây điện bị đứt và không sử dụng các thiết bị điện tử. Nước lũ có thể dẫn điện.",
+                duringP6: "Chỉ uống nước đóng chai hoặc nước đã được đun sôi kỹ lưỡng. Nước lũ bị ô nhiễm nặng.",
+
+                // 5. After
+                afterTitle: "5. Khắc phục: Cách khắc phục Hậu quả sau Lũ lụt",
+                afterP1: "**Kiểm tra An toàn:** Không vào nhà nếu chưa được kiểm tra an toàn. Coi chừng các mối nguy hiểm như dây điện đứt, rò rỉ ga, hoặc cấu trúc nhà yếu.",
+                afterP2: "**Vệ sinh và Khử trùng:** Nước lũ mang theo bùn đất và vi khuẩn. Phải đeo găng tay và ủng khi dọn dẹp. Vệ sinh và khử trùng tất cả các bề mặt bị ngập nước để ngăn ngừa nấm mốc và dịch bệnh.",
+                afterP3: "**Ghi lại Thiệt hại:** Chụp ảnh mọi thiệt hại cho mục đích bảo hiểm hoặc hỗ trợ. Không vứt bỏ các vật dụng bị hư hỏng nặng cho đến khi đã được cơ quan chức năng kiểm tra.",
+                afterP4: "**Tìm kiếm Hỗ trợ:** Liên hệ với cơ quan cứu trợ địa phương hoặc các tổ chức nhân đạo để được hỗ trợ về lương thực, chỗ ở và y tế.",
+                
+                footerText: "Đây là dự án hướng dẫn cộng đồng. Hãy luôn tuân theo hướng dẫn của chính quyền địa phương."
+            },
+            en: {
+                pageTitle: "Flood Prevention Guide",
+                headerTitle: "Flood Prevention",
+                navConcept: "Concept",
+                navCauses: "Causes",
+                navBefore: "Before Flood",
+                navDuring: "During Flood",
+                navAfter: "Recovery",
+                heroHeadline: "Protect Your Family and Community from Flooding",
+                heroSubtitle: "Essential information to prepare, respond, and recover after a disaster.",
+                heroCTA: "Start Preparing Now",
+
+                // 1. Concept
+                conceptTitle: "1. Concept of Flooding",
+                conceptP1: "Flooding is a temporary condition where water levels rise or overflow into an area that is usually dry. It is one of the most common and damaging natural disasters worldwide.",
+                conceptP2: "Floods can happen quickly (flash floods) or slowly (river floods). It is vital to recognize the types of floods and risks in your living area.",
+
+                // 2. Causes
+                causesTitle: "2. Causes of Flooding",
+                causeHeavyRainTitle: "Prolonged Heavy Rainfall",
+                causeHeavyRainDesc: "This is the most common cause. Rainfall exceeds the drainage capacity of the soil and drainage systems.",
+                causeDamTitle: "Dam/Levee Failure",
+                causeDamDesc: "A dam or levee breaks due to weak structure or excessive water volume, causing rapid and destructive flash floods.",
+                causeHumanTitle: "Human Impact",
+                causeHumanDesc: "Deforestation, excessive urbanization leading to land concretization, and blocked drainage systems reduce the land's natural water absorption capacity.",
+
+                // 3. Before
+                beforeTitle: "3. Preparation: Before the Flood Happens",
+                beforeP1: "**Create a Family Plan:** Establish evacuation routes, safe meeting places, and ensure everyone knows how to communicate in an emergency.",
+                beforeP2: "**Prepare an Emergency Kit:** Include drinking water, non-perishable food, flashlights, a battery-powered radio, spare batteries, a first-aid kit, medications, and copies of important documents.",
+                beforeP3: "**Home Upgrades:** Install check valves in sewer pipes to prevent floodwater backflow, and move electrical appliances to higher floors.",
+                beforeP4: "**Monitor Information:** Always stay updated with weather forecasts and flood warnings from reliable sources.",
+
+                // 4. During
+                duringTitle: "4. Response: During the Flood",
+                duringDangerTitle: "The Most Important Rule: Evacuate",
+                duringP1: "**NEVER** drive or walk through floodwaters. Just 6 inches (15cm) of moving water can knock you down, and 2 feet (60cm) can sweep away a car.",
+                duringP2: "If ordered to evacuate, turn off all electrical and gas appliances before leaving the house.",
+                duringP3: "If trapped, go to the highest floor or the roof, and stay away from power lines.",
+                duringInsideTitle: "Safety Inside the Home",
+                duringP4: "Use a battery-powered radio to receive updated information from authorities.",
+                duringP5: "Stay away from electrical outlets, broken wires, and do not use electronic devices. Floodwater can conduct electricity.",
+                duringP6: "Only drink bottled water or thoroughly boiled water. Floodwater is heavily contaminated.",
+
+                // 5. After
+                afterTitle: "5. Recovery: Post-Flood Cleanup and Restoration",
+                afterP1: "**Safety Check:** Do not enter your home until it has been declared safe. Watch out for hazards like downed power lines, gas leaks, or weakened structures.",
+                afterP2: "**Clean and Disinfect:** Floodwater carries mud and bacteria. Wear gloves and boots when cleaning up. Disinfect all flooded surfaces to prevent mold and disease.",
+                afterP3: "**Document Damage:** Take photos of all damage for insurance or aid purposes. Do not discard severely damaged items until they have been inspected by authorities.",
+                afterP4: "**Seek Assistance:** Contact local relief agencies or humanitarian organizations for support with food, shelter, and medical needs.",
+
+                footerText: "This is a community guidance project. Always follow instructions from local authorities."
+            }
+        };
+
+        // Biến lưu trữ trạng thái ngôn ngữ hiện tại, mặc định là Tiếng Việt
+        let currentLang = 'vi';
+        
+        // Lấy tham chiếu đến nút (đảm bảo nút đã được tạo trong DOM)
+        const translateButton = document.getElementById('translateButton');
+
+        /**
+         * Cập nhật văn bản trên nút bấm để hiển thị ngôn ngữ chuyển đổi tiếp theo.
+         * @param {string} lang Ngôn ngữ hiện tại của trang ('vi' hoặc 'en').
+         */
+        function setButtonText(lang) {
+            if (translateButton) {
+                if (lang === 'vi') {
+                    // Nếu trang đang là Tiếng Việt, nút sẽ mời chuyển sang Tiếng Anh
+                    translateButton.textContent = 'English (EN)';
+                } else {
+                    // Nếu trang đang là Tiếng Anh, nút sẽ mời chuyển sang Tiếng Việt
+                    translateButton.textContent = 'Tiếng Việt (VI)';
+                }
+            }
+        }
+
+
+        /**
+         * Chuyển đổi ngôn ngữ của toàn bộ trang web.
+         */
+        function translatePage() {
+            // Xác định ngôn ngữ mới
+            currentLang = currentLang === 'vi' ? 'en' : 'vi';
+            const newLangData = translations[currentLang];
+
+            // Lấy tất cả các phần tử có thuộc tính data-i18n
+            const elements = document.querySelectorAll('[data-i18n]');
+
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (newLangData[key]) {
+                    // Cập nhật nội dung văn bản.
+                    element.innerHTML = newLangData[key];
+                }
+            });
+
+            // Cập nhật thuộc tính lang của HTML
+            document.documentElement.lang = currentLang;
+
+            // Cập nhật text của nút để người dùng biết họ có thể chuyển sang ngôn ngữ nào.
+            setButtonText(currentLang);
+        }
+
+        /**
+         * Khởi tạo trạng thái ngôn ngữ khi tải trang (mặc định VI).
+         */
+        function initializeLanguage() {
+            // Thiết lập trạng thái ban đầu là Tiếng Việt (VI).
+            currentLang = 'vi';
+            document.documentElement.lang = currentLang;
+
+            // Đảm bảo nút được đặt đúng cho trạng thái VI
+            setButtonText(currentLang); 
+        }
+
+        /**
+         * Thêm hiệu ứng active cho các liên kết điều hướng khi cuộn trang.
+         */
+        function setupIntersectionObserver() {
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const options = {
+                root: null, // viewport
+                rootMargin: '0px',
+                threshold: 0.5 // Kích hoạt khi 50% section hiển thị
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Loại bỏ class 'active' khỏi tất cả các liên kết
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        
+                        // Thêm class 'active' cho liên kết tương ứng
+                        const targetId = entry.target.id;
+                        const activeLink = document.querySelector(`.nav-link[href="#${targetId}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                        }
+                    }
+                });
+            }, options);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+
+        // Khởi tạo trang web và thiết lập sự kiện
+        document.addEventListener('DOMContentLoaded', () => {
+            if (translateButton) {
+                // Thiết lập listener cho nút dịch thuật
+                translateButton.addEventListener('click', translatePage);
+            }
+
+            // Khởi tạo trạng thái ngôn ngữ ban đầu
+            initializeLanguage(); 
+
+            // Thiết lập Intersection Observer cho thanh điều hướng
+            setupIntersectionObserver();
+        });
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Kỹ Năng Sống Toàn Diện</title>
+    <!-- Tải Tailwind CSS cho giao diện hiện đại và responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải Tone.js cho hiệu ứng âm thanh -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <!-- Tải Font Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+        .game-container { max-width: 900px; }
+        .neon-glow {
+            box-shadow: 0 0 5px #fff, 0 0 10px #22d3ee, 0 0 15px #22d3ee, 0 0 20px #22d3ee;
+        }
+        /* Custom styles for matching/ordering rounds */
+        .match-item, .order-item {
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+        .match-item:hover, .order-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .correct-answer {
+            animation: pulse-correct 0.5s 3;
+            background-color: #4ade80 !important; /* Green 400 */
+        }
+        .incorrect-answer {
+            animation: shake-incorrect 0.3s 3;
+            background-color: #f87171 !important; /* Red 400 */
+        }
+        @keyframes pulse-correct {
+            0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+        @keyframes shake-incorrect {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+    </style>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, onSnapshot, collection, query, limit, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Thiết lập cấu hình Firebase và Auth/DB
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'lifeskills-game-default';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Log Debug
+        setLogLevel('Debug');
+
+        let app, db, auth;
+
+        // Export setup functions to global scope for use in the main script
+        window.initializeFirebase = async () => {
+            if (Object.keys(firebaseConfig).length === 0) {
+                console.error("Firebase config is missing or invalid.");
+                return;
+            }
+
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                window.db = db; // Make db globally accessible
+                window.auth = auth; // Make auth globally accessible
+                window.appId = appId; // Make appId globally accessible
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        window.userId = user.uid;
+                        console.log("User authenticated:", user.uid);
+                    } else {
+                        window.userId = crypto.randomUUID(); // Fallback to random ID
+                        console.log("User signed out or failed authentication. Using temporary ID.");
+                    }
+                    window.isAuthReady = true;
+                    // Trigger initial data load after auth is ready
+                    window.loadLeaderboard();
+                });
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+            }
+        };
+
+        window.saveScore = async (username, topic, score, difficulty) => {
+            if (!window.db || !window.isAuthReady) {
+                console.error("Database not ready or user not authenticated.");
+                return;
+            }
+
+            const userId = auth.currentUser?.uid || window.userId;
+            // Dùng đường dẫn public để mọi người chơi đều thấy điểm của nhau
+            const collectionPath = `artifacts/${appId}/public/data/lifeskill_scores`;
+
+            try {
+                await addDoc(collection(db, collectionPath), {
+                    userId: userId,
+                    username: username,
+                    topic: topic,
+                    score: score,
+                    difficulty: difficulty,
+                    timestamp: new Date() // Lưu thời gian để sắp xếp khi bằng điểm
+                });
+                console.log("Score saved successfully!");
+            } catch (error) {
+                console.error("Error saving score:", error);
+                // Display error to user via modal
+                showModal('Lỗi', `Lỗi khi lưu điểm: ${error.message}. Vui lòng thử lại.`);
+            }
+        };
+
+        window.loadLeaderboard = () => {
+            if (!window.db || !window.isAuthReady) return;
+
+            const collectionPath = `artifacts/${appId}/public/data/lifeskill_scores`;
+            // Lấy 10 bản ghi điểm cao nhất (orderBy("score", "desc"))
+            const q = query(collection(db, collectionPath), orderBy("score", "desc"), limit(10));
+
+            // Set up real-time listener
+            onSnapshot(q, (snapshot) => {
+                let leaderboard = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // Store raw timestamp object for local sorting
+                    leaderboard.push({
+                        id: doc.id,
+                        username: data.username || 'Ẩn danh',
+                        topic: data.topic,
+                        score: data.score,
+                        difficulty: data.difficulty,
+                        timestamp: data.timestamp, 
+                    });
+                });
+                
+                // Local Sorting: Sort by score (desc) and then by timestamp (asc) for tie-breaking
+                // Người đạt điểm số đó sớm hơn sẽ được xếp hạng cao hơn
+                leaderboard.sort((a, b) => {
+                    if (b.score !== a.score) {
+                        return b.score - a.score; // Sắp xếp chính: Điểm giảm dần
+                    }
+                    // Tie-breaker: Sắp xếp phụ: Thời gian tăng dần (người hoàn thành sớm hơn lên trước)
+                    const tsA = a.timestamp?.toMillis() || 0;
+                    const tsB = b.timestamp?.toMillis() || 0;
+                    return tsA - tsB;
+                });
+
+                // Map and format the timestamp for display
+                const finalLeaderboard = leaderboard.map(record => ({
+                    ...record,
+                    timestamp: record.timestamp ? new Date(record.timestamp.toMillis()).toLocaleString('vi-VN') : 'N/A'
+                }));
+
+                // Update the global state/UI with new leaderboard data
+                window.updateLeaderboardUI(finalLeaderboard);
+            }, (error) => {
+                console.error("Error fetching leaderboard:", error);
+            });
+        };
+
+        // Call initialization right away
+        window.initializeFirebase();
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div id="game-container" class="game-container w-full bg-white rounded-xl shadow-2xl p-6 md:p-10 border-t-8 border-cyan-500">
+        
+        <!-- Game Status & Score Display -->
+        <div id="status-bar" class="flex justify-between items-center mb-6 p-4 bg-cyan-50 border-l-4 border-cyan-600 rounded-lg shadow-inner hidden">
+            <div id="game-info" class="text-lg font-semibold text-gray-700"></div>
+            <div id="current-score" class="text-2xl font-extrabold text-cyan-700 bg-white px-4 py-2 rounded-full shadow-md">Điểm: 0</div>
+        </div>
+
+        <!-- Main Content Area (Dynamic Screens) -->
+        <div id="game-screen">
+            
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">🧠 Kỹ Năng Sống Toàn Diện 💡</h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Mục tiêu chính của trò chơi là nâng cao **nhận thức và kiến thức** về các kỹ năng quan trọng trong cuộc sống. Hãy chọn chủ đề và độ khó để bắt đầu hành trình phát triển bản thân!
+                </p>
+
+                <input type="text" id="username-input" placeholder="Nhập tên người chơi của bạn" class="w-full max-w-sm p-3 border-2 border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 mb-6 text-center text-lg">
+
+                <h2 class="text-3xl font-bold text-cyan-600 mb-4 mt-8">Chọn Chủ Đề</h2>
+                <div id="topic-selection" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <!-- Topics will be populated by JS -->
+                </div>
+
+                <h2 class="text-3xl font-bold text-cyan-600 mb-4">Chọn Độ Khó</h2>
+                <div id="difficulty-selection" class="flex justify-center space-x-4 mb-10">
+                    <!-- Difficulties will be populated by JS -->
+                </div>
+                
+                <button id="start-button" onclick="startGame()" class="bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-4 px-10 rounded-full shadow-lg transition duration-300 transform hover:scale-105" disabled>
+                    Bắt Đầu Chơi
+                </button>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div id="quiz-screen" class="hidden">
+                <h2 id="quiz-title" class="text-3xl font-bold text-gray-800 mb-6 text-center">Vòng 1: Trắc Nghiệm</h2>
+                <div id="question-card" class="bg-cyan-50 border-l-4 border-cyan-600 p-6 rounded-xl shadow-lg mb-6">
+                    <p id="question-text" class="text-xl font-semibold text-gray-800 mb-4"></p>
+                    <div id="options-container" class="space-y-3">
+                        <!-- Options for MC will be here -->
+                    </div>
+                </div>
+                <button onclick="submitAnswer()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white text-xl font-bold py-3 rounded-lg shadow-md transition duration-200">
+                    Gửi Câu Trả Lời
+                </button>
+            </div>
+            
+            <!-- Matching Screen -->
+            <div id="matching-screen" class="hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Vòng 2: Ghép Đôi Chính Xác</h2>
+                <p class="text-lg text-gray-600 mb-6 text-center">Hãy ghép các khái niệm/vấn đề (cột Trái) với định nghĩa/giải pháp phù hợp (cột Phải).</p>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div id="match-left-container" class="space-y-3 p-4 bg-yellow-50 rounded-xl shadow-inner border-t-4 border-yellow-600">
+                        <h3 class="font-bold text-xl text-yellow-800 mb-2">Khái Niệm</h3>
+                        <!-- Left items here -->
+                    </div>
+                    <div id="match-right-container" class="space-y-3 p-4 bg-indigo-50 rounded-xl shadow-inner border-t-4 border-indigo-600">
+                        <h3 class="font-bold text-xl text-indigo-800 mb-2">Định Nghĩa/Giải Pháp</h3>
+                        <!-- Right items here -->
+                    </div>
+                </div>
+                
+                <div id="matching-status" class="text-center mt-4 text-xl font-semibold text-gray-700"></div>
+
+                <button onclick="checkMatchingAnswer()" class="w-full mt-6 bg-cyan-600 hover:bg-cyan-700 text-white text-xl font-bold py-3 rounded-lg shadow-md transition duration-200">
+                    Kiểm Tra Ghép Đôi
+                </button>
+            </div>
+            
+            <!-- Ordering Screen -->
+            <div id="ordering-screen" class="hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Vòng 3: Sắp Xếp Trình Tự</h2>
+                <p class="text-lg text-gray-600 mb-6 text-center">Hãy kéo thả các bước để sắp xếp chúng theo trình tự **hợp lý** hoặc **chính xác** nhất.</p>
+
+                <div id="order-container" class="space-y-3 p-4 bg-lime-50 rounded-xl shadow-xl border-t-4 border-lime-600 min-h-64">
+                    <!-- Order items here (drag/drop) -->
+                </div>
+
+                <button onclick="checkOrderingAnswer()" class="w-full mt-6 bg-cyan-600 hover:bg-cyan-700 text-white text-xl font-bold py-3 rounded-lg shadow-md transition duration-200">
+                    Hoàn Thành Sắp Xếp
+                </button>
+            </div>
+
+            <!-- Final Score Screen -->
+            <div id="score-screen" class="text-center hidden p-8 bg-white rounded-xl shadow-2xl">
+                <h2 class="text-4xl font-extrabold text-green-600 mb-4">🏆 Hoàn Thành Xuất Sắc! 🏆</h2>
+                <p class="text-2xl text-gray-700 mb-4">Bạn đã hoàn thành thử thách **Kỹ Năng Sống**!</p>
+                <div class="text-5xl font-black text-cyan-700 mb-8">Tổng Điểm: <span id="final-score-display">0</span></div>
+                <button onclick="resetGame()" class="bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+                    Chơi Lại
+                </button>
+            </div>
+
+            <!-- Leaderboard Screen (Always visible, but toggle position) -->
+            <div id="leaderboard-container" class="mt-10 pt-6 border-t border-gray-200">
+                <h2 class="text-3xl font-bold text-pink-600 mb-6 text-center">🏅 Bảng Xếp Hạng Thành Tích 🏅</h2>
+                <div class="overflow-x-auto bg-white p-4 rounded-xl shadow-lg">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hạng</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chủ Đề</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Độ Khó</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Điểm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body" class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="5" class="text-center py-4 text-gray-500">Đang tải bảng xếp hạng...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal for Alerts/Errors -->
+            <div id="custom-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center p-4 z-50">
+                <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl text-center">
+                    <h3 id="modal-title" class="text-2xl font-bold mb-3 text-red-600"></h3>
+                    <p id="modal-message" class="text-gray-700 mb-6"></p>
+                    <button onclick="hideModal()" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Đóng</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Game Constants
+        const TOPICS = [
+            { id: "critical_thinking", name: "Tư Duy Phản Biện 🧐", icon: "🧠" },
+            { id: "presentation_skills", name: "Kỹ Năng Thuyết Trình 🎤", icon: "🗣️" },
+            { id: "emotional_management", name: "Quản Lý Cảm Xúc 🧘", icon: "❤️" },
+            { id: "survival_skills", name: "Kỹ Năng Sinh Tồn 🏕️", icon: "🌲" },
+        ];
+        const DIFFICULTIES = [
+            { id: "easy", name: "Dễ", multiplier: 1, color: "bg-green-500" },
+            { id: "medium", name: "Trung Bình", multiplier: 1.5, color: "bg-yellow-500" },
+            { id: "hard", name: "Khó", multiplier: 2, color: "bg-red-500" },
+        ];
+        const QUESTIONS_PER_ROUND = 10; // Max desired questions, will use actual available count
+        const ROUND_NAMES = ["Trắc Nghiệm", "Ghép Đôi", "Sắp Xếp"];
+        
+        // Game State Variables
+        let gameState = {
+            currentScreen: 'welcome',
+            username: '',
+            topic: null,
+            difficulty: null,
+            score: 0,
+            round: 0, // 0=MC, 1=Matching, 2=Ordering
+            questionIndex: 0,
+            currentQuestion: null,
+            selectedQuestions: [],
+            matchingPair: [], // For Round 2
+            orderingItems: [], // For Round 3
+        };
+
+        // --- Question Bank (Large, diverse, and realistic content) ---
+        // (Includes a combined pool for easy sampling/shuffling)
+        const QUESTION_BANK = {
+            // TƯ DUY PHẢN BIỆN (CRITICAL THINKING)
+            "critical_thinking": {
+                // Round 1: Multiple Choice (5 questions available)
+                mc: [
+                    { q: "Điều gì là quan trọng nhất khi đánh giá một nguồn thông tin?", a: "Độ tin cậy và bằng chứng", opt: ["Thông tin phải mới nhất", "Nguồn phải nổi tiếng", "Độ tin cậy và bằng chứng", "Phù hợp với quan điểm của bạn"] },
+                    { q: "Thế nào là 'Thiên kiến xác nhận' (Confirmation Bias)?", a: "Chỉ tìm kiếm thông tin ủng hộ ý kiến có sẵn", opt: ["Chỉ tìm kiếm thông tin ủng hộ ý kiến có sẵn", "Đánh giá mọi thông tin như nhau", "Thay đổi ý kiến ngay lập tức", "Chỉ tin vào chuyên gia"] },
+                    { q: "Bước đầu tiên trong quy trình tư duy phản biện là gì?", a: "Xác định và phân tích vấn đề", opt: ["Đưa ra giải pháp ngay lập tức", "Xác định và phân tích vấn đề", "Thu thập dữ liệu ngẫu nhiên", "Tranh luận với người khác"] },
+                    { q: "Khi nào nên đặt câu hỏi 'Tại sao điều này lại quan trọng?'", a: "Sau khi có đủ thông tin", opt: ["Trước khi tìm kiếm thông tin", "Sau khi có đủ thông tin", "Chỉ khi gặp khó khăn", "Không cần thiết phải hỏi"] },
+                    { q: "Yếu tố nào sau đây là 'ngụy biện logic'?", a: "Công kích cá nhân (Ad hominem)", opt: ["Sử dụng bằng chứng khoa học", "Công kích cá nhân (Ad hominem)", "Sử dụng nhiều nguồn tham khảo", "Đưa ra ví dụ cụ thể"] }
+                ],
+                // Round 2: Matching (3 questions available)
+                matching: [
+                    { q: "Ngụy biện 'Đánh tráo khái niệm'", a: "Thay đổi ý nghĩa của một từ trong lập luận", choices: ["Sử dụng cảm xúc để thay thế logic", "Thay đổi ý nghĩa của một từ trong lập luận", "Lấy số đông làm chuẩn mực"] },
+                    { q: "Lập luận Quy nạp", a: "Dùng các trường hợp cụ thể để đưa ra kết luận chung", choices: ["Dùng các trường hợp cụ thể để đưa ra kết luận chung", "Đi từ một nguyên tắc chung đến một kết luận cụ thể", "Đưa ra giải pháp tạm thời"] },
+                    { q: "Tư duy Sáng tạo", a: "Khả năng nhìn nhận vấn đề từ nhiều góc độ mới", choices: ["Khả năng nhìn nhận vấn đề từ nhiều góc độ mới", "Đưa ra quyết định nhanh chóng", "Ghi nhớ thông tin chi tiết"] }
+                ],
+                // Round 3: Ordering (2 questions available)
+                ordering: [
+                    { q: "Trình tự giải quyết vấn đề bằng Tư duy phản biện:", correctOrder: ["Xác định vấn đề", "Thu thập thông tin", "Phân tích và đánh giá thông tin", "Đưa ra kết luận và giải pháp", "Thực hiện và theo dõi giải pháp"] },
+                    { q: "Các bước để tránh Thiên kiến (Bias):", correctOrder: ["Nhận biết thiên kiến có thể xảy ra", "Tìm kiếm thông tin trái chiều", "Đánh giá bằng chứng một cách khách quan", "Điều chỉnh quan điểm dựa trên bằng chứng"] }
+                ]
+            },
+            
+            // KỸ NĂNG THUYẾT TRÌNH (PRESENTATION SKILLS)
+            "presentation_skills": {
+                // Round 1: Multiple Choice (5 questions available)
+                mc: [
+                    { q: "Nguyên tắc 10/20/30 của Guy Kawasaki đề cập đến điều gì?", a: "10 slides, 20 phút, cỡ chữ 30", opt: ["10 slides, 20 phút, cỡ chữ 30", "10 người nghe, 20 ý chính, 30 phút", "10 phút chuẩn bị, 20 phút trình bày, 30 phút hỏi đáp", "10 câu chuyện, 20 hình ảnh, 30 giây mỗi slide"] },
+                    { q: "Cách tốt nhất để mở đầu một bài thuyết trình là gì?", a: "Một câu chuyện, một câu hỏi hoặc một thống kê gây sốc", opt: ["Đọc lời chào và giới thiệu bản thân một cách dài dòng", "Bắt đầu ngay bằng slide đầu tiên", "Một câu chuyện, một câu hỏi hoặc một thống kê gây sốc", "Xin lỗi vì sự chuẩn bị chưa hoàn hảo"] },
+                    { q: "Làm thế nào để duy trì sự tương tác với khán giả?", a: "Sử dụng ánh mắt và đặt câu hỏi mở", opt: ["Chỉ nhìn vào màn hình trình chiếu", "Sử dụng ánh mắt và đặt câu hỏi mở", "Đứng yên một chỗ", "Đọc to nội dung trên slide"] },
+                    { q: "Khi bị quên bài, bạn nên làm gì?", a: "Tạm dừng ngắn, hít thở và nhìn vào ghi chú", opt: ["Cười lớn và nói 'Tôi quên rồi!'", "Tạm dừng ngắn, hít thở và nhìn vào ghi chú", "Chuyển sang chủ đề khác ngay lập tức", "Yêu cầu khán giả nhắc bài"] },
+                    { q: "Mục đích của việc luyện tập trước khi thuyết trình là gì?", a: "Giúp tự tin và kiểm soát thời gian", opt: ["Giúp tự tin và kiểm soát thời gian", "Đọc thuộc lòng từng chữ", "Chỉ để làm quen với phòng họp", "Tìm lỗi chính tả"] }
+                ],
+                // Round 2: Matching (3 questions available)
+                matching: [
+                    { q: "Ngôn ngữ cơ thể mở", a: "Tạo sự kết nối và tín nhiệm với khán giả", choices: ["Làm khán giả cảm thấy khó hiểu", "Tạo sự kết nối và tín nhiệm với khán giả", "Giảm thời gian trình bày"] },
+                    { q: "Sử dụng công cụ trực quan (Visual Aids)", a: "Hỗ trợ và làm rõ ý chính, không phải sao chép lời nói", choices: ["Hỗ trợ và làm rõ ý chính, không phải sao chép lời nói", "Thay thế hoàn toàn người thuyết trình", "Gây phân tâm cho người nghe"] },
+                    { q: "Phân tích khán giả", a: "Điều chỉnh nội dung và giọng điệu cho phù hợp với họ", choices: ["Điều chỉnh nội dung và giọng điệu cho phù hợp với họ", "Chỉ sử dụng những thuật ngữ chuyên ngành phức tạp", "Giữ nguyên bài thuyết trình gốc"] }
+                ],
+                // Round 3: Ordering (2 questions available)
+                ordering: [
+                    { q: "Các bước chuẩn bị một bài thuyết trình hiệu quả:", correctOrder: ["Xác định mục tiêu và khán giả", "Xây dựng nội dung và bố cục", "Thiết kế slide (trực quan)", "Luyện tập và kiểm soát thời gian", "Trình bày và tương tác"] },
+                    { q: "Trình tự cấu trúc bài thuyết trình:", correctOrder: ["Mở đầu (hút sự chú ý)", "Thân bài (phát triển các luận điểm)", "Tóm tắt (tổng kết ý chính)", "Kết luận (kêu gọi hành động)"] }
+                ]
+            },
+
+            // QUẢN LÝ CẢM XÚC (EMOTIONAL MANAGEMENT)
+            "emotional_management": {
+                // Round 1: Multiple Choice (5 questions available)
+                mc: [
+                    { q: "Thế nào là 'Trí tuệ cảm xúc' (EQ)?", a: "Khả năng nhận biết, hiểu và quản lý cảm xúc của bản thân và người khác", opt: ["Khả năng giải toán nhanh", "Khả năng nhận biết, hiểu và quản lý cảm xúc của bản thân và người khác", "Khả năng ghi nhớ tốt", "Khả năng phản xạ nhanh"] },
+                    { q: "Phương pháp '3 giây tạm dừng' được dùng để làm gì?", a: "Ngăn phản ứng bốc đồng và chọn lựa phản ứng tích cực", opt: ["Ngăn phản ứng bốc đồng và chọn lựa phản ứng tích cực", "Kéo dài cuộc tranh luận", "Làm đối phương lo lắng", "Thể hiện sự kiên nhẫn"] },
+                    { q: "Kỹ thuật 'Tự đối thoại tích cực' giúp ích như thế nào?", a: "Thay thế suy nghĩ tiêu cực bằng những lời động viên", opt: ["Bỏ qua mọi vấn đề", "Thay thế suy nghĩ tiêu cực bằng những lời động viên", "Đổ lỗi cho người khác", "Phóng đại vấn đề"] },
+                    { q: "Dấu hiệu của cảm xúc 'Lo lắng' (Anxiety) thường là gì?", a: "Tim đập nhanh, căng cơ, khó tập trung", opt: ["Cười liên tục, nói to", "Tim đập nhanh, căng cơ, khó tập trung", "Ăn nhiều và ngủ say", "Cảm thấy rất bình tĩnh"] },
+                    { q: "Điều gì KHÔNG phải là một cơ chế đối phó lành mạnh?", a: "Trốn tránh vấn đề bằng mạng xã hội hoặc chất kích thích", opt: ["Viết nhật ký", "Trốn tránh vấn đề bằng mạng xã hội hoặc chất kích thích", "Tập thể dục", "Nói chuyện với người tin cậy"] }
+                ],
+                // Round 2: Matching (3 questions available)
+                matching: [
+                    { q: "Cảm xúc 'Giận dữ'", a: "Nguyên nhân có thể là cảm thấy bị đối xử bất công", choices: ["Nguyên nhân có thể là cảm thấy bị đối xử bất công", "Xuất phát từ sự hài lòng tột độ", "Thường đi kèm với sự thờ ơ"] },
+                    { q: "Kỹ thuật 'Tái định khung' (Reframing)", a: "Thay đổi cách nhìn nhận một tình huống tiêu cực thành tích cực", choices: ["Làm tăng cường độ của cảm xúc tiêu cực", "Thay đổi cách nhìn nhận một tình huống tiêu cực thành tích cực", "Bỏ qua hoàn toàn cảm xúc"] },
+                    { q: "Lắng nghe chủ động", a: "Tạo không gian an toàn để người khác bày tỏ cảm xúc", choices: ["Tạo không gian an toàn để người khác bày tỏ cảm xúc", "Nhanh chóng đưa ra lời khuyên", "Ngắt lời để thể hiện sự đồng cảm"] }
+                ],
+                // Round 3: Ordering (2 questions available)
+                ordering: [
+                    { q: "Các bước thực hành Chánh niệm (Mindfulness):", correctOrder: ["Dừng lại (Stop)", "Hít thở sâu (Breathe)", "Quan sát cảm xúc và suy nghĩ (Observe)", "Tiếp tục (Proceed)"] },
+                    { q: "Quy trình giải quyết xung đột cảm xúc:", correctOrder: ["Nhận diện cảm xúc của bản thân", "Lắng nghe quan điểm của đối phương", "Tìm kiếm giải pháp chung (Win-Win)", "Thực hiện giải pháp"] }
+                ]
+            },
+
+            // KỸ NĂNG SINH TỒN (SURVIVAL SKILLS)
+            "survival_skills": {
+                // Round 1: Multiple Choice (5 questions available)
+                mc: [
+                    { q: "Quy tắc ưu tiên sinh tồn là gì?", a: "Che chắn/Nơi trú ẩn > Nước > Lửa > Thức ăn", opt: ["Thức ăn > Nước > Che chắn", "Che chắn/Nơi trú ẩn > Nước > Lửa > Thức ăn", "Lửa > Thức ăn > Nước", "Nước > Thức ăn > Che chắn"] },
+                    { q: "Nếu bị lạc trong rừng, vật dụng nào là quan trọng nhất để mang theo?", a: "Thẻ cứu sinh, dao đa năng và bật lửa/diêm", opt: ["Một quyển sách và tai nghe", "Nhiều đồ ăn đóng hộp", "Thẻ cứu sinh, dao đa năng và bật lửa/diêm", "Một chiếc gối êm ái"] },
+                    { q: "Cách sơ cứu ban đầu cho vết bỏng cấp độ 1 là gì?", a: "Ngâm vết bỏng dưới nước lạnh (không dùng đá) khoảng 10-20 phút", opt: ["Ngâm vết bỏng dưới nước lạnh (không dùng đá) khoảng 10-20 phút", "Chọc vỡ các vết phồng rộp", "Bôi kem đánh răng lên vết bỏng", "Băng kín vết thương bằng vải khô"] },
+                    { q: "Làm thế nào để báo hiệu khẩn cấp hiệu quả nhất trong rừng?", a: "Dùng gương hoặc còi để tạo tín hiệu 3 lần", opt: ["Hét to liên tục", "Viết chữ 'HELP' bằng máu", "Dùng gương hoặc còi để tạo tín hiệu 3 lần", "Đốt lửa lớn ngay lập tức"] },
+                    { q: "Khi bị chảy máu mũi, hành động đúng là gì?", a: "Ngồi thẳng, nghiêng đầu về phía trước và bóp cánh mũi trong 10 phút", opt: ["Ngả đầu ra phía sau", "Nhét bông gòn vào mũi", "Ngồi thẳng, nghiêng đầu về phía trước và bóp cánh mũi trong 10 phút", "Nằm xuống và chờ máu ngừng chảy"] }
+                ],
+                // Round 2: Matching (3 questions available)
+                matching: [
+                    { q: "Lửa", a: "Sưởi ấm, thanh trùng nước, nấu ăn, báo hiệu", choices: ["Chỉ để nấu ăn", "Chỉ để sưởi ấm", "Sưởi ấm, thanh trùng nước, nấu ăn, báo hiệu"] },
+                    { q: "Quy tắc 3 của Sinh tồn", a: "3 phút không khí, 3 ngày nước, 3 tuần thức ăn", choices: ["3 phút không khí, 3 ngày nước, 3 tuần thức ăn", "3 giờ chạy bộ, 3 ngày nghỉ, 3 tuần làm việc", "3 loại thức ăn, 3 lít nước, 3 bộ quần áo"] },
+                    { q: "Phòng tránh Hạ thân nhiệt (Hypothermia)", a: "Giữ khô ráo, mặc nhiều lớp quần áo, che chắn đầu", choices: ["Ăn nhiều thức ăn lạnh", "Giữ khô ráo, mặc nhiều lớp quần áo, che chắn đầu", "Tắm nước lạnh liên tục"] }
+                ],
+                // Round 3: Ordering (2 questions available)
+                ordering: [
+                    { q: "Các bước tìm kiếm và thanh trùng nước trong tự nhiên:", correctOrder: ["Tìm nguồn nước chảy/nước mưa", "Lọc sơ bộ bằng vải", "Đun sôi nước trong 1 phút (hoặc dùng thuốc)", "Lưu trữ trong bình sạch"] },
+                    { q: "Trình tự di chuyển nạn nhân bị thương nặng:", correctOrder: ["Kiểm tra độ an toàn của khu vực", "Sơ cứu vết thương đe dọa tính mạng (ABC)", "Cố định phần bị thương/gãy xương", "Di chuyển nạn nhân đến nơi an toàn"] }
+                ]
+            }
+        };
+
+        // --- Core Game Logic ---
+
+        // Tone.js Setup for Sound Effects
+        const synth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "square" },
+            envelope: { release: 0.1 }
+        }).toDestination();
+        
+        function playCorrectSound() {
+            synth.triggerAttackRelease(["C5", "E5", "G5"], "8n");
+        }
+        function playIncorrectSound() {
+            synth.triggerAttackRelease(["C3", "B2"], "16n", "+0.01");
+        }
+        function playAdvanceSound() {
+            synth.triggerAttackRelease("G4", "16n");
+        }
+        function playFinishSound() {
+             synth.triggerAttackRelease(["C6", "E6", "G6"], "4n");
+        }
+
+        // UI Initialization & Utility
+        function showScreen(screenId) {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('matching-screen').classList.add('hidden');
+            document.getElementById('ordering-screen').classList.add('hidden');
+            document.getElementById('score-screen').classList.add('hidden');
+            document.getElementById('status-bar').classList.add('hidden');
+            
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            if (screenId !== 'welcome-screen' && screenId !== 'score-screen') {
+                 document.getElementById('status-bar').classList.remove('hidden');
+                 updateStatusBar();
+            }
+
+            gameState.currentScreen = screenId.replace('-screen', '');
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('custom-modal').classList.add('flex');
+        }
+
+        function hideModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+            document.getElementById('custom-modal').classList.remove('flex');
+        }
+
+        function updateStatusBar() {
+            const topicName = TOPICS.find(t => t.id === gameState.topic)?.name || 'N/A';
+            
+            // Get the actual number of questions for the current round to display
+            const currentRoundQuestions = gameState.selectedQuestions[gameState.round] ? gameState.selectedQuestions[gameState.round].length : QUESTIONS_PER_ROUND;
+
+            document.getElementById('game-info').innerHTML = `
+                ${topicName} | Vòng ${gameState.round + 1}: ${ROUND_NAMES[gameState.round]} | Câu hỏi: ${gameState.questionIndex + 1}/${currentRoundQuestions}
+            `;
+            document.getElementById('current-score').textContent = `Điểm: ${gameState.score}`;
+        }
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function populateTopics() {
+            const container = document.getElementById('topic-selection');
+            container.innerHTML = TOPICS.map(t => `
+                <button data-topic="${t.id}" class="topic-btn flex flex-col items-center justify-center p-4 rounded-xl border-4 border-gray-200 hover:border-cyan-500 transition duration-200 bg-white shadow-md" onclick="selectTopic('${t.id}')">
+                    <span class="text-4xl mb-2">${t.icon}</span>
+                    <span class="text-sm md:text-lg font-semibold text-gray-700">${t.name}</span>
+                </button>
+            `).join('');
+
+            const diffContainer = document.getElementById('difficulty-selection');
+            diffContainer.innerHTML = DIFFICULTIES.map(d => `
+                <button data-difficulty="${d.id}" class="difficulty-btn px-6 py-3 rounded-full text-white font-bold text-lg shadow-lg ${d.color} opacity-70 transition duration-200" onclick="selectDifficulty('${d.id}')">
+                    ${d.name}
+                </button>
+            `).join('');
+        }
+
+        // Topic/Difficulty Selection Handlers
+        function selectTopic(topicId) {
+            gameState.topic = topicId;
+            document.querySelectorAll('.topic-btn').forEach(btn => {
+                const isSelected = btn.dataset.topic === topicId;
+                btn.classList.toggle('border-cyan-500', isSelected);
+                btn.classList.toggle('border-gray-200', !isSelected);
+            });
+            checkStartButton();
+        }
+
+        function selectDifficulty(diffId) {
+            gameState.difficulty = diffId;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                const isSelected = btn.dataset.difficulty === diffId;
+                btn.classList.toggle('opacity-100', isSelected);
+                btn.classList.toggle('opacity-70', !isSelected);
+                btn.classList.toggle('neon-glow', isSelected);
+            });
+            checkStartButton();
+        }
+
+        function checkStartButton() {
+            const username = document.getElementById('username-input').value.trim();
+            const startButton = document.getElementById('start-button');
+            if (gameState.topic && gameState.difficulty && username.length > 0) {
+                startButton.disabled = false;
+                startButton.classList.remove('opacity-50');
+            } else {
+                startButton.disabled = true;
+                startButton.classList.add('opacity-50');
+            }
+        }
+        
+        document.getElementById('username-input').addEventListener('input', checkStartButton);
+
+        // --- Game Flow Control ---
+        function startGame() {
+            gameState.username = document.getElementById('username-input').value.trim();
+            if (!gameState.topic || !gameState.difficulty || !gameState.username) {
+                showModal('Lỗi', 'Vui lòng nhập tên, chọn chủ đề và độ khó trước khi chơi!');
+                return;
+            }
+            
+            // Reset game state
+            gameState.score = 0;
+            gameState.round = 0;
+            gameState.questionIndex = 0;
+            gameState.selectedQuestions = [];
+
+            // Pre-select and shuffle all available questions (up to QUESTIONS_PER_ROUND)
+            try {
+                const topicData = QUESTION_BANK[gameState.topic];
+                
+                // Shuffle and slice MC questions
+                shuffleArray(topicData.mc);
+                gameState.selectedQuestions[0] = topicData.mc.slice(0, QUESTIONS_PER_ROUND);
+
+                // Shuffle and slice Matching questions
+                shuffleArray(topicData.matching);
+                gameState.selectedQuestions[1] = topicData.matching.slice(0, QUESTIONS_PER_ROUND);
+
+                // Shuffle and slice Ordering questions
+                shuffleArray(topicData.ordering);
+                gameState.selectedQuestions[2] = topicData.ordering.slice(0, QUESTIONS_PER_ROUND);
+                
+            } catch (e) {
+                console.error("Error setting up questions:", e);
+                showModal('Lỗi dữ liệu', 'Không đủ dữ liệu câu hỏi cho chủ đề này.');
+                resetGame();
+                return;
+            }
+
+            loadNextQuestion();
+        }
+
+        function loadNextQuestion() {
+            if (gameState.round >= 3) {
+                endGame();
+                return;
+            }
+            
+            // FIX: Use the actual length of the selected questions array for the current round
+            const currentRoundQuestions = gameState.selectedQuestions[gameState.round];
+            const actualQuestionsCount = currentRoundQuestions ? currentRoundQuestions.length : 0;
+
+            if (gameState.questionIndex >= actualQuestionsCount) {
+                playAdvanceSound();
+                gameState.round++;
+                gameState.questionIndex = 0;
+                
+                if (gameState.round >= 3) {
+                    endGame();
+                    return;
+                }
+            }
+
+            // After potentially advancing the round and resetting the index, check again
+            const nextRoundQuestions = gameState.selectedQuestions[gameState.round];
+            if (!nextRoundQuestions || nextRoundQuestions.length === 0) {
+                 // Should only happen if a round has zero questions
+                 endGame(); 
+                 return;
+            }
+
+            // Now safely load the current question
+            gameState.currentQuestion = gameState.selectedQuestions[gameState.round][gameState.questionIndex];
+
+            // Determine which round screen to display
+            if (gameState.round === 0) {
+                showScreen('quiz-screen');
+                renderMultipleChoice(gameState.currentQuestion);
+            } else if (gameState.round === 1) {
+                showScreen('matching-screen');
+                renderMatching(gameState.currentQuestion);
+            } else if (gameState.round === 2) {
+                showScreen('ordering-screen');
+                renderOrdering(gameState.currentQuestion);
+            }
+            
+            updateStatusBar();
+            playAdvanceSound();
+        }
+
+        function incrementScore(points) {
+            const diffMultiplier = DIFFICULTIES.find(d => d.id === gameState.difficulty).multiplier;
+            gameState.score += Math.round(points * diffMultiplier);
+            updateStatusBar();
+            // Animate score update if needed
+            document.getElementById('current-score').classList.add('neon-glow');
+            setTimeout(() => document.getElementById('current-score').classList.remove('neon-glow'), 500);
+        }
+
+        // --- Round 1: Multiple Choice (MC) Logic ---
+        function renderMultipleChoice(qData) {
+            // Check if qData is valid before accessing properties
+            if (!qData) {
+                console.error("Question data is missing for MC round.");
+                loadNextQuestion(); // Try to load the next available question/round
+                return;
+            }
+
+            document.getElementById('quiz-title').textContent = `Vòng ${gameState.round + 1}: Trắc Nghiệm - ${TOPICS.find(t => t.id === gameState.topic).name}`;
+            document.getElementById('question-text').textContent = `${gameState.questionIndex + 1}. ${qData.q}`;
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            // Combine correct answer and wrong options, then shuffle
+            const allOptions = [...qData.opt];
+            shuffleArray(allOptions);
+
+            allOptions.forEach((option, index) => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center p-3 bg-white rounded-lg border-2 border-gray-200 hover:bg-cyan-50 transition duration-150 cursor-pointer';
+                label.innerHTML = `
+                    <input type="radio" name="mc-option" value="${option}" class="w-5 h-5 text-cyan-600 form-radio focus:ring-cyan-500">
+                    <span class="ml-3 text-lg text-gray-800">${option}</span>
+                `;
+                optionsContainer.appendChild(label);
+            });
+        }
+
+        window.submitAnswer = function() {
+            const selectedOption = document.querySelector('input[name="mc-option"]:checked');
+            if (!selectedOption) {
+                showModal('Thông báo', 'Vui lòng chọn một đáp án.');
+                return;
+            }
+
+            const userAnswer = selectedOption.value;
+            const correctAnswer = gameState.currentQuestion.a;
+            const questionCard = document.getElementById('question-card');
+
+            if (userAnswer === correctAnswer) {
+                playCorrectSound();
+                questionCard.classList.add('correct-answer');
+                incrementScore(10);
+            } else {
+                playIncorrectSound();
+                questionCard.classList.add('incorrect-answer');
+                // Optional: Show correct answer feedback
+            }
+
+            // Lock input and proceed after delay
+            document.querySelectorAll('input[name="mc-option"]').forEach(input => input.disabled = true);
+            setTimeout(() => {
+                questionCard.classList.remove('correct-answer', 'incorrect-answer');
+                gameState.questionIndex++;
+                loadNextQuestion();
+            }, 1000);
+        }
+
+        // --- Round 2: Matching Logic ---
+        function renderMatching(qData) {
+            // Check if qData is valid before accessing properties
+            if (!qData) {
+                console.error("Question data is missing for Matching round.");
+                loadNextQuestion();
+                return;
+            }
+            
+            gameState.matchingPair = [];
+            document.getElementById('matching-status').textContent = 'Chưa chọn cặp nào.';
+
+            const leftContainer = document.getElementById('match-left-container');
+            const rightContainer = document.getElementById('match-right-container');
+            leftContainer.innerHTML = '<h3 class="font-bold text-xl text-yellow-800 mb-2">Khái Niệm</h3>';
+            rightContainer.innerHTML = '<h3 class="font-bold text-xl text-indigo-800 mb-2">Định Nghĩa/Giải Pháp</h3>';
+
+            // All choices (including the correct one) need to be displayed on the right
+            const rightOptions = [qData.a, ...qData.choices].filter((v, i, a) => a.indexOf(v) === i); // Ensure unique
+            shuffleArray(rightOptions);
+
+            // Left side (the question/concept)
+            const leftItem = document.createElement('div');
+            leftItem.className = 'match-item left-item p-3 bg-yellow-200 rounded-lg shadow-sm text-lg font-medium';
+            leftItem.dataset.value = qData.q;
+            leftItem.textContent = qData.q;
+            leftItem.onclick = () => selectMatchItem(qData.q, 'left', leftItem);
+            leftContainer.appendChild(leftItem);
+
+            // Right side (the definitions/answers)
+            rightOptions.forEach(opt => {
+                const rightItem = document.createElement('div');
+                rightItem.className = 'match-item right-item p-3 bg-indigo-200 rounded-lg shadow-sm text-lg';
+                rightItem.dataset.value = opt;
+                rightItem.textContent = opt;
+                rightItem.onclick = () => selectMatchItem(opt, 'right', rightItem);
+                rightContainer.appendChild(rightItem);
+            });
+        }
+
+        window.selectMatchItem = function(value, type, element) {
+            const statusDiv = document.getElementById('matching-status');
+            
+            // Check if the same item type is selected twice
+            if (gameState.matchingPair.length === 1 && gameState.matchingPair[0].type === type) {
+                // Deselect the old one
+                gameState.matchingPair[0].element.classList.remove('border-4', 'border-red-500', 'ring-2', 'ring-red-500');
+                gameState.matchingPair = [];
+            }
+            
+            // Deselect if already selected
+            const existingIndex = gameState.matchingPair.findIndex(p => p.element === element);
+            if (existingIndex !== -1) {
+                element.classList.remove('border-4', 'border-red-500', 'ring-2', 'ring-red-500');
+                gameState.matchingPair.splice(existingIndex, 1);
+            } else {
+                // Select new item
+                element.classList.add('border-4', 'border-red-500', 'ring-2', 'ring-red-500');
+                gameState.matchingPair.push({ value, type, element });
+            }
+
+            // Update status
+            if (gameState.matchingPair.length === 2) {
+                statusDiv.textContent = 'Đã chọn 1 cặp. Sẵn sàng kiểm tra!';
+            } else if (gameState.matchingPair.length === 1) {
+                statusDiv.textContent = `Đã chọn ${type === 'left' ? 'Khái niệm' : 'Định nghĩa'}...`;
+            } else {
+                statusDiv.textContent = 'Chưa chọn cặp nào.';
+            }
+        }
+
+        window.checkMatchingAnswer = function() {
+            if (gameState.matchingPair.length !== 2) {
+                showModal('Thông báo', 'Vui lòng chọn **chính xác** một Khái niệm và một Định nghĩa/Giải pháp.');
+                return;
+            }
+
+            const leftItem = gameState.matchingPair.find(p => p.type === 'left');
+            const rightItem = gameState.matchingPair.find(p => p.type === 'right');
+            const correctLeft = gameState.currentQuestion.q;
+            const correctRight = gameState.currentQuestion.a;
+
+            // Check if the selected pair is the correct pair for the current question
+            const isCorrect = (leftItem.value === correctLeft && rightItem.value === correctRight);
+
+            // Highlight and provide feedback
+            const allItems = [leftItem.element, rightItem.element];
+            if (isCorrect) {
+                playCorrectSound();
+                allItems.forEach(item => {
+                    item.classList.remove('border-4', 'border-red-500', 'ring-2', 'ring-red-500');
+                    item.classList.add('correct-answer', 'pointer-events-none');
+                    item.onclick = null; // Disable further interaction
+                });
+                incrementScore(10);
+            } else {
+                playIncorrectSound();
+                allItems.forEach(item => item.classList.add('incorrect-answer'));
+                // Clear incorrect selection after a delay
+                setTimeout(() => {
+                    allItems.forEach(item => item.classList.remove('incorrect-answer', 'border-4', 'border-red-500', 'ring-2', 'ring-red-500'));
+                }, 1000);
+            }
+
+            gameState.matchingPair = [];
+
+            // Proceed to next question if correct
+            if (isCorrect) {
+                setTimeout(() => {
+                    gameState.questionIndex++;
+                    loadNextQuestion();
+                }, 1000);
+            }
+        }
+
+
+        // --- Round 3: Ordering Logic ---
+        function renderOrdering(qData) {
+            // Check if qData is valid before accessing properties
+            if (!qData) {
+                console.error("Question data is missing for Ordering round.");
+                loadNextQuestion();
+                return;
+            }
+            
+            document.getElementById('ordering-screen').querySelector('h2').textContent = `Vòng ${gameState.round + 1}: Sắp Xếp - ${TOPICS.find(t => t.id === gameState.topic).name}`;
+            
+            const container = document.getElementById('order-container');
+            container.innerHTML = '';
+            
+            // The items to be ordered (scrambled)
+            gameState.orderingItems = [...qData.correctOrder];
+            shuffleArray(gameState.orderingItems);
+
+            gameState.orderingItems.forEach((step, index) => {
+                const item = document.createElement('div');
+                item.className = 'order-item p-3 bg-lime-200 rounded-lg shadow-md text-lg font-medium select-none';
+                item.textContent = step;
+                item.draggable = true;
+                item.id = `order-step-${index}`;
+                item.addEventListener('dragstart', dragStart);
+                item.addEventListener('dragover', dragOver);
+                item.addEventListener('drop', drop);
+                item.addEventListener('dragenter', dragEnter);
+                item.addEventListener('dragleave', dragLeave);
+                container.appendChild(item);
+            });
+        }
+
+        // Drag & Drop Implementation
+        let draggedItem = null;
+
+        function dragStart(e) {
+            draggedItem = this;
+            setTimeout(() => this.classList.add('opacity-40'), 0);
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', null); // Required for Firefox
+        }
+
+        function dragOver(e) {
+            e.preventDefault(); // Necessary to allow drop
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function dragEnter(e) {
+            e.preventDefault();
+            if (this !== draggedItem) {
+                this.classList.add('border-4', 'border-lime-700');
+            }
+        }
+
+        function dragLeave() {
+            this.classList.remove('border-4', 'border-lime-700');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            this.classList.remove('border-4', 'border-lime-700');
+
+            if (draggedItem && draggedItem !== this) {
+                const container = document.getElementById('order-container');
+                const children = Array.from(container.children);
+                const draggedIndex = children.indexOf(draggedItem);
+                const dropIndex = children.indexOf(this);
+
+                container.removeChild(draggedItem);
+                if (draggedIndex < dropIndex) {
+                    container.insertBefore(draggedItem, this.nextSibling);
+                } else {
+                    container.insertBefore(draggedItem, this);
+                }
+            }
+            draggedItem.classList.remove('opacity-40');
+        }
+
+        window.checkOrderingAnswer = function() {
+            const container = document.getElementById('order-container');
+            const currentOrder = Array.from(container.children).map(item => item.textContent.trim());
+            const correctOrder = gameState.currentQuestion.correctOrder;
+
+            const isCorrect = currentOrder.every((step, index) => step === correctOrder[index]);
+            
+            // Provide visual feedback to the list items
+            Array.from(container.children).forEach((item, index) => {
+                if (item.textContent.trim() === correctOrder[index]) {
+                    item.classList.add('correct-answer');
+                    item.classList.remove('incorrect-answer');
+                } else {
+                    item.classList.add('incorrect-answer');
+                    item.classList.remove('correct-answer');
+                }
+            });
+
+            if (isCorrect) {
+                playCorrectSound();
+                incrementScore(10);
+            } else {
+                playIncorrectSound();
+                // Deduct points for incorrect sorting
+                incrementScore(-5); 
+            }
+
+            // Lock input and proceed after delay
+            Array.from(container.children).forEach(item => item.draggable = false);
+            setTimeout(() => {
+                Array.from(container.children).forEach(item => item.classList.remove('correct-answer', 'incorrect-answer'));
+                gameState.questionIndex++;
+                loadNextQuestion();
+            }, 1500);
+        }
+
+        // --- Game End and Scoring ---
+        function endGame() {
+            playFinishSound();
+            showScreen('score-screen');
+            document.getElementById('final-score-display').textContent = gameState.score;
+            
+            // Save score to Firestore
+            window.saveScore(gameState.username, 
+                             TOPICS.find(t => t.id === gameState.topic)?.name.replace(/[^a-zA-Z\s]/g, '').trim(), // Clean name for display
+                             gameState.score, 
+                             DIFFICULTIES.find(d => d.id === gameState.difficulty)?.name);
+            
+            // Ensure leaderboard is updated immediately
+            window.loadLeaderboard();
+        }
+
+        function resetGame() {
+            gameState.score = 0;
+            gameState.round = 0;
+            gameState.questionIndex = 0;
+            gameState.topic = null;
+            gameState.difficulty = null;
+            document.getElementById('username-input').value = '';
+            document.querySelectorAll('.topic-btn, .difficulty-btn').forEach(btn => {
+                btn.classList.remove('border-cyan-500', 'opacity-100', 'neon-glow');
+                btn.classList.add('border-gray-200', 'opacity-70');
+            });
+            document.getElementById('start-button').disabled = true;
+            document.getElementById('start-button').classList.add('opacity-50');
+
+            showScreen('welcome-screen');
+        }
+
+        // --- Leaderboard UI Update ---
+        window.updateLeaderboardUI = function(leaderboardData) {
+            const body = document.getElementById('leaderboard-body');
+            if (!body) return;
+            
+            body.innerHTML = '';
+            if (leaderboardData.length === 0) {
+                body.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">Chưa có thành tích nào được ghi nhận. Hãy là người đầu tiên!</td></tr>';
+                return;
+            }
+
+            leaderboardData.forEach((record, index) => {
+                const rank = index + 1;
+                const row = document.createElement('tr');
+                row.className = rank <= 3 ? 'bg-yellow-50 font-bold' : (rank % 2 === 0 ? 'bg-gray-50' : 'bg-white');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${rank} ${rank === 1 ? '👑' : ''}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${record.username}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${record.topic}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${record.difficulty}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-extrabold text-cyan-600">${record.score}</td>
+                `;
+                body.appendChild(row);
+            });
+        };
+        
+        // Initial setup on load
+        window.onload = function() {
+            populateTopics();
+            checkStartButton(); // Check initial state
+            showScreen('welcome-screen');
+            // Firebase init is handled by the module script, which then calls loadLeaderboard
+        };
+
+    </script>
+</body>
+</html>

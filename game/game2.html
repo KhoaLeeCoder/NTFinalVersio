@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Kỹ Năng Sống Survival</title>
+    
+    <style>
+        /* === CÀI ĐẶT CHUNG === */
+        :root {
+            --primary-color: #007bff; /* Màu xanh chuyên nghiệp */
+            --light-color: #f8f9fa;
+            --dark-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* === HEADER & FOOTER === */
+        .main-header, .main-footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: var(--box-shadow);
+        }
+
+        .main-header h1 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        /* === THANH ĐIỀU HƯỚNG (NAV) === */
+        .main-nav ul {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            background-color: var(--primary-color);
+        }
+
+        .main-nav a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .main-nav a:hover {
+            background-color: #0056b3;
+        }
+
+        .main-nav a.active {
+            background-color: #004a99;
+            border-bottom: 4px solid #ffc107;
+        }
+
+        /* === KHU VỰC TRÒ CHƠI === */
+        .game-topic {
+            display: none; /* Ẩn theo mặc định */
+            background-color: #fff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 20px;
+        }
+
+        .game-topic.active {
+            display: block; /* Chỉ hiển thị chủ đề có class 'active' */
+        }
+
+        .game-topic h2 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        /* === THẺ CÂU HỎI (CARD) === */
+        .question-card {
+            background-color: var(--light-color);
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .question-card fieldset {
+            border: none;
+            padding: 0;
+        }
+
+        .question-card legend {
+            font-size: 1.1em;
+            font-weight: bold;
+            padding: 15px 0;
+        }
+
+        .question-card div {
+            margin-bottom: 12px;
+        }
+
+        .question-card label {
+            display: block;
+            padding: 10px 15px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-card label:hover {
+            background-color: #eef8ff;
+            border-color: var(--primary-color);
+        }
+
+        /* Ẩn nút radio gốc */
+        .question-card input[type="radio"] {
+            display: none;
+        }
+
+        /* Tạo kiểu cho label khi radio được chọn */
+        .question-card input[type="radio"]:checked + label {
+            background-color: #d4edda; 
+            border-color: #28a745; 
+            font-weight: bold;
+        }
+
+        /* === NÚT BẤM & KẾT QUẢ === */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #28a745; 
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .results-container {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            font-size: 1.2em;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .results-container.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .results-container.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>🚀 Game Kỹ Năng Sống 🚀</h1>
+        <p>Cùng củng cố kiến thức để bảo vệ bản thân và những người xung quanh!</p>
+    </header>
+
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#dong-dat" data-topic="dong-dat" class="active">Động đất</a></li>
+            <li><a href="#lu-lut" data-topic="lu-lut">Lũ lụt</a></li>
+            <li><a href="#chay-rung" data-topic="chay-rung">Cháy rừng</a></li>
+            <li><a href="#thuyet-trinh" data-topic="thuyet-trinh">Thuyết trình</a></li>
+            <li><a href="#cam-xuc" data-topic="cam-xuc">Quản lý cảm xúc</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="dong-dat" class="game-topic active">
+            <h2>Chủ đề: Kỹ năng khi có Động đất 🌋</h2>
+            
+            <form id="form-dong-dat" class="quiz-form">
+                <article class="question-card">
+                    <fieldset>
+                        <legend>Câu 1: Khi đang ở trong nhà và xảy ra động đất, bạn nên làm gì ĐẦU TIÊN?</legend>
+                        <div>
+                            <input type="radio" id="q1-a" name="question1" value="a">
+                            <label for="q1-a">A. Lập tức chạy ra ngoài ban công kêu cứu.</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="q1-b" name="question1" value="b">
+                            <label for="q1-b">B. Chui xuống gầm bàn chắc chắn, che đầu và giữ chặt.</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="q1-c" name="question1" value="c">
+                            <label for="q1-c">C. Chạy ngay vào thang máy để thoát hiểm.</label>
+                        </div>
+                    </fieldset>
+                </article>
+
+                <article class="question-card">
+                    <fieldset>
+                        <legend>Câu 2: Nếu bạn đang ở ngoài trời khi động đất xảy ra, bạn nên di chuyển đến đâu?</legend>
+                        <div>
+                            <input type="radio" id="q2-a" name="question2" value="a">
+                            <label for="q2-a">A. Một khu đất trống, tránh xa tòa nhà, cây cối và đường dây điện.</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="q2-b" name="question2" value="b">
+                            <label for="q2-b">B. Đứng sát vào tường của một tòa nhà cao tầng để tránh bị đè.</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="q2-c" name="question2" value="c">
+                            <label for="q2-c">C. Chạy xuống một cây cầu hoặc cầu vượt.</label>
+                        </div>
+                    </fieldset>
+                </article>
+                
+                <button type="submit" class="submit-btn" data-topic-id="dong-dat">Kiểm tra Đáp án Động đất</button>
+                <div id="results-dong-dat" class="results-container"></div>
+            </form>
+        </section>
+
+        <section id="lu-lut" class="game-topic">
+            <h2>Chủ đề: Kỹ năng khi có Lũ lụt 🌊</h2>
+            <form id="form-lu-lut" class="quiz-form">
+                 <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
+                <button type="submit" class="submit-btn" data-topic-id="lu-lut">Kiểm tra Đáp án Lũ lụt</button>
+                <div id="results-lu-lut" class="results-container"></div>
+            </form>
+        </section>
+
+        <section id="chay-rung" class="game-topic">
+            <h2>Chủ đề: Kỹ năng khi có Cháy rừng 🔥</h2>
+            <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
+        </section>
+
+        <section id="thuyet-trinh" class="game-topic">
+            <h2>Chủ đề: Kỹ năng Thuyết trình 🎙️</h2>
+            <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
+        </section>
+
+        <section id="cam-xuc" class="game-topic">
+            <h2>Chủ đề: Kỹ năng Quản lý Cảm xúc 😊</h2>
+            <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 - Một sản phẩm web giáo dục vì cộng đồng.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === PHẦN 1: DỮ LIỆU ĐÁP ÁN (DỄ DÀNG THAY ĐỔI) ===
+            const correctAnswers = {
+                // Chủ đề Động đất
+                'dong-dat': {
+                    question1: 'b', 
+                    question2: 'a'  
+                },
+                // Thêm đáp án cho các chủ đề khác ở đây
+                'lu-lut': { question1: 'b' }, 
+                'chay-rung': { question1: 'c' }, 
+                'thuyet-trinh': { question1: 'b' }, 
+                'cam-xuc': { question1: 'a' } 
+            };
+
+
+            // === PHẦN 2: XỬ LÝ CHUYỂN TAB (ĐIỀU HƯỚNG) ===
+            const navLinks = document.querySelectorAll('.main-nav a');
+            const gameTopics = document.querySelectorAll('.game-topic');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); 
+                    const topicId = link.getAttribute('data-topic');
+                    const targetTopic = document.getElementById(topicId);
+
+                    // Ẩn tất cả, rồi hiển thị cái được chọn
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    gameTopics.forEach(topic => topic.classList.remove('active'));
+
+                    link.classList.add('active');
+                    targetTopic.classList.add('active');
+                });
+            });
+
+
+            // === PHẦN 3: XỬ LÝ LOGIC QUIZ ===
+            const quizForms = document.querySelectorAll('.quiz-form');
+
+            quizForms.forEach(form => {
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault(); 
+                    
+                    // Lấy ID của chủ đề từ nút submit
+                    const topicId = event.submitter.getAttribute('data-topic-id');
+                    const currentAnswers = correctAnswers[topicId];
+                    const resultsContainer = document.getElementById(`results-${topicId}`);
+                    
+                    let score = 0;
+                    const totalQuestions = Object.keys(currentAnswers).length;
+                    const formData = new FormData(form);
+
+                    for (const [question, correctAnswer] of Object.entries(currentAnswers)) {
+                        const userAnswer = formData.get(question);
+
+                        if (userAnswer === correctAnswer) {
+                            score++; 
+                        }
+                    }
+
+                    // Hiển thị kết quả
+                    resultsContainer.innerHTML = `Bạn đã trả lời đúng ${score} / ${totalQuestions} câu!`;
+
+                    if (score === totalQuestions) {
+                        resultsContainer.className = 'results-container correct'; 
+                        resultsContainer.innerHTML += " 🌟 Tuyệt vời! Bạn là một chuyên gia sinh tồn!";
+                    } else {
+                        resultsContainer.className = 'results-container incorrect'; 
+                        resultsContainer.innerHTML += " 😟 Hãy ôn lại kiến thức để an toàn hơn nhé!";
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

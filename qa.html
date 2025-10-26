@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Q&amp;A - AI Life Skills</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main style="max-width:900px;margin:28px auto;padding:18px;">
+    <h1>Góp ý & Hỗ trợ</h1>
+    <p>Gửi góp ý hoặc yêu cầu hỗ trợ cho nhóm.</p>
+
+    <form id="supportForm" class="form" style="display:flex;flex-direction:column;gap:10px;">
+      <label for="sname">Tên</label>
+      <input id="sname" required />
+
+      <label for="semail">Email</label>
+      <input id="semail" type="email" required />
+
+      <label for="stopic">Chủ đề</label>
+      <select id="stopic">
+        <option>Giao diện</option>
+        <option>Game</option>
+        <option>Video</option>
+        <option>Khác</option>
+      </select>
+
+      <label for="smsg">Mô tả</label>
+      <textarea id="smsg" rows="6" required></textarea>
+
+      <div class="form-actions" style="text-align:right">
+        <button type="submit" class="btn primary">Gửi yêu cầu</button>
+      </div>
+    </form>
+
+    <div style="margin-top:16px;">
+      <a href="index.html" class="btn">⬅ Quay lại</a>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('supportForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = document.getElementById('sname').value.trim();
+      const email = document.getElementById('semail').value.trim();
+      const topic = document.getElementById('stopic').value;
+      const msg = document.getElementById('smsg').value.trim();
+      if(!name||!email||!msg){ alert('Vui lòng điền đầy đủ.'); return; }
+      // Demo: hiện popup, còn gửi mail cần backend (hoặc form service như Formspree)
+      alert('Cảm ơn ' + name + '. Yêu cầu của bạn đã được gửi (demo).');
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
