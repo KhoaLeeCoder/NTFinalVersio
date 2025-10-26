@@ -3,203 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kỹ Năng Quản Lý Cảm Xúc | Chìa Khóa Hạnh Phúc</title>
-    
+    <title>Khóa Học Kỹ Năng Quản Lý Cảm Xúc</title>
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Tải font Inter từ Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Tùy chỉnh nhỏ cho Tailwind -->
+    <!-- Cấu hình Font Inter và màu sắc -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
-            font-family: 'Inter', sans-serif; /* Sử dụng font Inter cho toàn bộ trang */
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Màu nền nhẹ nhàng */
         }
-        /* Tạo một lớp gradient xanh dương đẹp mắt cho phần hero */
-        .hero-gradient {
-            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+        .section-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease-in-out;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="antialiased">
 
-    <!-- Header / Navbar -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4">
-            <h1 class="text-2xl font-bold text-blue-600">Làm Chủ Cảm Xúc</h1>
-        </div>
-    </nav>
-
-    <!-- Phần Hero Section -->
-    <header class="hero-gradient text-white p-12 md:p-20 text-center">
-        <div class="container mx-auto">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">Làm Chủ Cảm Xúc, Làm Chủ Cuộc Đời</h1>
-            <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">
-                Khám phá sức mạnh của việc hiểu và điều khiển cảm xúc để sống một cuộc đời cân bằng, hạnh phúc và thành công hơn.
-            </p>
+    <!-- Header & Nút Quay Về -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-blue-700 tracking-tight">
+                Kỹ Năng Quản Lý Cảm Xúc
+            </h1>
+            <a href="/index.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                <!-- Sử dụng icon lucide-react (tượng trưng) hoặc inline SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                    <path d="M5.5 15.5L12 12 18.5 15.5"/>
+                    <path d="M5.5 8.5L12 5 18.5 8.5"/>
+                </svg>
+                Quay Về Web Chính
+            </a>
         </div>
     </header>
 
-    <!-- Nội dung chính -->
-    <main class="container mx-auto px-6 py-16">
+    <!-- Nội dung Khóa học -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <p class="text-xl text-gray-600 mb-10 text-center max-w-4xl mx-auto">
+            Khóa học này sẽ cung cấp cho bạn những kiến thức nền tảng và các kỹ thuật thực tiễn để hiểu, chấp nhận và làm chủ cảm xúc của mình, hướng tới cuộc sống cân bằng và hạnh phúc hơn.
+        </p>
 
-        <!-- Phần 1: Thế nào là Quản lý Cảm xúc? -->
-        <section id="what-is-it" class="mb-20">
-            <div class="bg-white p-8 md:p-12 rounded-xl shadow-lg md:flex items-center gap-12">
-                <!-- Phần văn bản -->
-                <div class="md:w-2/3">
-                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Quản lý Cảm xúc là gì?</h2>
-                    <p class="text-lg text-gray-700 mb-4 leading-relaxed">
-                        <strong>Quản lý cảm xúc</strong> là khả năng nhận diện, hiểu và điều chỉnh cảm xúc của chính bạn một cách lành mạnh và mang tính xây dựng.
-                    </p>
-                    <p class="text-gray-600 mb-4 leading-relaxed">
-                        Nó không có nghĩa là kìm nén hay phớt lờ cảm xúc, mà là thừa nhận chúng, hiểu thông điệp chúng mang lại và sau đó quyết định cách phản ứng một cách có ý thức.
-                    </p>
-                    <p class="text-gray-600 leading-relaxed">
-                        Đây là một kỹ năng cốt lõi, giúp bạn vượt qua căng thẳng, giao tiếp hiệu quả và đưa ra những quyết định sáng suốt hơn.
-                    </p>
+        <!-- Bài Học 1: Quản Lý Cảm Xúc Là Gì? -->
+        <section id="lesson-1" class="mb-12 section-card bg-white rounded-xl p-8 border-t-4 border-blue-500">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="text-blue-500 mr-3 text-3xl font-extrabold">01</span> Quản Lý Cảm Xúc Là Gì?
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+                Quản lý cảm xúc không phải là ngăn chặn hay loại bỏ cảm xúc, mà là quá trình **nhận biết, hiểu, chấp nhận và điều chỉnh** các phản ứng cảm xúc của bản thân một cách lành mạnh và hiệu quả. Nó bao gồm khả năng làm dịu những cảm xúc tiêu cực mãnh liệt (như giận dữ, lo âu) và khuyến khích những cảm xúc tích cực (như sự đồng cảm, lạc quan).
+            </p>
+            <ul class="list-disc list-inside mt-4 text-gray-600 ml-4">
+                <li>**Nhận biết:** Xác định được cảm xúc đang diễn ra (buồn, vui, tức giận...).</li>
+                <li>**Hiểu:** Tìm ra nguyên nhân và thông điệp mà cảm xúc đó mang lại.</li>
+                <li>**Điều chỉnh:** Lựa chọn cách phản ứng phù hợp với hoàn cảnh, không để cảm xúc kiểm soát hành động.</li>
+            </ul>
+        </section>
+
+        <!-- Bài Học 2: Tầm Quan Trọng Của Việc Quản Lý Cảm Xúc -->
+        <section id="lesson-2" class="mb-12 section-card bg-white rounded-xl p-8 border-t-4 border-indigo-500">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="text-indigo-500 mr-3 text-3xl font-extrabold">02</span> Quản Lý Cảm Xúc Có Quan Trọng Không?
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+                Quản lý cảm xúc là nền tảng của Trí tuệ Cảm xúc (EQ), yếu tố dự đoán thành công và hạnh phúc cao hơn cả Trí tuệ Logic (IQ). Nó quan trọng vì nó ảnh hưởng trực tiếp đến:
+            </p>
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <h4 class="font-semibold text-indigo-700">Sức Khỏe Tinh Thần</h4>
+                    <p class="text-sm text-gray-600 mt-1">Giảm căng thẳng, lo âu và nguy cơ trầm cảm.</p>
                 </div>
-                <!-- Phần hình ảnh minh họa -->
-                <div class="md:w-1/3 mt-8 md:mt-0">
-                    <img src="https://placehold.co/600x400/e0f7fa/007bff?text=Binh+Yen+Trong+Tam" 
-                         alt="Hình ảnh minh họa sự bình yên, cân bằng" 
-                         class="rounded-lg shadow-md w-full h-auto object-cover">
+                <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <h4 class="font-semibold text-indigo-700">Mối Quan Hệ</h4>
+                    <p class="text-sm text-gray-600 mt-1">Tăng sự đồng cảm, giao tiếp hiệu quả và giải quyết xung đột tốt hơn.</p>
+                </div>
+                <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <h4 class="font-semibold text-indigo-700">Hiệu Suất Làm Việc</h4>
+                    <p class="text-sm text-gray-600 mt-1">Giúp đưa ra quyết định lý trí và duy trì sự tập trung.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Phần 2: Vì sao lại quan trọng? (Lợi ích) -->
-        <section id="why-important" class="mb-20">
-            <h2 class="text-3xl font-bold text-center text-blue-700 mb-12">Tại sao Quản lý Cảm xúc lại Quan trọng?</h2>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Card Lợi ích 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500 transform hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="text-blue-500 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-1.657-1.343-3-3-3s-3 1.343-3 3v2m10 0v-6.586A2 2 0 0015.414 12H8.586A2 2 0 007 13.414V20m7-8v-1.086A3 3 0 0011.5 8h-1A3 3 0 008 10.914V12m7 0a3 3 0 01-3 3H9.707A3.001 3.001 0 017 12v-1.086A3 3 0 019.5 8h1A3 3 0 0113 10.914V12"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-900">Cải thiện Mối quan hệ</h3>
-                    <p class="text-gray-600">Giúp bạn giao tiếp rõ ràng, thấu cảm và giải quyết xung đột hiệu quả hơn với người khác.</p>
+        <!-- Bài Học 3: Tác Động Tích Cực -->
+        <section id="lesson-3" class="mb-12 section-card bg-white rounded-xl p-8 border-t-4 border-green-500">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="text-green-500 mr-3 text-3xl font-extrabold">03</span> Tác Động Khi Bạn Biết Quản Lý Cảm Xúc
+            </h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Khi bạn làm chủ được cảm xúc, cuộc sống của bạn sẽ có những thay đổi đáng kể:
+            </p>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 mt-1 flex-shrink-0 mr-3">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <path d="M22 4L12 14.01l-3-3"></path>
+                    </svg>
+                    <p class="text-gray-700">**Sự An Nhiên Nội Tại:** Bạn cảm thấy bình tĩnh hơn, ít bị xao động bởi các yếu tố bên ngoài.</p>
                 </div>
-
-                <!-- Card Lợi ích 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500 transform hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="text-green-500 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-900">Ra quyết định Sáng suốt</h3>
-                    <p class="text-gray-600">Khi bình tĩnh, bạn có thể suy nghĩ logic, phân tích tình huống khách quan thay vì hành động bốc đồng.</p>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 mt-1 flex-shrink-0 mr-3">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <p class="text-gray-700">**Khả Năng Phục Hồi:** Bạn hồi phục nhanh hơn sau những thất bại hoặc tổn thương tinh thần.</p>
                 </div>
-
-                <!-- Card Lợi ích 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-500 transform hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="text-purple-500 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-900">Giảm căng thẳng & Lo âu</h3>
-                    <p class="text-gray-600">Hiểu rõ cảm xúc giúp bạn quản lý stress tốt hơn, ngăn chúng leo thang thành sự lo lắng mãn tính.</p>
-                </div>
-
-                <!-- Card Lợi ích 4 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-500 transform hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="text-yellow-500 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12 12 0 0012 21.694a12 12 0 008.618-3.04A11.955 11.955 0 0112 2.944z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-900">Tăng cường Sức khỏe</h3>
-                    <p class="text-gray-600">Cảm xúc tiêu cực kéo dài có thể ảnh hưởng xấu đến thể chất. Quản lý tốt giúp cơ thể khỏe mạnh hơn.</p>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 mt-1 flex-shrink-0 mr-3">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <path d="M14 2v6h6"></path>
+                        <path d="M12 17v-4"></path>
+                        <path d="M14 15h-4"></path>
+                    </svg>
+                    <p class="text-gray-700">**Đưa Ra Quyết Định Tốt Hơn:** Các quyết định của bạn được dẫn dắt bởi lý trí thay vì sự nóng vội của cảm xúc.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Phần 3: Các Phương Pháp (Thông tin liên quan) -->
-        <section id="how-to" class="mb-20">
-            <h2 class="text-3xl font-bold text-center text-blue-700 mb-12">Làm thế nào để Quản lý Cảm xúc?</h2>
-            
-            <div class_="bg-white p-8 md:p-12 rounded-xl shadow-lg">
-                <ol class="space-y-8">
-                    <!-- Bước 1 -->
-                    <li class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <span class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-xl">1</span>
-                        </div>
-                        <div class="ml-6">
-                            <h3 class="text-2xl font-semibold text-gray-900 mb-2">Nhận diện Cảm xúc (Gọi tên)</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Dừng lại một chút và tự hỏi: "Mình đang cảm thấy gì?". Cố gắng gọi tên chính xác cảm xúc đó (ví dụ: thất vọng, lo lắng, vui sướng, tội lỗi). Việc gọi tên giúp bạn tách mình ra khỏi cảm xúc và bắt đầu quan sát nó.
-                            </p>
-                        </div>
-                    </li>
-                    
-                    <!-- Bước 2 -->
-                    <li class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <span class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-xl">2</span>
-                        </div>
-                        <div class="ml-6">
-                            <h3 class="text-2xl font-semibold text-gray-900 mb-2">Hiểu Nguyên nhân (Truy tìm)</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                "Điều gì đã kích hoạt cảm xúc này?". Có thể đó là một sự kiện, một suy nghĩ, hoặc một lời nói của ai đó. Hiểu nguyên nhân gốc rễ giúp bạn giải quyết vấn đề tận gốc thay vì chỉ xử lý bề mặt.
-                            </p>
-                        </div>
-                    </li>
-
-                    <!-- Bước 3 -->
-                    <li class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <span class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-xl">3</span>
-                        </div>
-                        <div class="ml-6">
-                            <h3 class="text-2xl font-semibold text-gray-900 mb-2">Chấp nhận và Lựa chọn Phản ứng</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Chấp nhận rằng cảm xúc là một phần tự nhiên của con người. Thay vì phản ứng ngay lập tức (như la hét khi tức giận), hãy cho mình một khoảng lặng. Hít thở sâu. Sau đó, lựa chọn cách phản ứng mang tính xây dựng (ví dụ: "Tôi cần thời gian để bình tĩnh trước khi nói về điều này").
-                            </p>
-                        </div>
-                    </li>
-
-                    <!-- Bước 4 -->
-                    <li class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <span class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-xl">4</span>
-                        </div>
-                        <div class="ml-6">
-                            <h3 class="text-2xl font-semibold text-gray-900 mb-2">Thực hành Kỹ thuật Thư giãn</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Thường xuyên thực hành các kỹ thuật như hít thở sâu, thiền định (mindfulness), yoga, hoặc tập thể dục. Những hoạt động này giúp hệ thần kinh của bạn trở nên kiên cường hơn trước các tác nhân gây stress.
-                            </p>
-                        </div>
-                    </li>
-                </ol>
-            </div>
-        </section>
-
-        <!-- Phần 4: Mẹo nhanh (Thông tin liên quan) -->
-        <section id="quick-tips">
-            <h2 class="text-3xl font-bold text-center text-blue-700 mb-12">Mẹo Nhanh Hàng Ngày</h2>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-400">
-                    <h3 class="font-bold text-xl text-blue-800 mb-2">Quy tắc 10 giây</h3>
-                    <p class="text-blue-700">Khi cảm thấy tức giận, hãy đếm từ 1 đến 10 trước khi nói hoặc làm bất cứ điều gì.</p>
+        <!-- Bài Học 4: Cách Thực Hành Kỹ Năng Quản Lý Cảm Xúc -->
+        <section id="lesson-4" class="mb-12 section-card bg-white rounded-xl p-8 border-t-4 border-amber-500">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="text-amber-500 mr-3 text-3xl font-extrabold">04</span> Các Kỹ Thuật Thực Hành
+            </h2>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="font-semibold text-lg text-amber-700">1. Kỹ thuật "Dán Nhãn" (Labeling)</h3>
+                    <p class="text-gray-700 mt-1">
+                        Khi cảm xúc mạnh mẽ xuất hiện, hãy dừng lại và tự hỏi: "Mình đang cảm thấy gì?". Dùng một từ cụ thể (ví dụ: 'thất vọng', 'ghen tị', 'hào hứng') để gọi tên cảm xúc. Việc dán nhãn giúp kích hoạt vùng vỏ não trước trán, làm giảm cường độ phản ứng của hạch hạnh nhân (trung tâm cảm xúc).
+                    </p>
                 </div>
-                <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-400">
-                    <h3 class="font-bold text-xl text-green-800 mb-2">Viết Nhật ký</h3>
-                    <p class="text-green-700">Dành 5 phút mỗi tối để viết ra 3 điều bạn cảm thấy biết ơn hoặc những cảm xúc bạn đã trải qua.</p>
+                <div>
+                    <h3 class="font-semibold text-lg text-amber-700">2. Phương pháp 3-3-3 (Ngắt quãng phản ứng)</h3>
+                    <p class="text-gray-700 mt-1">
+                        Đây là kỹ thuật giúp bạn tạo khoảng cách với cảm xúc tiêu cực trước khi phản ứng.
+                    </p>
+                    <ul class="list-disc list-inside mt-2 text-gray-600 ml-4 space-y-1">
+                        <li>**Hít thở 3 lần:** Thở sâu và chậm.</li>
+                        <li>**Dừng 3 giây:** Tự nhủ "Dừng lại, chưa phản ứng vội".</li>
+                        <li>**Chuyển hướng 3 phút:** Làm việc khác (uống nước, đi dạo, nghe nhạc) để phá vỡ chuỗi cảm xúc.</li>
+                    </ul>
                 </div>
-                <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-400">
-                    <h3 class="font-bold text-xl text-yellow-800 mb-2">Vận động Cơ thể</h3>
-                    <p class="text-yellow-700">Chỉ cần đi bộ 10 phút cũng có thể thay đổi tâm trạng của bạn một cách tích cực.</p>
-                </div>
-                <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-purple-400">
-                    <h3 class="font-bold text-xl text-purple-800 mb-2">Hít thở Hộp</h3>
-                    <p class="text-purple-700">Hít vào (đếm 4), giữ (đếm 4), thở ra (đếm 4), giữ (đếm 4). Lặp lại 5 lần.</p>
-                </div>
-                <div class="bg-pink-50 p-6 rounded-lg border-l-4 border-pink-400">
-                    <h3 class="font-bold text-xl text-pink-800 mb-2">Thay đổi Góc nhìn</h3>
-                    <p class="text-pink-700">Tự hỏi: "5 năm nữa, chuyện này có còn quan trọng không?".</D>
-                </div>
-                <div class="bg-indigo-50 p-6 rounded-lg border-l-4 border-indigo-400">
-                    <h3 class="font-bold text-xl text-indigo-800 mb-2">Ngủ đủ giấc</h3>
-                    <p class="text-indigo-700">Thiếu ngủ là một trong những nguyên nhân lớn nhất gây ra sự cáu kỉnh và mất kiểm soát cảm xúc.</p>
+                <div>
+                    <h3 class="font-semibold text-lg text-amber-700">3. Viết Nhật Ký Cảm Xúc</h3>
+                    <p class="text-gray-700 mt-1">
+                        Mỗi ngày dành 10 phút để ghi lại những cảm xúc mạnh nhất bạn trải qua, nguyên nhân và cách bạn đã đối phó. Điều này giúp tăng cường khả năng tự nhận thức (Self-awareness) theo thời gian.
+                    </p>
                 </div>
             </div>
         </section>
@@ -207,237 +155,11 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-300 text-center p-8 mt-20">
-        <p>&copy; 2025 Trang web Kỹ Năng Quản Lý Cảm Xúc. Được tạo với tình yêu.</p>
+    <footer class="bg-gray-800 py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400 text-sm">
+            <p>&copy; 2025 Khóa Học Kỹ Năng Cảm Xúc. Được phát triển bởi Google Developer.</p>
+        </div>
     </footer>
-
-    <!-- === BẮT ĐẦU: Code Chatbot === -->
-
-    <!-- Chatbot Nút Kích Hoạt -->
-    <button id="chat-toggle" class="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 z-50">
-        <!-- Icon tin nhắn -->
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z"></path></svg>
-    </button>
-
-    <!-- Cửa sổ Chatbot -->
-    <div id="chat-window" class="fixed bottom-24 right-6 w-80 md:w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 hidden transform transition-all duration-300 ease-out">
-        <!-- Header -->
-        <div class="flex justify-between items-center p-4 bg-blue-600 text-white rounded-t-lg">
-            <h3 class="font-bold text-lg">Chatbot Hỗ Trợ</h3>
-            <button id="chat-close" class="text-white hover:text-gray-200 focus:outline-none">
-                <!-- Icon đóng (X) -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-        
-        <!-- Thân Chat -->
-        <div id="chat-body" class="p-4 h-80 overflow-y-auto space-y-4 bg-gray-50">
-            <!-- Tin nhắn chào mừng -->
-            <div class="flex justify-start">
-                <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs shadow">
-                    <p>Xin chào! Tôi có thể giúp gì cho bạn về chủ đề quản lý cảm xúc?</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Input -->
-        <form id="chat-form" class="p-4 border-t border-gray-200 bg-white rounded-b-lg">
-            <div class="flex gap-2">
-                <input type="text" id="chat-input" placeholder="Nhập câu hỏi..." class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
-                <button type="submit" id="chat-send" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    <!-- Icon gửi -->
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                </button>
-            </div>
-        </form>
-    </div>
-    <!-- === KẾT THÚC: Code Chatbot === -->
-
-    <!-- === BẮT ĐẦU: JS Cho Chatbot === -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatToggle = document.getElementById('chat-toggle');
-            const chatWindow = document.getElementById('chat-window');
-            const chatClose = document.getElementById('chat-close');
-            const chatBody = document.getElementById('chat-body');
-            const chatForm = document.getElementById('chat-form');
-            const chatInput = document.getElementById('chat-input');
-
-            // Mở/đóng cửa sổ chat
-            chatToggle.addEventListener('click', () => {
-                chatWindow.classList.toggle('hidden');
-                if (!chatWindow.classList.contains('hidden')) {
-                    chatInput.focus();
-                }
-            });
-
-            chatClose.addEventListener('click', () => {
-                chatWindow.classList.add('hidden');
-            });
-
-            // Gửi tin nhắn
-            chatForm.addEventListener('submit', (e) => {
-                e.preventDefault(); // Ngăn form submit lại trang
-                const userMessage = chatInput.value.trim();
-                if (userMessage) {
-                    appendMessage(userMessage, 'user');
-                    chatInput.value = '';
-                    getBotResponse(userMessage);
-                }
-            });
-
-            // Thêm tin nhắn vào giao diện
-            function appendMessage(message, sender) {
-                const messageWrapper = document.createElement('div');
-                const messageBubble = document.createElement('div');
-                
-                // Sử dụng innerHTML để có thể render Markdown cơ bản (như xuống dòng)
-                // Gemini thường trả về text, nhưng đề phòng trường hợp có markdown
-                messageBubble.innerHTML = message.replace(/\n/g, '<br>'); 
-                messageBubble.classList.add('p-3', 'rounded-lg', 'max-w-xs', 'shadow');
-
-                if (sender === 'user') {
-                    messageWrapper.classList.add('flex', 'justify-end');
-                    messageBubble.classList.add('bg-blue-500', 'text-white');
-                } else {
-                    messageWrapper.classList.add('flex', 'justify-start');
-                    messageBubble.classList.add('bg-gray-200', 'text-gray-800');
-                }
-                
-                messageWrapper.appendChild(messageBubble);
-                chatBody.appendChild(messageWrapper);
-                
-                // Cuộn xuống tin nhắn mới nhất
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
-
-            // Thêm một hàm để hiển thị/ẩn chỉ báo "Bot đang nhập..."
-            function showTypingIndicator() {
-                // Kiểm tra xem chỉ báo đã tồn tại chưa
-                if (document.getElementById('typing-indicator')) return;
-
-                const messageWrapper = document.createElement('div');
-                messageWrapper.id = 'typing-indicator';
-                messageWrapper.classList.add('flex', 'justify-start');
-                
-                const messageBubble = document.createElement('div');
-                messageBubble.classList.add('bg-gray-200', 'text-gray-800', 'p-3', 'rounded-lg', 'max-w-xs', 'shadow');
-                messageBubble.innerHTML = `
-                    <div class="flex items-center space-x-1">
-                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: -0.3s;"></div>
-                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: -0.15s;"></div>
-                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                    </div>
-                `; // Đây là 3 dấu chấm nhấp nháy
-                
-                messageWrapper.appendChild(messageBubble);
-                chatBody.appendChild(messageWrapper);
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
-
-            function hideTypingIndicator() {
-                const typingIndicator = document.getElementById('typing-indicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-            }
-            
-            // --- BẮT ĐẦU THAY ĐỔI LỚN ---
-
-            // QUAN TRỌNG: Thay "YOUR_GEMINI_API_KEY_HERE" bằng API Key của bạn
-            // Lấy API Key từ Google AI Studio: https://aistudio.google.com/app/apikey
-            const GEMINI_API_KEY = "AIzaSyChGSKfvZlFGpO3RFBdLtWZf1xoTpfzYfI";
-            const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-            
-            // Lưu lịch sử trò chuyện để làm ngữ cảnh
-            let chatHistory = [];
-
-            // Chỉ dẫn hệ thống cho Gemini
-            const systemInstruction = {
-                parts: [{
-                    text: "Bạn là một chatbot hỗ trợ thân thiện tên là 'Bot Hạnh Phúc'. Bạn đang ở trên một trang web về 'Kỹ Năng Quản Lý Cảm Xúc'. Hãy trả lời các câu hỏi của người dùng một cách ngắn gọn (khoảng 1-3 câu), tập trung vào chủ đề quản lý cảm xúc, và luôn giữ thái độ tích cực, thấu hiểu. Tuyệt đối không trả lời các câu hỏi không liên quan đến tâm lý, cảm xúc, hoặc chủ đề của trang web."
-                }]
-            };
-
-            // Logic của Bot được cập nhật để gọi API Gemini
-            async function getBotResponse(message) {
-                // Hiển thị chỉ báo "đang nhập..."
-                showTypingIndicator();
-                
-                // Kiểm tra API key
-                if (GEMINI_API_KEY === "AIzaSyChGSKfvZlFGpO3RFBdLtWZf1xoTpfzYfI") {
-                    hideTypingIndicator();
-                    appendMessage("Xin lỗi, trang web này chưa cấu hình API Key cho chatbot. Vui lòng liên hệ quản trị viên.", 'bot');
-                    return;
-                }
-
-                // Thêm tin nhắn mới của người dùng vào lịch sử
-                chatHistory.push({
-                    role: "user",
-                    parts: [{ text: message }]
-                });
-
-                // Xây dựng payload
-                const payload = {
-                    contents: chatHistory,
-                    systemInstruction: systemInstruction,
-                    generationConfig: {
-                        candidateCount: 1,
-                        // Cấu hình an toàn
-                        safetySettings: [
-                            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-                            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-                            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-                            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
-                        ]
-                    }
-                };
-
-                try {
-                    const response = await fetch(GEMINI_API_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error.message || 'Lỗi từ phía API');
-                    }
-
-                    const result = await response.json();
-
-                    if (result.candidates && result.candidates.length > 0) {
-                        const botReply = result.candidates[0].content.parts[0].text;
-                        
-                        // Thêm phản hồi của bot vào lịch sử
-                        chatHistory.push({
-                            role: "model",
-                            parts: [{ text: botReply }]
-                        });
-                        
-                        // Hiển thị phản hồi
-                        hideTypingIndicator();
-                        appendMessage(botReply, 'bot');
-                    } else {
-                        // Xử lý trường hợp không có phản hồi (ví dụ: bị chặn vì an toàn)
-                        hideTypingIndicator();
-                        appendMessage("Xin lỗi, tôi không thể trả lời câu hỏi đó. Bạn có câu hỏi nào khác về quản lý cảm xúc không?", 'bot');
-                    }
-
-                } catch (error) {
-                    console.error("Lỗi gọi API Gemini:", error);
-                    hideTypingIndicator();
-                    appendMessage(`Xin lỗi, đã có lỗi xảy ra. (${error.message})`, 'bot');
-                }
-            }
-            // --- KẾT THÚC THAY ĐỔI LỚN ---
-        });
-    </script>
-    <!-- === KẾT THÚC: JS Cho Chatbot === -->
 
 </body>
 </html>
-
