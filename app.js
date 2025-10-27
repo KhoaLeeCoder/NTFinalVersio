@@ -108,9 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function getBotReply(prompt) {
-    const API_KEY = "DÁN_API_KEY_CỦA_EM_VÀO_ĐÂY";
+    const API_KEY = "AIzaSyDhzzMsJddVFhqOkTNrPl2blCwbCZRYexk";
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
