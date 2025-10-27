@@ -41,3 +41,83 @@ document.querySelectorAll('.dropdown-toggle').forEach(btn => {
     }
   });
 });
+
+// === Chatbot Google AI ===
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("chatbot-toggle");
+  const chatbotBox = document.getElementById("chatbot-box");
+  const closeBtn = document.getElementById("chatbot-close");
+  const sendBtn = document.getElementById("send-btn");
+  const userInput = document.getElementById("user-input");
+  const messages = document.getElementById("chatbot-messages");
+
+  if (!toggleBtn || !chatbotBox) return;
+
+  toggleBtn.onclick = () => {
+    chatbotBox.classList.toggle("hidden");
+  };
+
+  // ✅ fix lỗi nút X không hoạt động
+  if (closeBtn) {
+    closeBtn.onclick = (e) => {
+      e.stopPropagation(); // tránh chồng sự kiện
+      chatbotBox.classList.add("hidden");
+    };
+  }
+
+  if (sendBtn) {
+    sendBtn.onclick = sendMessage;
+  }
+
+  if (userInput) {
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  }
+
+  async function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text) return;
+    addMessage(text, "user-msg");
+    userInput.value = "";
+    addMessage("⏳ Đang phản hồi...", "bot-msg");
+
+    try {
+      const reply = await getBotReply(text);
+      document
+        .querySelectorAll(".bot-msg")
+        [document.querySelectorAll(".bot-msg").length - 1].remove();
+      addMessage(reply, "bot-msg");
+    } catch (err) {
+      addMessage("⚠️ Lỗi kết nối API Google AI.", "bot-msg");
+    }
+  }
+
+  function addMessage(text, className) {
+    const div = document.createElement("div");
+    div.className = className;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  async function getBotReply(prompt) {
+    const API_KEY = "DÁN_API_KEY_CỦA_EM_VÀO_ĐÂY";
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+        }),
+      }
+    );
+    const data = await response.json();
+    return (
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Mình chưa hiểu câu hỏi đó."
+    );
+  }
+});
+
