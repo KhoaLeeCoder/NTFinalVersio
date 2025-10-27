@@ -251,4 +251,52 @@ body{
 .bot-msg {
   background: #f1f2f6;
 }
+/* --- Nâng cấp nhẹ phần nhập tin nhắn chatbot --- */
+#chatbot-input {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  background: #ffffff;
+  padding: 8px;
+  gap: 8px;
+  z-index: 1000001;
+}
+
+#chatbot-input input {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px 15px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s ease;
+  background: #f9f9f9;
+}
+
+#chatbot-input input:focus {
+  border-color: #00bcd4;
+  background: #fff;
+  box-shadow: 0 0 4px rgba(0, 188, 212, 0.3);
+}
+
+#chatbot-input button {
+  background: #00bcd4;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#chatbot-input button:hover {
+  background: #0097a7;
+  transform: scale(1.05);
+}
 
