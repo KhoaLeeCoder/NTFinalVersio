@@ -64,6 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
       chatbotBox.classList.add("hidden");
     };
   }
+  closeBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation(); // ✅ đảm bảo sự kiện không bị chặn
+  chatbotBox.classList.add("hidden");
+});
+
 
   if (sendBtn) {
     sendBtn.onclick = sendMessage;
