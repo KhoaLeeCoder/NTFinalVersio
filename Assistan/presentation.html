@@ -51,7 +51,7 @@
 </head>
 <body class="min-h-screen">
 
-    <!-- HEADER (Đồng bộ với ảnh chụp màn hình) -->
+    <!-- HEADER (Đã chỉnh sửa cho Mobile: loại bỏ nút "Web Chính" khỏi khu vực Logo/Menu) -->
     <header class="bg-white shadow sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
@@ -74,30 +74,26 @@
                     <a href="#section-4" class="hover:text-blue-600 transition">Thực Thi</a>
                 </nav>
 
-                <!-- KHU VỰC MOBILE CONTROLS (Hiển thị trên Mobile) -->
+                <!-- KHU VỰC MOBILE CONTROLS (Chỉ còn nút 3 chấm) -->
                 <div class="flex items-center space-x-2 md:hidden">
-                    <!-- Nút Quay Về Web Chính (Gọn gàng trên Mobile) -->
-                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 text-sm rounded-lg shadow-md transition duration-300">
-                        Web Chính
-                    </a>
-
                     <!-- Nút Toggle Menu (3 chấm) -->
                     <button id="menu-toggle" onclick="toggleMobileMenu()" 
                             class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <!-- Icon 3 chấm -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z" />
                         </svg>
                     </button>
                 </div>
 
-                <!-- Nút Quay Về Web Chính CHO DESKTOP (Ẩn trên Mobile) -->
+                <!-- Nút Quay Về Web Chính CHO DESKTOP (Vẫn giữ trên Desktop) -->
                 <a href="/index.html" class="hidden md:block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-300">
                     Quay về Web Chính
                 </a>
             </div>
         </div>
 
-        <!-- MOBILE MENU DROPDOWN (Chỉ hiển thị khi mở, ẩn trên Desktop) -->
+        <!-- MOBILE MENU DROPDOWN (Vẫn chứa các mục điều hướng) -->
         <nav id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-lg pb-4 px-4 sm:px-6">
             <div class="space-y-1 pt-2">
                 <a href="#hero" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150">Trang Chủ</a>
@@ -217,8 +213,9 @@
                 <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                     <p class="text-gray-700">
                         <span class="font-bold text-blue-700">**Video Tham Khảo:**</span>
-                        <br>Dưới đây là video minh họa về cách chuẩn bị hiệu quả trước khi thuyết trình. Hãy chú ý đến các bước chuẩn bị và mẹo nhỏ được chia sẻ trong video này.
+                        <br>Đây là nơi bạn có thể dán mã nhúng (Embed URL) của video đã chuẩn bị.
                         <br>
+                        <span class="text-sm italic text-gray-500">Hiện tại đang sử dụng placeholder. Nếu muốn chèn video, hãy chỉnh sửa trường 'videoEmbed' trong code JS.</span>
                     </p>
                     <!-- Vùng Placeholder Video -->
                     <div class="mt-4 responsive-video mb-2 shadow-lg rounded-xl">
@@ -276,11 +273,17 @@
 
     </main>
 
-    <!-- FOOTER (Đồng bộ với ảnh chụp màn hình: Màu xanh đậm) -->
+    <!-- FOOTER (Đã thêm nút "Quay về Web Chính" ở đây, gọn gàng và nổi bật) -->
     <footer class="bg-blue-800 text-white mt-12 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <p>Đây là dự án hướng dẫn cộng đồng. Hãy luyện tập và chia sẻ khóa học này!</p>
-            <p class="mt-2 text-gray-300">&copy; 2025 Google Web Developer. Khóa Học Kỹ Năng Thuyết Trình.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <!-- Nút Quay về Web Chính ở cuối trang -->
+            <a href="/index.html" class="inline-block mb-4 bg-white text-blue-800 font-bold py-3 px-6 rounded-full text-lg shadow-xl hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                Quay Về Web Chính
+            </a>
+
+            <p class="text-sm">Đây là dự án hướng dẫn cộng đồng. Hãy luyện tập và chia sẻ khóa học này!</p>
+            <p class="mt-2 text-gray-300 text-sm">&copy; 2025 Google Web Developer. Khóa Học Kỹ Năng Thuyết Trình.</p>
         </div>
     </footer>
 
