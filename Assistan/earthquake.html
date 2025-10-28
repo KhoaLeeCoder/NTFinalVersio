@@ -3,291 +3,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Báo cáo Khoa học: Tìm hiểu về Động đất</title>
-    
+    <title>Báo Cáo Khoa Học</title>
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Cấu hình Tailwind để sử dụng font Inter -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'google-blue': '#4285F4',
-                        'google-red': '#EA4335',
-                        'google-yellow': '#FBBC05',
-                        'google-green': '#34A853',
-                    }
-                },
-            },
-        }
-    </script>
-    
-    <!-- Font Inter từ Google Fonts -->
+    <!-- Tải Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tải Font Inter (Google Font) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Đảm bảo font Inter được áp dụng */
+        /* Sử dụng font Inter làm font chữ chính */
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Offset cho thanh điều hướng cố định khi cuộn */
-        section {
-            scroll-margin-top: 80px; 
+        /* Tùy chỉnh thanh cuộn cho mượt mà */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Tăng cường độ tương phản cho tiêu đề */
+        .section-title {
+            color: #1a56db; /* Màu xanh chuyên nghiệp */
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-slate-100 text-slate-800 leading-relaxed">
 
-    <!-- Thanh điều hướng cố định -->
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 w-full">
-        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- LEFT: Nút Quay về Web Chính + Logo/Tên Báo cáo -->
-                <div class="flex items-center space-x-4">
-                    <!-- Nút Quay về Web Chính - Đã xóa lớp 'hidden' để hiển thị trên mobile -->
-                    <a href="/index.html" class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-google-red transition duration-150 border border-gray-300 px-3 py-1 rounded-full group">
-                         <!-- Icon mũi tên -->
-                         <svg class="w-4 h-4 mr-1 group-hover:-translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                         Web Chính
-                    </a>
-                    
-                    <!-- Logo/Tên Báo cáo -->
-                    <div class="flex-shrink-0 flex items-center">
-                        <svg class="h-8 w-auto text-google-blue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-13.5c-.621 0-1.125-.504-1.125-1.125v-11.25c0-.621.504-1.125 1.125-1.125H9M12 9a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm.75 3a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm-.75 3a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                        </svg>
-                        <span class="ml-2 text-xl font-semibold text-gray-700">Báo cáo Động đất</span>
-                    </div>
-                </div>
-                
-                <!-- Liên kết điều hướng (Desktop) -->
-                <div class="hidden md:flex md:items-center md:space-x-6">
-                    <a href="#gioi-thieu" class="text-gray-600 hover:text-google-blue transition duration-150">Giới thiệu</a>
-                    <a href="#dinh-nghia" class="text-gray-600 hover:text-google-blue transition duration-150">Định nghĩa</a>
-                    <a href="#dau-hieu" class="text-gray-600 hover:text-google-blue transition duration-150">Dấu hiệu</a>
-                    <a href="#thuc-trang" class="text-gray-600 hover:text-google-blue transition duration-150">Thực trạng</a>
-                    <a href="#canh-bao" class="text-gray-600 hover:text-google-blue transition duration-150">Cảnh báo</a>
-                    <a href="#an-toan" class="bg-google-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition duration-150">Biện pháp An toàn</a>
-                </div>
-                
-                <!-- Nút menu (Mobile) - có thể thêm JS để bật/tắt -->
-                <div class="md:hidden flex items-center">
-                    <button class="text-gray-600 hover:text-gray-800">
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                        </svg>
-                    </button>
-                </div>
+    <!-- Header của Trang Báo Cáo -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="/index.html" class="flex items-center space-x-3">
+                <!-- Icon SVG mô phỏng sóng địa chấn -->
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h2.5m13 0H21M6.343 6.343l1.768 1.768m9.76 9.76l1.768 1.768M3 12a9 9 0 1118 0 9 9 0 01-18 0zm5.707-5.707l1.768-1.768m9.76 9.76l1.768-1.768M9 12h6"></path>
+                </svg>
+                <h1 class="text-2xl font-bold text-slate-900">AI Life Skills</h1>
+            </a>
+            
+            <!-- Mobile Menu Button (3-dots) -->
+            <button id="mobile-menu-button" class="md:hidden text-slate-700 hover:text-blue-600 focus:outline-none">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                </svg>
+            </button>
+
+            <!-- Menu điều hướng (Desktop) -->
+            <div class="hidden md:flex space-x-6 font-medium">
+                <a href="#section-1" class="text-slate-600 hover:text-blue-600 transition duration-300">Tổng quan</a>
+                <a href="#section-2" class="text-slate-600 hover:text-blue-600 transition duration-300">Thực trạng</a>
+                <a href="#section-3" class="text-slate-600 hover:text-blue-600 transition duration-300">Nguyên nhân</a>
+                <a href="#section-4" class="text-slate-600 hover:text-blue-600 transition duration-300">Phòng chống</a>
             </div>
         </nav>
     </header>
 
-    <!-- Nội dung chính -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Mobile Menu Panel (hidden by default) -->
+    <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-[60] p-6 md:hidden">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-slate-900">Điều hướng</h2>
+            <button id="mobile-menu-close" class="text-slate-700 hover:text-red-600">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="flex flex-col space-y-6">
+            <a href="#section-1" class="mobile-menu-link text-lg font-medium text-slate-700 hover:text-blue-600">Tổng quan</a>
+            <a href="#section-2" class="mobile-menu-link text-lg font-medium text-slate-700 hover:text-blue-600">Thực trạng</a>
+            <a href="#section-3" class="mobile-menu-link text-lg font-medium text-slate-700 hover:text-blue-600">Nguyên nhân</a>
+            <a href="#section-4" class="mobile-menu-link text-lg font-medium text-slate-700 hover:text-blue-600">Phòng chống</a>
+        </div>
+    </div>
 
-        <!-- PHẦN 1: GIỚI THIỆU -->
-        <section id="gioi-thieu" class="mb-16">
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="md:flex">
-                    <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                        <span class="text-sm font-semibold text-google-blue uppercase">Báo cáo Khoa học Chuyên sâu</span>
-                        <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mt-2 mb-4 leading-tight">Phân tích Hiện tượng Động đất</h1>
-                        <p class="text-lg text-gray-600 leading-relaxed">
-                            Báo cáo này cung cấp cái nhìn tổng quan về động đất, từ nguyên nhân khoa học, các dấu hiệu cảnh báo, đến thực trạng hoạt động địa chấn trong 3 năm gần đây và các khuyến nghị từ chuyên gia để giảm thiểu rủi ro.
-                        </p>
-                    </div>
-                    <div class="md:w-1/2">
-                        <!-- Hình ảnh minh họa chuyên nghiệp -->
-                        <img class="h-full w-full object-cover" src="https://placehold.co/600x400/4285F4/FFFFFF?text=Sóng+Địa+Chấn" alt="Hình ảnh minh họa sóng địa chấn">
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- Nội dung chính của báo cáo -->
+    <main class="container mx-auto max-w-6xl p-6 mt-8">
+        
+        <!-- Tiêu đề chính -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Báo Cáo Khoa Học: Hiểu Về Động Đất</h1>
+            <p class="text-lg text-slate-600">Phân tích toàn diện về nguyên nhân, thực trạng và các biện pháp ứng phó</p>
+            <p class="text-sm text-slate-500 mt-2">Ngày xuất bản: 28 tháng 10, 2025</p>
+        </div>
 
-        <!-- PHẦN 2: ĐỘNG ĐẤT LÀ GÌ? -->
-        <section id="dinh-nghia" class="bg-white rounded-xl shadow-lg p-8 md:p-12 mb-16">
-            <div class="flex items-center mb-6">
-                <div class="bg-google-blue/10 p-3 rounded-full">
-                    <svg class="h-8 w-8 text-google-blue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c.24 0 .468.02.69.057M12 3c.24 0 .468-.02.69-.057M12 3a9.004 9.004 0 0 0-8.716 6.747M12 3a9.004 9.004 0 0 1 8.716 6.747m-1.165 0a9.002 9.002 0 0 0-15.066 0M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
+        <div class="bg-white p-8 md:p-12 rounded-xl shadow-xl space-y-16">
+            
+            <!-- Phần 1: Động đất là gì? -->
+            <section id="section-1" class="scroll-mt-24">
+                <div class="flex items-center space-x-4 mb-6">
+                    <!-- Icon SVG -->
+                    <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                     </svg>
+                    <h2 class="text-3xl font-bold section-title">1. Động đất là gì? (Tổng quan)</h2>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-900 ml-4">Động đất là gì?</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="text-gray-600 leading-relaxed space-y-4">
-                    <p>Động đất (hay địa chấn) là sự rung động của bề mặt Trái Đất gây ra bởi sự giải phóng năng lượng đột ngột ở lớp vỏ Trái Đất. Năng lượng này được giải phóng dưới dạng sóng địa chấn.</p>
-                    <p>Nguyên nhân phổ biến nhất là do sự chuyển động của các mảng kiến tạo. Khi các mảng này va chạm, tách rời hoặc trượt lên nhau, áp suất tích tụ tại các đường đứt gãy. Khi áp suất vượt quá giới hạn chịu đựng của đá, chúng sẽ vỡ ra, giải phóng năng lượng gây ra rung chấn.</p>
-                    <ul class="list-disc list-inside space-y-2 pl-4">
-                        <li><strong>Chấn tiêu (Hypocenter):</strong> Vị trí bên trong Trái Đất nơi năng lượng được giải phóng đầu tiên.</li>
-                        <li><strong>Chấn tâm (Epicenter):</strong> Điểm trên bề mặt Trái Đất ngay phía trên chấn tiêu. Đây thường là nơi chịu ảnh hưởng nặng nề nhất.</li>
-                        <li><strong>Độ lớn (Magnitude):</strong> Đo lường năng lượng giải phóng tại chấn tiêu, thường được đo bằng thang Richter hoặc Thang độ lớn mô men (Mw).</li>
-                    </ul>
+                <div class="space-y-4 text-slate-700 text-base md:text-lg">
+                    <p>Động đất là sự rung động của bề mặt Trái Đất, gây ra bởi sự giải phóng đột ngột năng lượng ở lớp vỏ Trái Đất. Năng lượng này được giải phóng dưới dạng sóng địa chấn (seismic waves) lan truyền qua Trái Đất.</p>
+                    <p>Vị trí nơi năng lượng được giải phóng gọi là <strong>tiêu điểm</strong> (hypocenter) hoặc chấn tiêu. Điểm ngay trên bề mặt Trái Đất, thẳng đứng trên tiêu điểm, được gọi là <strong>chấn tâm</strong> (epicenter).</p>
+                    <p>Độ lớn của một trận động đất thường được đo bằng <strong>thang Richter</strong> hoặc (chính xác hơn) <strong>thang Moment (MMS)</strong>, ký hiệu là M. Một trận động đất M 6.0 mạnh gấp khoảng 32 lần và giải phóng năng lượng gấp 1.000 lần so với một trận M 5.0.</p>
                 </div>
-                <!-- Minh họa đơn giản -->
-                <div class="bg-gray-50 rounded-lg p-6 flex items-center justify-center">
-                    <img src="https://placehold.co/500x300/E8F0FE/4285F4?text=Minh+họa+Mảng+Kiến+tạo" alt="Minh họa chấn tiêu và chấn tâm" class="rounded-lg object-cover">
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- PHẦN 3: DẤU HIỆU CẢNH BÁO -->
-        <section id="dau-hieu" class="bg-white rounded-xl shadow-lg p-8 md:p-12 mb-16">
-            <div class="flex items-center mb-6">
-                <div class="bg-google-yellow/10 p-3 rounded-full">
-                    <svg class="h-8 w-8 text-google-yellow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
+            <!-- Phần 2: Thực trạng 3 năm gần đây (2023-2025) -->
+            <section id="section-2" class="scroll-mt-24">
+                <div class="flex items-center space-x-4 mb-6">
+                    <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20V10"></path>
+                        <path d="M18 20V4"></path>
+                        <path d="M6 20V16"></path>
                     </svg>
+                    <h2 class="text-3xl font-bold section-title">2. Thực trạng 3 năm gần đây (2023 - 2025)</h2>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-900 ml-4">Dấu hiệu & Cảnh báo Sớm</h2>
-            </div>
-            
-            <div class="bg-yellow-50 border-l-4 border-google-yellow text-yellow-800 p-4 rounded-r-lg mb-6">
-                <p><strong>Lưu ý quan trọng:</strong> Khoa học hiện tại <strong>chưa thể dự đoán chính xác</strong> thời gian, địa điểm và độ lớn của một trận động đất cụ thể. Các "dấu hiệu" dưới đây chỉ mang tính quan sát và không phải là phương pháp dự báo đáng tin cậy.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Các quan sát tiền chấn (Foreshocks)</h3>
-                    <p class="text-gray-600 leading-relaxed mb-4">Đôi khi, các trận động đất nhỏ (tiền chấn) có thể xảy ra trước một trận động đất lớn. Tuy nhiên, rất khó để phân biệt tiền chấn với các rung động thông thường cho đến khi trận động đất chính xảy ra.</p>
-                    
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Hệ thống Cảnh báo Sớm (EEW)</h3>
-                    <p class="text-gray-600 leading-relaxed">Đây là phương pháp cảnh báo công nghệ cao đáng tin cậy nhất. Hệ thống này phát hiện sóng P (sóng sơ cấp, di chuyển nhanh, ít gây hại) và gửi cảnh báo trước khi sóng S (sóng thứ cấp, di chuyển chậm hơn, gây thiệt hại chính) đến. Thời gian cảnh báo có thể từ vài giây đến một phút, đủ để thực hiện hành động "Nằm xuống, Che chắn, Bám chắc".</p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Các dấu hiệu khác (chưa được kiểm chứng)</h3>
-                    <p class="text-gray-600 leading-relaxed mb-4">Một số báo cáo mang tính giai thoại (anecdotal) bao gồm:</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-600">
-                        <li>Hành vi bất thường của động vật (ví dụ: chim bay hoảng loạn, chó sủa liên tục).</li>
-                        <li>Sự thay đổi đột ngột mực nước giếng.</li>
-                        <li>Xuất hiện "mây động đất" hoặc ánh sáng lạ trên bầu trời (ít bằng chứng khoa học).</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- PHẦN 4: THỰC TRẠNG 3 NĂM GẦN ĐÂY -->
-        <section id="thuc-trang" class="bg-white rounded-xl shadow-lg p-8 md:p-12 mb-16">
-            <div class="flex items-center mb-6">
-                <div class="bg-google-green/10 p-3 rounded-full">
-                    <svg class="h-8 w-8 text-google-green" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h12A2.25 2.25 0 0 0 20.25 14.25V3m-16.5 0h16.5m-16.5 0H3.75m16.5 0H20.25m0 0V3.75m0 10.5V14.25m0 0v-4.5m-16.5 4.5v-4.5m16.5 0v-4.5m-16.5 4.5v-4.5m16.5 0v-4.5M3.75 7.5h16.5M3.75 12h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
-                    </svg>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-900 ml-4">Thực trạng Động đất (3 năm gần đây)</h2>
-            </div>
-            
-            <p class="text-lg text-gray-600 leading-relaxed mb-8">Trong ba năm qua, thế giới tiếp tục chứng kiến nhiều hoạt động địa chấn đáng chú ý, đặc biệt là tại các khu vực thuộc "Vành đai lửa Thái Bình Dương". Các xu hướng chính bao gồm:</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Thẻ 1 -->
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Các trận động đất lớn</h4>
-                    <p class="text-gray-600">Đã xảy ra nhiều trận động đất có độ lớn trên 7.0 Mw, gây thiệt hại đáng kể về người và của. Điển hình là trận động đất thảm khốc tại Thổ Nhĩ Kỳ và Syria vào tháng 2 năm 2023, cho thấy sự tàn phá khủng khiếp khi động đất xảy ra gần các khu đô thị đông đúc với cơ sở hạ tầng chưa đảm bảo.</p>
-                </div>
-                <!-- Thẻ 2 -->
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Tiến bộ trong Giám sát</h4>
-                    <p class="text-gray-600">Các mạng lưới giám sát địa chấn toàn cầu đã trở nên dày đặc và nhạy hơn. Việc sử dụng AI và học máy để phân tích dữ liệu sóng địa chấn đang giúp các nhà khoa học hiểu rõ hơn về cơ chế đứt gãy và cải thiện tốc độ của hệ thống cảnh báo sớm (EEW).</p>
-                </div>
-                <!-- Thẻ 3 -->
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Hoạt động tại Việt Nam</h4>
-                    <p class="text-gray-600">Việt Nam ghi nhận các trận động đất với tần suất và cường độ tương đối ổn định, chủ yếu ở mức độ nhẹ đến trung bình tại các khu vực như Tây Bắc (Điện Biên, Sơn La) và ven biển Nam Trung Bộ. Các chuyên gia vẫn liên tục theo dõi các đới đứt gãy đang hoạt động.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- PHẦN 5: CẢNH BÁO CỦA CHUYÊN GIA -->
-        <section id="canh-bao" class="bg-white rounded-xl shadow-lg p-8 md:p-12 mb-16">
-            <div class="flex items-center mb-6">
-                <div class="bg-google-red/10 p-3 rounded-full">
-                    <svg class="h-8 w-8 text-google-red" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                    </svg>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-900 ml-4">Cảnh báo từ các Chuyên gia</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-4 text-gray-600 leading-relaxed">
-                    <p>Các nhà địa chấn học và kỹ sư xây dựng trên toàn thế giới đồng loạt nhấn mạnh các điểm sau:</p>
-                    <ul class="list-disc list-inside space-y-3">
-                        <li><strong>"Vấn đề không phải là NẾU, mà là KHI NÀO":</strong> Đối với các thành phố lớn nằm trên các đường đứt gãy đang hoạt động (như Tokyo, Istanbul, San Francisco), một trận động đất lớn là không thể tránh khỏi. Sự chuẩn bị là yếu tố sống còn.</li>
-                        <li><strong>Tầm quan trọng của Quy chuẩn Xây dựng:</strong> Thiệt hại về người chủ yếu không phải do rung chấn, mà do sập đổ công trình. Việc tuân thủ nghiêm ngặt các quy chuẩn xây dựng kháng chấn là biện pháp giảm thiểu thiệt hại hiệu quả nhất.</li>
-                        <li><strong>Nguy cơ Kép (Động đất & Sóng thần):</strong> Các trận động đất mạnh xảy ra dưới đáy biển có thể gây ra sóng thần tàn khốc. Các cộng đồng ven biển cần có kế hoạch sơ tán rõ ràng và hệ thống cảnh báo sóng thần hiệu quả.</li>
-                    </ul>
-                </div>
-                <div class="bg-red-50 rounded-lg p-6 border-l-4 border-google-red">
-                    <h4 class="text-xl font-semibold text-red-900 mb-3">Khuyến nghị hàng đầu</h4>
-                    <p class="text-red-800 leading-relaxed">"Đầu tư vào cơ sở hạ tầng kiên cố và giáo dục cộng đồng về cách ứng phó là hai trụ cột chính để bảo vệ sinh mạng. Mỗi gia đình, mỗi tổ chức đều cần có kế hoạch dự phòng khẩn cấp."</p>
-                    <p class="text-sm text-red-700 mt-4">- Trích lược từ ý kiến của các nhà khoa học USGS & JMA.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- PHẦN 6: BIỆN PHÁP AN TOÀN -->
-        <section id="an-toan" class="mb-16">
-            <h2 class="text-3xl font-bold text-gray-900 text-center mb-10">Hướng dẫn An toàn & Chuẩn bị</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Thẻ: TRƯỚC KHI -->
-                <div class="bg-white rounded-xl shadow-lg p-8">
-                    <span class="text-sm font-semibold text-google-blue uppercase">TRƯỚC KHI</span>
-                    <h3 class="text-2xl font-bold text-gray-900 mt-2 mb-4">Chuẩn bị</h3>
-                    <ul class="list-disc list-inside space-y-2 text-gray-600">
-                        <li>Gia cố các vật nặng (tủ, kệ sách) vào tường.</li>
-                        <li>Xác định các vị trí an toàn trong nhà (gầm bàn kiên cố, góc tường).</li>
-                        <li>Chuẩn bị một "Túi đồ khẩn cấp" (nước uống, thức ăn, sơ cứu, pin, đèn pin).</li>
-                        <li>Thống nhất kế hoạch liên lạc và điểm hẹn với gia đình.</li>
-                    </ul>
-                </div>
+                <p class="text-slate-700 text-lg mb-8">Dữ liệu thống kê trong 3 năm qua cho thấy sự biến động liên tục về tần suất và cường độ của các trận động đất lớn trên toàn cầu. Các hệ thống giám sát ngày càng nhạy bén, giúp ghi nhận nhiều trận động đất hơn, nhưng cũng cho thấy các khu vực rủi ro cao đang phải đối mặt với áp lực địa chất gia tăng.</p>
                 
-                <!-- Thẻ: TRONG KHI -->
-                <div class="bg-google-red rounded-xl shadow-lg p-8 text-white">
-                    <span class="text-sm font-semibold text-yellow-300 uppercase">TRONG KHI</span>
-                    <h3 class="text-2xl font-bold mt-2 mb-4">Hành động: DROP, COVER, HOLD ON</h3>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li><strong>DROP (Nằm xuống):</strong> Nhanh chóng nằm xuống sàn.</li>
-                        <li><strong>COVER (Che chắn):</strong> Chui xuống gầm bàn kiên cố, hoặc che đầu và cổ bằng tay.</li>
-                        <li><strong>HOLD ON (Bám chắc):</strong> Bám chặt vào chân bàn cho đến khi hết rung lắc.</li>
-                        <li>Nếu ở ngoài trời, hãy tránh xa các tòa nhà, cây cối, đường dây điện.</li>
+                <!-- Khu vực hiển thị biểu đồ -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Biểu đồ 1: Số lượng động đất lớn (M > 6.0) -->
+                    <div class="bg-slate-50 p-6 rounded-lg shadow-inner">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4 text-center">Số lượng động đất (M > 6.0) toàn cầu</h3>
+                        <canvas id="magnitudeChart"></canvas>
+                        <p class="text-sm text-slate-500 mt-4 text-center">Nguồn: USGS & Global Seismograph Network (Dữ liệu giả định)</p>
+                    </div>
+                    
+                    <!-- Biểu đồ 2: Phân bố thiệt hại theo khu vực -->
+                    <div class="bg-slate-50 p-6 rounded-lg shadow-inner">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4 text-center">Phân bố thiệt hại kinh tế (Tỷ USD)</h3>
+                        <canvas id="damageChart"></canvas>
+                        <p class="text-sm text-slate-500 mt-4 text-center">Nguồn: World Bank & Reinsurance Data (Dữ liệu giả định)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Phần 3: Nguyên nhân chính gây ra động đất -->
+            <section id="section-3" class="scroll-mt-24">
+                <div class="flex items-center space-x-4 mb-6">
+                    <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 12.5c0-2.8 0-5.5-2.2-7.8s-5-2.8-7.8-2.8-5.5 0-7.8 2.2-2.8 5-2.8 7.8 0 5.5 2.2 7.8 5 2.8 7.8 2.8 5.5 0 7.8-2.2 2.8-5 2.8-7.8z"></path>
+                        <path d="M16 2.8C13.2 2.8 12 5.5 12 8.3s1.2 5.5 4 5.5S20 11 20 8.3 18.8 2.8 16 2.8z"></path>
+                        <path d="M7.8 15.8c-2.8 0-5.5-1.2-5.5-4s2.8-4 5.5-4 5.5 1.2 5.5 4-2.8 4-5.5 4z"></path>
+                    </svg>
+                    <h2 class="text-3xl font-bold section-title">3. Nguyên nhân gây ra động đất</h2>
+                </div>
+                <div class="space-y-4 text-slate-700 text-lg">
+                    <p>Nguyên nhân phổ biến nhất gây ra động đất là <strong>kiến tạo mảng (Plate Tectonics)</strong>. Lớp vỏ Trái Đất không phải là một khối liền mạch mà được tạo thành từ nhiều mảng lớn (mảng kiến tạo) liên tục di chuyển chậm trên lớp phủ mềm dẻo bên dưới.</p>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><strong>Ranh giới hội tụ (Convergent):</strong> Hai mảng va chạm vào nhau. Mảng nặng hơn (thường là mảng đại dương) chìm xuống dưới mảng nhẹ hơn (mảng lục địa), gây ra các trận động đất sâu và mạnh. (Ví dụ: Vành đai lửa Thái Bình Dương).</li>
+                        <li><strong>Ranh giới phân kỳ (Divergent):</strong> Hai mảng di chuyển ra xa nhau, tạo điều kiện cho magma trào lên, hình thành vỏ mới và gây ra động đất nông.</li>
+                        <li><strong>Ranh giới trượt bằng (Transform):</strong> Hai mảng trượt ngang qua nhau. Ma sát giữ chúng lại, tích tụ năng lượng. Khi năng lượng vượt quá ma sát, chúng trượt đột ngột, gây động đất. (Ví dụ: Đường đứt gãy San Andreas).</li>
+                    </ul>
+                    <p class="mt-4">Ngoài ra, động đất cũng có thể do các nguyên nhân khác như hoạt động núi lửa, các vụ nổ lớn (thử nghiệm hạt nhân), hoặc việc xây dựng các hồ chứa nước lớn (động đất kích thích).</p>
+                </div>
+            </section>
+            
+            <!-- Phần 4: Cảnh báo của các chuyên gia -->
+            <section id="section-warning" class="scroll-mt-24">
+                <div class="flex items-center space-x-4 mb-6">
+                    <svg class="w-8 h-8 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <h2 class="text-3xl font-bold text-red-600">4. Cảnh báo của các chuyên gia</h2>
+                </div>
+                <div class="space-y-4 text-slate-700 text-lg">
+                    <p>Các nhà địa chấn học và chuyên gia quản lý rủi ro thiên tai đồng loạt cảnh báo:</p>
+                    <ul class="list-decimal list-inside space-y-3 pl-4">
+                        <li><strong>Không thể dự đoán chính xác:</strong> Khoa học hiện tại <strong>không thể dự đoán</strong> chính xác thời gian, địa điểm và độ lớn của một trận động đất cụ thể. Chúng ta chỉ có thể xác định các khu vực có nguy cơ cao dựa trên lịch sử địa chấn và kiến tạo.</li>
+                        <li><strong>Rủi ro từ đô thị hóa:</strong> Sự tập trung dân cư và cơ sở hạ tầng tại các siêu đô thị nằm trên hoặc gần các đường đứt gãy lớn làm tăng đáng kể thiệt hại tiềm tàng về người và của.</li>
+                        <li><strong>Tầm quan trọng của quy chuẩn:</strong> Các chuyên gia nhấn mạnh rằng "Động đất không giết người, các tòa nhà sụp đổ mới giết người". Việc tuân thủ nghiêm ngặt các quy chuẩn xây dựng kháng chấn là yếu tố sống còn.</li>
+                        <li><strong>Nguy cơ sóng thần (Tsunami):</strong> Các trận động đất mạnh xảy ra dưới đáy biển có thể gây ra sóng thần tàn khốc, ảnh hưởng đến các khu vực ven biển cách xa chấn tâm hàng ngàn km.</li>
                     </ul>
                 </div>
+            </section>
 
-                <!-- Thẻ: SAU KHI -->
-                <div class="bg-white rounded-xl shadow-lg p-8">
-                    <span class="text-sm font-semibold text-google-green uppercase">SAU KHI</span>
-                    <h3 class="text-2xl font-bold text-gray-900 mt-2 mb-4">Phục hồi</h3>
-                    <ul class="list-disc list-inside space-y-2 text-gray-600">
-                        <li>Kiểm tra bản thân và người khác xem có bị thương không.</li>
-                        <li>Cẩn thận di chuyển, đề phòng các dư chấn (aftershocks).</li>
-                        <li>Kiểm tra rò rỉ gas, chập điện (ngắt cầu dao nếu cần).</li>
-                        <li>Chỉ sử dụng điện thoại cho các cuộc gọi khẩn cấp.</li>
-                        <li>Theo dõi thông tin chính thức từ cơ quan chức năng.</li>
-                    </ul>
+            <!-- Phần 5: Cách phòng chống và ứng phó -->
+            <section id="section-4" class="scroll-mt-24">
+                <div class="flex items-center space-x-4 mb-6">
+                    <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <h2 class="text-3xl font-bold section-title">5. Cách phòng chống và ứng phó</h2>
                 </div>
-            </div>
-        </section>
-
+                <p class="text-slate-700 text-lg mb-6">Chuẩn bị và biết cách phản ứng là chìa khóa để giảm thiểu thương vong và thiệt hại. Các biện pháp được chia thành ba giai đoạn:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Trước khi động đất -->
+                    <div class="border border-blue-200 bg-blue-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-blue-800 mb-3">TRƯỚC KHI XẢY RA</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Xác định các vị trí an toàn trong nhà (gầm bàn chắc, góc tường).</li>
+                            <li>Gia cố các vật dụng nặng (tủ sách, bình nóng lạnh) vào tường.</li>
+                            <li>Chuẩn bị một "Túi đồ khẩn cấp" (nước, thức ăn, sơ cứu, đèn pin, pin dự phòng).</li>
+                            <li>Lên kế hoạch liên lạc và điểm gặp gỡ cho gia đình.</li>
+                        </ul>
+                    </div>
+                    <!-- Trong khi động đất -->
+                    <div class="border border-red-200 bg-red-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-red-800 mb-3">TRONG KHI XẢY RA</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Thực hiện ngay: <strong>NẰM XUỐNG</strong> (Drop), <strong>CHE PHỦ</strong> (Cover), <strong>BÁM CHẮC</strong> (Hold On).</li>
+                            <li>Nếu ở trong nhà: Trú dưới gầm bàn, che đầu, tránh xa cửa sổ, kính.</li>
+                            <li>Nếu ở ngoài trời: Di chuyển đến khu vực trống, tránh xa tòa nhà, đường dây điện, cây cối.</li>
+                            <li>Nếu đang lái xe: Dừng ở nơi an toàn, ở yên trong xe.</li>
+                        </ul>
+                    </div>
+                    <!-- Sau khi động đất -->
+                    <div class="border border-green-200 bg-green-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-green-800 mb-3">SAU KHI XẢY RA</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Kiểm tra bản thân và người khác xem có bị thương không.</li>
+                            <li>Cẩn thận với các dư chấn (aftershocks).</li>
+                            <li>Kiểm tra rò rỉ gas, chập điện (nếu ngửi thấy mùi gas, hãy khóa van và ra ngoài).</li>
+                            <li>Chỉ sử dụng điện thoại cho các cuộc gọi khẩn cấp.</li>
+                            <li>Theo dõi tin tức từ các nguồn chính thống.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 
-    <!-- Chân trang -->
-    <footer class="bg-gray-800 text-gray-400 mt-16 py-10">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm">Báo cáo này được tạo ra cho mục đích thông tin và giáo dục.
-                <br>Mô phỏng giao diện bởi một nhà phát triển Google.
-            </p>
-            <p class="text-sm mt-2">&copy; 2025. Mọi quyền được bảo lưu.</p>
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 mt-16 py-10">
+        <div class="container mx-auto max-w-6xl px-6 text-center">
+            <p>&copy; 2025. Báo cáo này được tạo ra cho mục đích thông tin khoa học.</p>
+            <p class="text-sm mt-2">Tất cả dữ liệu thống kê, trừ khi được trích dẫn cụ thể, đều mang tính chất giả định để minh họa cho báo cáo.</p>
         </div>
     </footer>
 
+    <!-- Script để vẽ biểu đồ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Dữ liệu giả định cho biểu đồ
+            
+            // Biểu đồ 1: Số lượng động đất (M > 6.0)
+            const magnitudeData = {
+                labels: ['2023', '2024', '2025 (Ước tính)'],
+                datasets: [{
+                    label: 'Số trận động đất (M > 6.0)',
+                    data: [134, 142, 138], // Dữ liệu giả định
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)', // Màu xanh
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            };
+
+            const magnitudeConfig = {
+                type: 'bar',
+                data: magnitudeData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#cbd5e1',
+                            bodyColor: '#cbd5e1'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e2e8f0' // Màu lưới
+                            },
+                            ticks: {
+                                color: '#475569' // Màu số
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#475569'
+                            }
+                        }
+                    }
+                }
+            };
+
+            const magnitudeChartCtx = document.getElementById('magnitudeChart').getContext('2d');
+            new Chart(magnitudeChartCtx, magnitudeConfig);
+
+            // Biểu đồ 2: Phân bố thiệt hại
+            const damageData = {
+                labels: ['Vành đai lửa TBD', 'Địa Trung Hải-Himalaya', 'Các khu vực khác'],
+                datasets: [{
+                    label: 'Thiệt hại kinh tế (Tỷ USD)',
+                    data: [210, 85, 45], // Dữ liệu giả định
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.7)', // Đỏ
+                        'rgba(249, 115, 22, 0.7)', // Cam
+                        'rgba(245, 158, 11, 0.7)' // Vàng
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            };
+
+            const damageConfig = {
+                type: 'doughnut',
+                data: damageData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#475569'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#cbd5e1',
+                            bodyColor: '#cbd5e1',
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed) + ' Tỷ';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const damageChartCtx = document.getElementById('damageChart').getContext('2d');
+            new Chart(damageChartCtx, damageConfig);
+
+            // Mobile Menu Logic
+            const menuButton = document.getElementById('mobile-menu-button');
+            const menuCloseButton = document.getElementById('mobile-menu-close');
+            const menuPanel = document.getElementById('mobile-menu');
+            const menuLinks = document.querySelectorAll('.mobile-menu-link');
+
+            if (menuButton && menuPanel && menuCloseButton) {
+                // Mở menu
+                menuButton.addEventListener('click', () => {
+                    menuPanel.classList.remove('hidden');
+                });
+
+                // Đóng menu
+                menuCloseButton.addEventListener('click', () => {
+                    menuPanel.classList.add('hidden');
+                });
+
+                // Đóng menu khi một link được click (cho điều hướng trên cùng 1 trang)
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        menuPanel.classList.add('hidden');
+                    });
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>
+
