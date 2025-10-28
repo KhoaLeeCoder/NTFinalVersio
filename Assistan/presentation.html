@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khóa Học Toàn Diện: Kỹ Năng Thuyết Trình Chuyên Nghiệp</title>
+    <title>Khóa Học Kỹ Năng Thuyết Trình Chuyên Nghiệp</title>
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Thiết lập font Inter làm font mặc định -->
@@ -13,14 +13,236 @@
             font-family: 'Inter', sans-serif;
             background-color: #f7f9fb; /* Nền trắng xám nhẹ */
         }
-        /* Custom styles for course content - Hiding content blocks by default */
-        .lesson-content {
-            display: none;
+        /* Custom styles to match the look and feel of the provided screenshots */
+        .section-heading {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 800; /* font-extrabold */
+            color: #1e40af; /* blue-800 */
+            margin-bottom: 1.5rem;
+            padding-top: 1rem;
+            border-bottom: 2px solid #e5e7eb; /* border-gray-200 */
         }
-        .lesson-content.active {
-            display: block;
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
         }
-        /* Thêm style để đảm bảo tỷ lệ 16:9 cho video trên mọi trình duyệt */
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- HEADER (Đồng bộ với ảnh chụp màn hình) -->
+    <header class="bg-white shadow sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
+            <!-- Logo/Title -->
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-9a1 1 0 00-1 1v3a1 1 0 102 0v-3a1 1 0 00-1-1zm-1-4a1 1 0 102 0 1 1 0 00-2 0z" clip-rule="evenodd" />
+                </svg>
+                <h1 class="text-xl font-bold text-gray-800 tracking-tight">
+                    Kỹ Năng Thuyết Trình
+                </h1>
+            </div>
+
+            <!-- Menu Điều hướng -->
+            <nav class="hidden md:flex space-x-6 text-gray-600 font-medium">
+                <a href="#hero" class="hover:text-blue-600 transition">Trang Chủ</a>
+                <a href="#section-1" class="hover:text-blue-600 transition">Khái Niệm</a>
+                <a href="#section-2" class="hover:text-blue-600 transition">3 Trụ Cột</a>
+                <a href="#section-3" class="hover:text-blue-600 transition">Chuẩn Bị</a>
+                <a href="#section-4" class="hover:text-blue-600 transition">Thực Thi</a>
+            </nav>
+
+            <!-- Nút Quay Về Web Chính (Đồng bộ màu sắc & kiểu dáng nút English) -->
+            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-300">
+                Quay về Web Chính
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (Đồng bộ với ảnh chụp màn hình: Blue gradient, large text, centered) -->
+    <section id="hero" class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-24 sm:py-32">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mt-2 mb-4 leading-tight">
+                Kỹ Năng Thuyết Trình 
+            </h2>
+            <p class="text-xl opacity-90 mb-8 max-w-3xl mx-auto">
+                Tất cả thông tin thiết yếu về nội dung, thiết kế slide, và phong thái sân khấu để tự tin chinh phục mọi khán giả.
+            </p>
+            <button onclick="document.getElementById('section-1').scrollIntoView({ behavior: 'smooth' });"
+                class="bg-white text-blue-800 font-bold py-3 px-8 rounded-full text-lg shadow-xl hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                Bắt Đầu Khóa Học Ngay
+            </button>
+        </div>
+    </section>
+
+    <!-- KHU VỰC NỘI DUNG CHÍNH -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+
+        <!-- 1. KHÁI NIỆM & TẦM QUAN TRỌNG -->
+        <section id="section-1" class="mb-12">
+            <h3 class="section-heading">1. Khái Niệm & Tầm Quan Trọng</h3>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Kỹ năng thuyết trình là khả năng truyền đạt thông tin, ý tưởng hoặc quan điểm một cách rõ ràng, thuyết phục và thu hút trước một nhóm khán giả. Trong môi trường chuyên nghiệp, đây là một trong những kỹ năng cốt lõi quyết định thành công cá nhân và dự án.
+                </p>
+                <div class="mt-4 text-gray-600 space-y-2">
+                    <p><strong><span class="text-blue-600 font-semibold">Thuyết Trình Hiệu Quả</span></strong> có thể xảy ra nhanh chóng (tăng doanh số, được chấp thuận dự án) hoặc từ từ (xây dựng thương hiệu cá nhân). Điều quan trọng là phải nhận biết các loại khán giả và điều chỉnh thông điệp cho phù hợp.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 3 TRỤ CỘT CỦA BÀI THUYẾT TRÌNH HÚT HỒN -->
+        <section id="section-2" class="mb-12">
+            <h3 class="section-heading">2. 3 Trụ Cột của Bài Thuyết Trình Hút Hồn</h3>
+
+            <!-- Grid Cards (Đồng bộ với ảnh chụp màn hình Mục 2: 3 cột icon) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Card 1: Nội dung -->
+                <div class="content-card">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm10 2a1 1 0 100 2 1 1 0 000-2zm-5 1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Nội dung Chặt chẽ</h4>
+                    <p class="text-gray-600">Đây là nguyên tắc phổ biến nhất. Nội dung phải rõ ràng, có cấu trúc logic (Mở - Thân - Kết), và tập trung vào một thông điệp cốt lõi duy nhất.</p>
+                </div>
+
+                <!-- Card 2: Thiết kế Slide -->
+                <div class="content-card">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 3a1 1 0 011 1v3h4a1 1 0 110 2h-4v3a1 1 0 11-2 0v-3H4a1 1 0 110-2h4V4a1 1 0 011-1z" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-7-9a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm7 0a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Thiết kế Tác động</h4>
+                    <p class="text-gray-600">Sử dụng quy tắc 10/20/30 (Guy Kawasaki). Slide chỉ là công cụ hỗ trợ, không phải kịch bản. Tập trung vào hình ảnh chất lượng cao và biểu đồ trực quan.</p>
+                </div>
+
+                <!-- Card 3: Phong thái -->
+                <div class="content-card">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Phong thái Sân khấu</h4>
+                    <p class="text-gray-600">Ngôn ngữ cơ thể mở, ánh mắt giao tiếp với khán giả. Điều chỉnh tốc độ nói (âm lượng, nhấn nhá) để giữ sự chú ý và tạo ra những khoảng dừng chiến lược.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. CHUẨN BỊ: TRƯỚC KHI LÊN SÂN KHẤU -->
+        <section id="section-3" class="mb-12">
+            <h3 class="section-heading">3. Chuẩn Bị: Trước Khi Lên Sân Khấu</h3>
+            
+            <div class="space-y-6">
+                <!-- Checklist 1 -->
+                <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <p class="text-gray-700">
+                        <span class="font-bold text-blue-700">**Xây dựng Kế hoạch Luyện tập:**</span> Thiết lập các buổi luyện tập đầy đủ (không chỉ nhẩm trong đầu). Quay video để tự đánh giá và sửa lỗi về cử chỉ.
+                    </p>
+                </div>
+                
+                <!-- Checklist 2 -->
+                <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <p class="text-gray-700">
+                        <span class="font-bold text-blue-700">**Chuẩn bị Túi Cứu Cánh (Emergency Kit):**</span> Mang theo USB chứa slide, bút laser dự phòng, sạc pin, và một chai nước nhỏ. Kiểm tra phòng ốc và thiết bị trình chiếu trước 30 phút.
+                    </p>
+                </div>
+                
+                <!-- Checklist 3 -->
+                <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <p class="text-gray-700">
+                        <span class="font-bold text-blue-700">**Nắm vững Tài liệu & Dữ liệu:**</span> Luôn luôn sẵn sàng trình bày mà không cần slide nếu có sự cố kỹ thuật. Nắm rõ các số liệu thống kê chủ chốt để trả lời câu hỏi khó.
+                    </p>
+                </div>
+
+                <!-- Checklist 4: Đây là vị trí lý tưởng để chèn video của bạn nếu cần -->
+                <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <p class="text-gray-700">
+                        <span class="font-bold text-blue-700">**Video Tham Khảo:**</span>
+                        <br>
+                        <br>
+                    </p>
+                    <!-- Vùng Placeholder Video -->
+                    <div class="mt-4 responsive-video mb-2 shadow-lg rounded-xl">
+                        <iframe 
+                            src="https://www.youtube.com/embed/g6j3F7d2i2k?si=kLwM3yJd4Tq4k_x8" 
+                            title="Placeholder Video"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 4. THỰC THI: TRONG LÚC THUYẾT TRÌNH -->
+        <section id="section-4" class="mb-12">
+            <h3 class="section-heading">4. Thực Thi: Trong Lúc Thuyết Trình</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Box 1: Nhiệm vụ quan trọng nhất -->
+                <div class="content-card bg-blue-50 border-t-4 border-blue-500">
+                    <h4 class="text-xl font-bold text-blue-800 mb-2">Nhiệm vụ Quan trọng Nhất: Tương Tác</h4>
+                    <p class="text-gray-700 mt-2 space-y-3">
+                        **TẬP TRUNG TƯƠNG TÁC:** Không bao giờ đọc slide. Mắt luôn nhìn khán giả (chia đều 3-5 giây mỗi khu vực). Sử dụng công cụ tương tác như câu hỏi, khảo sát nhanh để giữ chân họ.
+                    </p>
+                    <p class="text-gray-700 mt-2 space-y-3">
+                        **Xử lý Lỗi:** Nếu quên bài, hãy dừng lại (pause) một cách tự tin, nhìn vào ghi chú, hoặc lặp lại câu cuối cùng bạn vừa nói để lấy lại mạch. Tránh dùng từ đệm ('ờm', 'à').
+                    </p>
+                </div>
+
+                <!-- Box 2: An toàn khi ở trong nhà -->
+                <div class="content-card bg-green-50 border-t-4 border-green-500">
+                    <h4 class="text-xl font-bold text-green-800 mb-2">An toàn (Tinh Thần) khi trên Sân Khấu</h4>
+                    <p class="text-gray-700 mt-2 space-y-3">
+                        **Kiểm soát Nỗi sợ:** Hít thở sâu và chậm. Thay vì cố gắng loại bỏ lo lắng, hãy chuyển hóa nó thành năng lượng tích cực. Khán giả muốn bạn thành công.
+                    </p>
+                    <p class="text-gray-700 mt-2 space-y-3">
+                        **Xử lý Hỏi/Đáp:** Lắng nghe kỹ câu hỏi. Lặp lại/tóm tắt câu hỏi để đảm bảo bạn hiểu đúng, sau đó trả lời súc tích. Nếu không biết, hãy trung thực và hứa sẽ tìm câu trả lời sau.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. KẾT LUẬN -->
+        <section id="section-5" class="mb-12">
+            <h3 class="section-heading">5. Hành Động: Đưa kiến thức vào Thực Tiễn</h3>
+            <p class="text-lg text-gray-700 leading-relaxed">
+                Thuyết trình không phải là năng khiếu, mà là một kỹ năng cần được mài giũa liên tục. Hãy áp dụng những kiến thức này vào bài thuyết trình tiếp theo của bạn. Bắt đầu từ những thay đổi nhỏ nhất như sử dụng Power Pose trước khi trình bày, hoặc giảm số lượng chữ trên slide.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- FOOTER (Đồng bộ với ảnh chụp màn hình: Màu xanh đậm) -->
+    <footer class="bg-blue-800 text-white mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>Đây là dự án hướng dẫn cộng đồng. Hãy luyện tập và chia sẻ khóa học này!</p>
+            <p class="mt-2 text-gray-300">&copy; 2025 Google Web Developer. Khóa Học Kỹ Năng Thuyết Trình.</p>
+        </div>
+    </footer>
+
+    <!-- CSS cho Responsive Video (đã được giữ lại và áp dụng) -->
+    <style>
         .responsive-video {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
@@ -36,355 +258,6 @@
             height: 100%;
         }
     </style>
-</head>
-<body class="min-h-screen">
 
-    <!-- Thanh điều hướng và nút Quay Về -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-800 tracking-tight">
-                <span class="text-blue-600">SkillUp</span> Academy
-            </h1>
-            <a href="/index.html" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
-                <!-- Nút Quay về Web chính - sử dụng icon Home (nhà) để trực quan -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                </svg>
-                Quay về Web Chính
-            </a>
-        </div>
-    </header>
-
-    <!-- Khu vực Banner chính (Hero Section) -->
-    <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 sm:py-20">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <span class="text-blue-200 uppercase tracking-widest text-sm font-semibold">Khóa Học Toàn Diện</span>
-            <h2 class="text-4xl sm:text-5xl font-extrabold mt-2 mb-4 leading-tight">
-                Làm Chủ Kỹ Năng Thuyết Trình: 4 Trụ Cột Thành Công
-            </h2>
-            <p class="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
-                Nghiên cứu sâu về nội dung, slide, ngôn ngữ cơ thể và kỹ thuật giọng nói để tự tin tỏa sáng trên mọi sân khấu.
-            </p>
-            <button onclick="document.getElementById('course-content').scrollIntoView({ behavior: 'smooth' });"
-                class="bg-yellow-400 text-blue-900 font-bold py-3 px-8 rounded-full text-lg shadow-xl hover:bg-yellow-300 transition duration-300 transform hover:scale-105">
-                Xem Toàn Bộ Chương Trình
-            </button>
-        </div>
-    </section>
-
-    <!-- Khu vực Nội dung Khóa học -->
-    <main id="course-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <h3 class="text-3xl font-bold text-gray-800 mb-8 text-center sm:text-left">Cấu Trúc Khóa Học Chi Tiết</h3>
-
-        <!-- Bố cục 2 cột cho desktop, 1 cột cho mobile -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
-            <!-- Cột trái: Danh sách các học phần -->
-            <div id="module-list" class="lg:col-span-1 space-y-4">
-                <!-- Nội dung được tạo bằng JavaScript -->
-            </div>
-
-            <!-- Cột phải: Nội dung bài học chi tiết -->
-            <div class="lg:col-span-2">
-                <article id="lesson-detail" class="bg-white p-8 sm:p-10 rounded-xl shadow-2xl border-t-8 border-blue-600">
-                    <!-- Nội dung bài học chi tiết sẽ được tải vào đây -->
-                </article>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-12 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <p>&copy; 2025 SkillUp Academy. Thiết kế bởi Google Web Developer.</p>
-            <p class="mt-2">Mọi kỹ năng đều cần luyện tập. Hãy bắt đầu ngay hôm nay!</p>
-        </div>
-    </footer>
-
-    <!-- JavaScript để quản lý nội dung khóa học động -->
-    <script>
-        // Dữ liệu toàn bộ khóa học
-        const courseData = [
-            {
-                id: 'M1',
-                title: 'Học phần 1: Chuẩn bị Nội dung & Cấu trúc',
-                duration: '4 Bài học | 60 phút',
-                lessons: [
-                    { 
-                        id: 'L1-1', 
-                        title: 'Xác định Mục tiêu và Khán giả', 
-                        content: '<p>Bước đầu tiên để có một bài thuyết trình thành công là hiểu rõ bạn muốn đạt được điều gì và đối tượng lắng nghe của bạn là ai. Mục tiêu phải cụ thể, đo lường được (SMART).</p><h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Lưới Cấu Trúc Tam Đoạn</h3><p>Áp dụng cấu trúc cổ điển (Mở đầu - Thân bài - Kết luận) nhưng thêm yếu tố <strong>"Móc Câu"</strong> và <strong>"Kêu gọi hành động"</strong> để tạo sự khác biệt.</p>',
-                        videoEmbed: '' // Chưa có video
-                    },
-                    { 
-                        id: 'L1-2', 
-                        title: 'Nghệ Thuật Kể Chuyện (Storytelling)', 
-                        content: '<p>Kể chuyện là cách mạnh mẽ nhất để kết nối cảm xúc và giúp khán giả ghi nhớ thông điệp. Sử dụng mô hình STAR (Situation, Task, Action, Result) để xây dựng câu chuyện có tác động.</p>',
-                        videoEmbed: 'https://youtu.be/hNuAv-42jzY?si=6xHogr8Gw8FO2_U7' // Chưa có video
-                    },
-                ]
-            },
-            {
-                id: 'M2',
-                title: 'Học phần 2: Thiết kế Slide Gây Ấn Tượng',
-                duration: '3 Bài học | 45 phút',
-                lessons: [
-                    { 
-                        id: 'L2-1', 
-                        title: 'Quy Tắc 10/20/30 và Sức Mạnh Hình Ảnh', 
-                        content: '<p>Thiết kế slide không chỉ là việc chọn font chữ và màu sắc, mà là nghệ thuật dẫn dắt sự chú ý của khán giả. Một bài thuyết trình xuất sắc luôn tuân thủ nguyên tắc <strong>"Ít là Nhiều"</strong>.</p><h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Quy Tắc 10/20/30 (Guy Kawasaki)</h3><ul class="list-disc ml-6 space-y-2"><li><strong>10 Slides:</strong> Số lượng slide tối đa.</li><li><strong>20 Minutes:</strong> Thời gian thuyết trình tối đa.</li><li><strong>30 Point Font Size:</strong> Cỡ chữ nhỏ nhất được chấp nhận.</li></ul><p>Não bộ xử lý hình ảnh nhanh hơn 60.000 lần so với văn bản. Tận dụng hình ảnh lớn, rõ nét và biểu đồ trực quan.</p>',
-                        videoEmbed: 'https://youtu.be/hCTtVTwPk5E?si=d_32zD0CtE0wv_P2' // Chưa có video
-                    },
-                    { 
-                        id: 'L2-2', 
-                        title: 'Kỹ năng thiết kế slide', 
-                        content: '<p>Sử dụng tối đa 2-3 font chữ và 3-4 màu sắc nhất quán. Chọn màu sắc tương phản để làm nổi bật dữ liệu và đảm bảo khả năng đọc trên màn hình lớn.</p>',
-                        videoEmbed: 'https://youtu.be/z-aMISyHqrw?si=FziWdzJQu8upLMWb' // Chưa có video
-                    },
-                ]
-            },
-            {
-                id: 'M3',
-                title: 'Học phần 3: Ngôn Ngữ Cơ Thể Chuyên Nghiệp',
-                duration: '4 Bài học | 50 phút',
-                lessons: [
-                    { 
-                        id: 'L3-1', 
-                        title: 'Tư Thế và Di Chuyển Trên Sân Khấu', 
-                        content: '<p>Tư thế mở (vai thẳng, ngực ưỡn) thể hiện sự tự tin. Tránh đứng yên như tượng; di chuyển có mục đích để chuyển ý hoặc thu hút sự chú ý. </p><p>Thực hành "Power Pose" trước khi trình bày để tăng adrenaline và giảm căng thẳng.</p>',
-                        // Ví dụ: Thay thế URL này bằng URL nhúng (embed URL) của video YouTube của bạn
-                        videoEmbed: 'https://youtu.be/x-wcxohGN7w?si=NFfme4u--qDnE8A-' 
-                    },
-                    { 
-                        id: 'L3-2', 
-                        title: 'Sử Dụng Ánh Mắt và Cử Chỉ Tay', 
-                        content: '<p>Ánh mắt là cầu nối: Chia đều ánh mắt với tất cả khán giả. Cử chỉ tay nên tự nhiên, sử dụng "khu vực thuyết trình" (từ thắt lưng đến vai) để diễn đạt ý tưởng.</p>',
-                        videoEmbed: 'https://youtu.be/x-wcxohGN7w?si=NFfme4u--qDnE8A-' // Chưa có video
-                    },
-                ]
-            },
-            {
-                id: 'M4',
-                title: 'Học phần 4: Kỹ Thuật Giọng Nói & Tương Tác',
-                duration: '3 Bài học | 40 phút',
-                lessons: [
-                    { 
-                        id: 'L4-1', 
-                        title: 'Điều Chỉnh Tốc Độ, Âm Lượng và Nhấn Nhá', 
-                        content: '<p>Giọng nói là nhạc cụ của bạn. Hãy giảm tốc độ khi nói về thông tin quan trọng và tăng âm lượng để thể hiện sự nhiệt huyết. Sử dụng các khoảng dừng (pause) một cách chiến lược để tạo kịch tính.</p>',
-                        videoEmbed: 'https://youtu.be/BSudYov7zc4?si=sLOcnVOZvAOgY8lC' // Chưa có video
-                    },
-                    { 
-                        id: 'L4-2', 
-                        title: 'Xử Lý Tình Huống Khó & Hỏi Đáp', 
-                        content: '<p>Luôn chuẩn bị trước các câu hỏi khó tiềm năng. Khi trả lời, hãy tóm tắt câu hỏi của khán giả trước, sau đó trả lời ngắn gọn và quay lại thông điệp chính của bạn.</p>',
-                        videoEmbed: 'https://youtu.be/GR5uYjF9dq4?si=Lo3kQ0gOjbNS_SXu' // Chưa có video
-                    },
-                ]
-            }
-        ];
-
-        // Khởi tạo trạng thái ban đầu
-        const initialModuleId = 'M3'; // Mặc định mở Học phần 3: Ngôn Ngữ Cơ Thể
-        const initialLessonId = 'L3-1'; // Mặc định mở bài đầu tiên của Học phần 3
-
-        /**
-         * Chuyển đổi trạng thái active của bài học
-         * @param {string} lessonId ID của bài học được chọn
-         */
-        function switchLesson(lessonId) {
-            const detailContainer = document.getElementById('lesson-detail');
-            let lesson = null;
-            let currentModule = null;
-
-            // Tìm kiếm bài học và module tương ứng
-            courseData.forEach(module => {
-                const found = module.lessons.find(l => l.id === lessonId);
-                if (found) {
-                    lesson = found;
-                    currentModule = module;
-                }
-            });
-
-            if (!lesson) {
-                detailContainer.innerHTML = '<p class="text-xl text-red-500 p-8">Không tìm thấy nội dung bài học.</p>';
-                return;
-            }
-
-            // 1. Tạo HTML cho phần video (sử dụng URL nhúng từ dữ liệu)
-            const videoEmbedHtml = lesson.videoEmbed ?
-                `
-                <!-- Vùng hiển thị video (tỷ lệ 16:9 responsive) -->
-                <div class="responsive-video mb-8 shadow-xl">
-                    <iframe 
-                        src="${lesson.videoEmbed}" 
-                        title="${lesson.title}"
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        referrerpolicy="strict-origin-when-cross-origin" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-                ` :
-                // Fallback nếu không có video
-                `
-                <div class="mb-8 bg-gray-200 rounded-xl overflow-hidden h-64 flex items-center justify-center border border-gray-300">
-                    <p class="text-xl text-gray-600 font-medium text-center px-4">
-                        [Vùng Video Bài Giảng: ${lesson.title} - Hãy thêm đường link nhúng video vào 'videoEmbed'!]
-                    </p>
-                </div>
-                `;
-
-            // 2. Cập nhật nội dung chi tiết
-            detailContainer.innerHTML = `
-                <div class="flex items-center space-x-3 mb-4 text-blue-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd" />
-                    </svg>
-                    <span class="text-xl font-semibold">${currentModule.title}:</span>
-                </div>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 border-b pb-4">
-                    ${lesson.title}
-                </h2>
-
-                ${videoEmbedHtml} <!-- Vùng Video đã được chèn -->
-
-                <!-- Nội dung bài học -->
-                <div class="prose max-w-none text-gray-700 space-y-6">
-                    ${lesson.content}
-                </div>
-
-                <!-- Nút hành động -->
-                <div class="mt-10 flex justify-end">
-                    <button onclick="goToNextLesson('${lessonId}')"
-                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:translate-y-0.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 000 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
-                        </svg>
-                        Bài học tiếp theo
-                    </button>
-                </div>
-            `;
-
-            // 3. Cập nhật trạng thái active trên sidebar
-            document.querySelectorAll('.lesson-item').forEach(item => {
-                item.classList.remove('bg-blue-50', 'ring-2', 'ring-blue-500', 'text-blue-700');
-                item.classList.add('bg-white', 'text-gray-800');
-            });
-
-            const activeItem = document.getElementById(lessonId);
-            activeItem.classList.remove('bg-white', 'text-gray-800');
-            activeItem.classList.add('bg-blue-50', 'ring-2', 'ring-blue-500', 'text-blue-700');
-        }
-
-        /**
-         * Chuyển đến bài học kế tiếp (dạng demo)
-         * @param {string} currentLessonId ID của bài học hiện tại
-         */
-        function goToNextLesson(currentLessonId) {
-            let nextLessonId = null;
-            let foundCurrent = false;
-
-            // Tìm bài học kế tiếp
-            for (const module of courseData) {
-                for (let i = 0; i < module.lessons.length; i++) {
-                    if (foundCurrent) {
-                        nextLessonId = module.lessons[i].id;
-                        switchLesson(nextLessonId);
-                        return; // Đã tìm thấy và chuyển đổi
-                    }
-                    if (module.lessons[i].id === currentLessonId) {
-                        foundCurrent = true;
-                        // Kiểm tra xem có bài học tiếp theo trong cùng module không
-                        if (i < module.lessons.length - 1) {
-                            // Bài học kế tiếp trong cùng module
-                            nextLessonId = module.lessons[i + 1].id;
-                            switchLesson(nextLessonId);
-                            return;
-                        }
-                    }
-                }
-            }
-
-            // Nếu là bài cuối cùng của module, tìm bài đầu tiên của module tiếp theo
-            if (foundCurrent) {
-                const currentModuleIndex = courseData.findIndex(module =>
-                    module.lessons.some(l => l.id === currentLessonId)
-                );
-                if (currentModuleIndex < courseData.length - 1) {
-                    const nextModule = courseData[currentModuleIndex + 1];
-                    if (nextModule.lessons.length > 0) {
-                        switchLesson(nextModule.lessons[0].id);
-                        return;
-                    }
-                }
-            }
-
-            // Nếu không còn bài nào nữa
-            // Sử dụng thông báo thay vì alert()
-            document.getElementById('lesson-detail').innerHTML = `
-                <div class="p-8 text-center">
-                    <h3 class="text-3xl font-bold text-green-600 mb-4">Hoàn Thành Khóa Học (Demo)!</h3>
-                    <p class="text-lg text-gray-700">Chúc mừng bạn đã xem hết toàn bộ nội dung khóa học. Hãy bắt đầu luyện tập ngay!</p>
-                </div>
-            `;
-            // Tắt trạng thái active của bài học cuối cùng
-            document.querySelectorAll('.lesson-item').forEach(item => {
-                item.classList.remove('bg-blue-50', 'ring-2', 'ring-blue-500', 'text-blue-700');
-                item.classList.add('bg-white', 'text-gray-800');
-            });
-        }
-
-
-        /**
-         * Khởi tạo Sidebar và tải nội dung mặc định
-         */
-        function initializeCourse() {
-            const moduleListContainer = document.getElementById('module-list');
-            let html = '';
-
-            courseData.forEach(module => {
-                // Thẻ bao bọc cho từng Module
-                html += `
-                    <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-600">
-                        <h4 class="text-xl font-bold text-blue-600 mb-2">${module.title}</h4>
-                        <p class="text-gray-500 text-sm mb-4">${module.duration}</p>
-                        <ul class="space-y-2">
-                `;
-
-                // Các Lesson trong Module
-                module.lessons.forEach(lesson => {
-                    // Sử dụng class 'lesson-item' và ID của lesson
-                    const isActive = lesson.id === initialLessonId;
-                    const defaultClasses = 'lesson-item p-3 rounded-lg cursor-pointer transition duration-150 hover:bg-gray-100 flex items-center space-x-2';
-                    const activeClasses = 'bg-blue-50 ring-2 ring-blue-500 text-blue-700 font-medium';
-                    const inactiveClasses = 'bg-white text-gray-800';
-
-                    html += `
-                        <li id="${lesson.id}" onclick="switchLesson('${lesson.id}')"
-                            class="${defaultClasses} ${isActive ? activeClasses : inactiveClasses}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-7-9a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm7 0a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2z" clip-rule="evenodd" />
-                            </svg>
-                            <span>${lesson.title}</span>
-                        </li>
-                    `;
-                });
-
-                html += `
-                        </ul>
-                    </div>
-                `;
-            });
-
-            moduleListContainer.innerHTML = html;
-
-            // Tải nội dung bài học mặc định
-            switchLesson(initialLessonId);
-        }
-
-        // Chạy hàm khởi tạo khi trang tải xong
-        window.onload = initializeCourse;
-    </script>
 </body>
 </html>
