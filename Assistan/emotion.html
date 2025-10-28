@@ -20,24 +20,60 @@
         .section-card:hover {
             transform: translateY(-5px);
         }
+        /* Icon Menu SVG (3 chấm) */
+        .icon-menu {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+        /* Icon Quay Lại SVG */
+        .icon-back {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
     </style>
 </head>
 <body class="antialiased">
 
+    <!-- Mobile Sidebar Menu (Thanh công cụ 3 chấm) -->
+    <div id="mobile-menu" class="fixed inset-y-0 right-0 z-50 w-64 bg-white transform translate-x-full transition duration-300 ease-in-out shadow-2xl lg:hidden">
+        <div class="p-4 border-b flex justify-between items-center">
+            <h3 class="text-xl font-bold text-blue-700">Mục Lục Khóa Học</h3>
+            <button onclick="toggleMenu()" class="text-gray-500 hover:text-gray-700">
+                <!-- Close Icon (X) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <nav class="p-4 space-y-2">
+            <a href="#lesson-1" onclick="toggleMenu()" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-150">01. Quản Lý Cảm Xúc Là Gì?</a>
+            <a href="#lesson-2" onclick="toggleMenu()" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-150">02. Tầm Quan Trọng Của QLCX</a>
+            <a href="#lesson-3" onclick="toggleMenu()" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-150">03. Tác Động Tích Cực</a>
+            <a href="#lesson-4" onclick="toggleMenu()" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-150">04. Các Kỹ Thuật Thực Hành</a>
+        </nav>
+    </div>
+
     <!-- Header & Nút Quay Về -->
     <header class="bg-white shadow-md sticky top-0 z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 class="text-3xl font-extrabold text-blue-700 tracking-tight">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-blue-700 tracking-tight">
                 Kỹ Năng Quản Lý Cảm Xúc
             </h1>
-            <a href="/index.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-                <!-- Sử dụng icon lucide-react (tượng trưng) hoặc inline SVG -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+            
+            <!-- Nút Quay Về (Chỉ hiện thị trên Desktop) -->
+            <a href="/index.html" class="hidden lg:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-back mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5.5 15.5L12 12 18.5 15.5"/>
                     <path d="M5.5 8.5L12 5 18.5 8.5"/>
                 </svg>
                 Quay Về Web Chính
             </a>
+
+            <!-- Nút Mở Menu (Chỉ hiện thị trên Mobile - giống '3 chấm') -->
+            <button onclick="toggleMenu()" class="lg:hidden text-blue-600 p-2 rounded-full hover:bg-blue-100 transition duration-150">
+                <!-- Menu Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
         </div>
     </header>
 
@@ -96,20 +132,20 @@
             </p>
             <div class="space-y-4">
                 <div class="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 mt-1 flex-shrink-0 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-back text-green-500 mt-1 flex-shrink-0 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <path d="M22 4L12 14.01l-3-3"></path>
                     </svg>
                     <p class="text-gray-700">**Sự An Nhiên Nội Tại:** Bạn cảm thấy bình tĩnh hơn, ít bị xao động bởi các yếu tố bên ngoài.</p>
                 </div>
                 <div class="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 mt-1 flex-shrink-0 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-back text-green-500 mt-1 flex-shrink-0 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
                     <p class="text-gray-700">**Khả Năng Phục Hồi:** Bạn hồi phục nhanh hơn sau những thất bại hoặc tổn thương tinh thần.</p>
                 </div>
                 <div class="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 mt-1 flex-shrink-0 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-back text-green-500 mt-1 flex-shrink-0 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <path d="M14 2v6h6"></path>
                         <path d="M12 17v-4"></path>
@@ -151,6 +187,17 @@
                 </div>
             </div>
         </section>
+        
+        <!-- Nút Quay Về Web Chính (Chỉ hiện thị trên Mobile - Theo yêu cầu) -->
+        <section class="lg:hidden text-center py-8">
+            <a href="/index.html" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-back mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5.5 15.5L12 12 18.5 15.5"/>
+                    <path d="M5.5 8.5L12 5 18.5 8.5"/>
+                </svg>
+                Quay Về Web Chính
+            </a>
+        </section>
 
     </main>
 
@@ -160,6 +207,26 @@
             <p>&copy; 2025 Khóa Học Kỹ Năng Cảm Xúc. Được phát triển bởi Google Developer.</p>
         </div>
     </footer>
+
+    <!-- JavaScript để xử lý Menu Mobile -->
+    <script>
+        /**
+         * Hàm chuyển đổi trạng thái hiển thị của menu mobile
+         */
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            // Kiểm tra xem menu đang mở (translate-x-0) hay đóng (translate-x-full)
+            if (menu.classList.contains('translate-x-full')) {
+                // Mở menu: Loại bỏ translate-x-full và thêm translate-x-0
+                menu.classList.remove('translate-x-full');
+                menu.classList.add('translate-x-0');
+            } else {
+                // Đóng menu: Loại bỏ translate-x-0 và thêm translate-x-full
+                menu.classList.remove('translate-x-0');
+                menu.classList.add('translate-x-full');
+            }
+        }
+    </script>
 
 </body>
 </html>
