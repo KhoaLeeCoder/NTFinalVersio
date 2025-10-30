@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Tải Icon Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tải thư viện Marked để render Markdown (khắc phục lỗi chữ) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
     <style>
         /* Thiết lập font Inter mặc định */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
@@ -28,6 +30,10 @@
         .user-message {
             background-color: #eff6ff; /* Blue light */
         }
+        /* Style cho nội dung Markdown đã được chuyển đổi */
+        #scenario-output p { margin-bottom: 0.5rem; }
+        #scenario-output ul, #scenario-output ol { margin-left: 1.5rem; list-style-type: disc; margin-bottom: 0.5rem; }
+        #scenario-output li { margin-bottom: 0.25rem; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -36,14 +42,14 @@
         <!-- Nút Quay về Web Chính (Yêu cầu bắt buộc) -->
         <div class="w-full max-w-4xl flex justify-end mb-4">
              <!-- Vui lòng thay thế '#' bằng URL web chính của bạn -->
-            <a href="#" id="return-button" onclick="returnToMainWeb(event)" class="flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition duration-150">
+            <a href="/index.html" id="return-button" onclick="returnToMainWeb(event)" class="flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition duration-150">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 <span>Quay về Web Chính</span>
             </a>
         </div>
 
         <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">KỸ NĂNG SIÊU VIỆT</h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">Luyện Kỹ Năng Mềm Cùng AI</h1>
             <p class="text-lg text-gray-600 mt-2">Trình Giả Lập & Huấn Luyện Kỹ Năng Mềm Ứng Dụng AI</p>
         </header>
 
@@ -74,6 +80,12 @@
 
             <!-- Vùng 2: Giả Lập Kịch Bản -->
             <div id="simulation-area" class="hidden space-y-6">
+                <!-- Nút Quay lại -->
+                <button onclick="backToSelection()" class="flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 mb-4 transition duration-150 p-2 border border-gray-200 rounded-lg">
+                    <i data-lucide="chevron-left" class="w-4 h-4 mr-1"></i>
+                    <span>Chọn Lại Kỹ Năng</span>
+                </button>
+                <!-- Tiêu đề kỹ năng -->
                 <h2 class="text-2xl font-bold text-gray-800 border-b pb-3 mb-4 flex items-center">
                     <i data-lucide="scroll-text" id="skill-icon" class="w-6 h-6 mr-3 text-indigo-500"></i>
                     Huấn Luyện Viên AI: <span id="current-skill-name" class="ml-2 text-indigo-600"></span>
@@ -120,20 +132,21 @@
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
+        // KIỂM TRA MÔI TRƯỜNG: Nếu __app_id không tồn tại, ta đang chạy cục bộ (local).
+        const isLocalEnvironment = typeof __app_id === 'undefined';
+
         let db, auth, userId = 'loading';
         let isAuthReady = false;
 
-        // --- 2. KHỞI TẠO FIREBASE VÀ XÁC THỰC ---
+        // --- 2. KHỞI TẠO FIREBASE VÀ XÁC THỰC (Không thay đổi) ---
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
 
-            // Xác thực người dùng
             onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    userId = user.uid;
-                } else {
+                if (user) { userId = user.uid; } 
+                else {
                     if (initialAuthToken) {
                         try {
                             await signInWithCustomToken(auth, initialAuthToken);
@@ -149,7 +162,6 @@
                 }
                 isAuthReady = true;
                 console.log("Firebase Auth đã sẵn sàng. User ID:", userId);
-                // Bắt đầu ứng dụng khi auth sẵn sàng (nếu cần)
             });
 
         } catch (e) {
@@ -158,8 +170,8 @@
 
         // --- 3. LOGIC APP CHÍNH (Gán cho window để có thể gọi từ HTML) ---
         
-        // API Configuration (Model: gemini-2.5-flash-preview-09-2025)
-        const API_KEY = ""; // Sẽ được Canvas tự động cung cấp
+        // API Configuration (Đã điều chỉnh để đảm bảo Canvas tự động inject API Key)
+        const API_KEY = ""; 
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
         
         let currentSkill = '';
@@ -167,9 +179,9 @@
 
         // Hỗ trợ đánh dấu icon
         const lucide = window.lucide;
-        lucide.createIcons();
+        // lucide.createIcons(); // Đã xóa khỏi DOMContentLoaded, chỉ gọi khi cần
 
-        // Hàm chung để hiển thị tin nhắn trong giao diện
+        // Hàm chung để hiển thị tin nhắn trong giao diện (ĐÃ CẬP NHẬT ĐỂ SỬ DỤNG MARKED)
         window.displayMessage = (sender, text) => {
             const outputArea = document.getElementById('scenario-output');
             const messageDiv = document.createElement('div');
@@ -178,25 +190,39 @@
             const bgColor = sender === 'ai' ? 'ai-message' : 'user-message';
             const icon = sender === 'ai' ? 'scroll-text' : 'user';
 
+            // CHUYỂN ĐỔI MARKDOWN SANG HTML TRƯỚC KHI HIỂN THỊ
+            // FIX: Thêm kiểm tra 'window.marked' trước khi gọi 'parse'
+            let htmlContent = `<p>${text}</p>`; // Mặc định là plain text
+            if (sender === 'ai' && typeof window.marked !== 'undefined') {
+                 // Dùng window.marked.parse(text)
+                htmlContent = window.marked.parse(text); 
+            } else if (sender === 'ai') {
+                console.warn("Thư viện Marked chưa được tải. Hiển thị dưới dạng plain text.");
+            }
+
             messageDiv.className = `${bgColor} p-4 rounded-xl shadow-sm break-words`;
             messageDiv.innerHTML = `
-                <div class="font-bold text-gray-700 flex items-center space-x-2">
+                <div class="font-bold text-gray-700 flex items-center space-x-2 mb-2">
                     <i data-lucide="${icon}" class="w-4 h-4"></i>
                     <span>${senderName}</span>
                 </div>
-                <div class="mt-2 text-gray-800">${text}</div>
+                <!-- Sử dụng innerHTML để hiển thị nội dung đã được Markdown render -->
+                <div class="text-gray-800">
+                    ${htmlContent}
+                </div>
             `;
             outputArea.appendChild(messageDiv);
-            outputArea.scrollTop = outputArea.scrollHeight; // Cuộn xuống dưới cùng
-            lucide.createIcons(); // Re-render icons for new elements
+            outputArea.scrollTop = outputArea.scrollHeight; 
+            lucide.createIcons(); // Gọi lại để render icon cho tin nhắn mới
         };
 
-        // Hàm Xử lý API Call với Exponential Backoff
+        // Hàm Xử lý API Call với Exponential Backoff (Không thay đổi)
         async function fetchWithBackoff(url, options, maxRetries = 5) {
             for (let i = 0; i < maxRetries; i++) {
                 try {
                     const response = await fetch(url, options);
                     if (!response.ok) {
+                        // Throw error to trigger retry logic
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return await response.json();
@@ -209,6 +235,39 @@
             }
         }
         
+        // --- CHỨC NĂNG MOCK API ĐỂ CHẠY CỤC BỘ (CẬP NHẬT ĐỊNH DẠNG MARKDOWN) ---
+        function mockApiCall(history, skill) {
+            console.warn("Chạy trong môi trường cục bộ: Sử dụng phản hồi giả lập (mock API).");
+            return new Promise(resolve => {
+                // Mô phỏng độ trễ mạng 1.5 giây
+                setTimeout(() => {
+                    const skillText = skill === 'presentation' ? 'Thuyết trình' : 'Quản lý Cảm xúc';
+                    // Đảm bảo phản hồi Markdown được định dạng tốt để thư viện marked xử lý
+                    const mockResponseText = `
+1. **Phân tích Phản hồi:** Phản hồi của bạn cho thấy bạn đã ưu tiên việc điều chỉnh trạng thái tâm lý trước khi hành động, đây là một bước khởi đầu rất tốt trong tình huống áp lực của bài tập ${skillText}! Hành động "bình tĩnh" là nền tảng vững chắc.
+
+2. **Lời khuyên Chuyên sâu:**
+* Hãy xác định **mục tiêu cụ thể** của lần phản hồi/thuyết trình tiếp theo (VD: mục tiêu cao nhất là gì?).
+* Áp dụng kỹ thuật **Tóm tắt (T.A.C):** **T**hông cảm, **A**p dụng giải pháp, **C**am kết hành động, để tạo ra phản hồi/bài nói chuyên nghiệp.
+
+3. **Kịch bản Tiếp theo:** Sau khi đã giữ được sự bình tĩnh, ban lãnh đạo yêu cầu bạn tập trung vào phần Tài chính trong bài thuyết trình 5 phút. Bạn sẽ sử dụng những luận điểm nào và nói như thế nào để gây ấn tượng trong thời gian ngắn ngủi này?
+                    `;
+
+                    // Cấu trúc phản hồi giả lập giống với cấu trúc API thật
+                    resolve({
+                        candidates: [{
+                            content: {
+                                parts: [{
+                                    text: mockResponseText
+                                }]
+                            }
+                        }]
+                    });
+                }, 1500); 
+            });
+        }
+        // --- KẾT THÚC MOCK API ---
+
         window.selectSkill = async (skill) => {
             currentSkill = skill;
             conversationHistory = [];
@@ -218,22 +277,35 @@
             
             document.getElementById('current-skill-name').textContent = skillName;
             document.getElementById('skill-icon').setAttribute('data-lucide', skillIcon);
-            document.getElementById('scenario-output').innerHTML = ''; // Xóa nội dung cũ
+            document.getElementById('scenario-output').innerHTML = ''; 
             
             document.getElementById('skill-selection').classList.add('hidden');
             document.getElementById('simulation-area').classList.remove('hidden');
             
-            lucide.createIcons();
+            lucide.createIcons(); // Cập nhật icon cho tiêu đề
 
             // Bắt đầu kịch bản đầu tiên
             const initialPrompt = skill === 'presentation' 
                 ? "Chào mừng bạn đến với mô phỏng kỹ năng Thuyết trình. Hãy bắt đầu với kịch bản đầu tiên: Bạn được yêu cầu trình bày nhanh (5 phút) về một dự án mới trước ban lãnh đạo trong 10 phút nữa. Bạn sẽ chuẩn bị và hành động như thế nào?"
                 : "Chào mừng bạn đến với mô phỏng kỹ năng Quản lý Cảm xúc. Hãy bắt đầu với kịch bản đầu tiên: Bạn vừa nhận được email phản hồi gay gắt từ một khách hàng quan trọng. Bạn cảm thấy khó chịu và muốn phản ứng ngay lập tức. Bạn sẽ xử lý cảm xúc và phản hồi email này như thế nào?";
             
+            // THAY ĐỔI QUAN TRỌNG: Thêm tin nhắn vào lịch sử trước, sau đó hiển thị
+            conversationHistory.push({ role: "model", parts: [{ text: initialPrompt }] });
             displayMessage('ai', initialPrompt);
-            
-            conversationHistory.push({ role: "user", parts: [{ text: `Tôi muốn luyện tập ${skillName}. Hãy bắt đầu kịch bản đầu tiên. Huấn luyện viên AI: ${initialPrompt}` }] });
         };
+
+        // --- HÀM QUAY LẠI CHỌN KỸ NĂNG ---
+        window.backToSelection = () => {
+            document.getElementById('simulation-area').classList.add('hidden');
+            document.getElementById('skill-selection').classList.remove('hidden');
+            document.getElementById('user-response').value = ''; // Xóa input cũ
+            document.getElementById('scenario-output').innerHTML = ''; // Xóa hội thoại cũ
+            document.getElementById('error-message').classList.add('hidden'); // Ẩn lỗi (nếu có)
+            currentSkill = '';
+            conversationHistory = [];
+            console.log("Quay lại màn hình chọn kỹ năng.");
+        };
+        // ----------------------------------
 
         window.submitResponse = async () => {
             const userResponseText = document.getElementById('user-response').value.trim();
@@ -250,55 +322,69 @@
 
             displayMessage('user', userResponseText);
             
-            // Thêm phản hồi của người dùng vào lịch sử trò chuyện (dùng cho API)
+            // Tin nhắn người dùng luôn được thêm vào lịch sử
             conversationHistory.push({ role: "user", parts: [{ text: userResponseText }] });
 
             // Vô hiệu hóa nút và hiển thị loading
             submitBtn.disabled = true;
             loadingMsg.classList.remove('hidden');
 
-            const systemInstruction = 
-                `Bạn là một chuyên gia huấn luyện kỹ năng mềm (${currentSkill === 'presentation' ? 'Kỹ Năng Thuyết Trình' : 'Kỹ Năng Quản Lý Cảm Xúc'}). 
-                Nhiệm vụ của bạn là đánh giá phản hồi gần nhất của người dùng, cung cấp lời khuyên chuyên sâu và sau đó tạo ra một kịch bản mới cho họ để tiếp tục luyện tập. 
-                Đảm bảo tính chuyên nghiệp, khích lệ và thân thiện.
-                
-                CẤU TRÚC PHẢN HỒI CỦA BẠN PHẢI THEO ĐỊNH DẠNG SAU (Sử dụng Markdown):
-                1. **Phân tích Phản hồi:** Đánh giá hành động của người dùng (Khoảng 2-3 câu).
-                2. **Lời khuyên Chuyên sâu:** Đưa ra 1-2 mẹo/kỹ thuật cụ thể để cải thiện (Sử dụng gạch đầu dòng).
-                3. **Kịch bản Tiếp theo:** Đặt ra một tình huống mới liên quan để người dùng phản hồi tiếp.
-                
-                Giới hạn tổng thể phản hồi của bạn dưới 200 từ tiếng Việt.`;
-
             try {
-                const payload = {
-                    contents: conversationHistory,
-                    tools: [{ "google_search": {} }], // Bật tìm kiếm để cung cấp thông tin thực tế, không giới hạn
-                    systemInstruction: {
-                        parts: [{ text: systemInstruction }]
-                    },
-                };
+                let result;
 
-                const result = await fetchWithBackoff(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                if (isLocalEnvironment) {
+                    // SỬ DỤNG MOCK API KHI CHẠY CỤC BỘ
+                    result = await mockApiCall(conversationHistory, currentSkill);
+                } else {
+                    // SỬ DỤNG API THẬT KHI CHẠY TRONG MÔI TRƯỜNG CANVAS/LIVE
+                    const systemInstruction = 
+                        `Bạn là một chuyên gia huấn luyện kỹ năng mềm (${currentSkill === 'presentation' ? 'Kỹ Năng Thuyết Trình' : 'Kỹ Năng Quản Lý Cảm Xúc'}). 
+                        Nhiệm vụ của bạn là đánh giá phản hồi gần nhất của người dùng, cung cấp lời khuyên chuyên sâu và sau đó tạo ra một kịch bản mới cho họ để tiếp tục luyện tập. 
+                        Đảm bảo tính chuyên nghiệp, khích lệ và thân thiện.
+                        
+                        CẤU TRÚC PHẢN HỒI CỦA BẠN PHẢI TUÂN THỦ CHẶT CHẼ ĐỊNH DẠNG SỐ VÀ IN ĐẬM SAU (Sử dụng Markdown). KHÔNG ĐƯỢC DÙNG DẤU THĂNG (#) HOẶC BẤT KỲ HEADER NÀO KHÁC TRONG TOÀN BỘ PHẢN HỒI.
+                        
+                        1. **Phân tích Phản hồi:** Đánh giá hành động của người dùng (Khoảng 2-3 câu).
+                        2. **Lời khuyên Chuyên sâu:** Đưa ra 1-2 mẹo/kỹ thuật cụ thể để cải thiện (Sử dụng gạch đầu dòng \`-\` hoặc dấu sao \`*\`).
+                        3. **Kịch bản Tiếp theo:** Đặt ra một tình huống mới liên quan để người dùng phản hồi tiếp.
+                        
+                        Giới hạn tổng thể phản hồi của bạn dưới 200 từ tiếng Việt.`;
+                    
+                    // Sử dụng API_URL đã được định nghĩa chuẩn ở đầu script
+                    const apiUrl = API_URL;
+
+
+                    const payload = {
+                        contents: conversationHistory,
+                        tools: [{ "google_search": {} }], 
+                        systemInstruction: {
+                            parts: [{ text: systemInstruction }]
+                        },
+                    };
+                    
+                    result = await fetchWithBackoff(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
 
                 const candidate = result.candidates?.[0];
                 if (candidate && candidate.content?.parts?.[0]?.text) {
                     const aiText = candidate.content.parts[0].text;
-                    displayMessage('ai', aiText);
+                    displayMessage('ai', aiText); // Hiển thị phản hồi AI
 
-                    // Thêm phản hồi của AI vào lịch sử trò chuyện (dùng cho API)
+                    // THÊM PHẢN HỒI AI VÀO LỊCH SỬ
                     conversationHistory.push({ role: "model", parts: [{ text: aiText }] });
                     
-                    document.getElementById('user-response').value = ''; // Xóa input
+                    document.getElementById('user-response').value = ''; 
                 } else {
-                    throw new Error("Cấu trúc phản hồi AI không hợp lệ.");
+                    throw new Error("Cấu trúc phản hồi AI không hợp lệ hoặc lỗi API.");
                 }
 
             } catch (e) {
-                console.error("Lỗi trong quá trình gọi API AI:", e);
+                console.error("Lỗi trong quá trình giao tiếp/gọi API AI:", e);
                 errorMsg.textContent = "Không thể kết nối với Huấn luyện viên AI. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.";
                 errorMsg.classList.remove('hidden');
             } finally {
@@ -309,11 +395,7 @@
         };
 
         window.returnToMainWeb = (event) => {
-            // Đây là chức năng giả định. Trong môi trường thực tế, 
-            // nó sẽ điều hướng người dùng quay lại trang chủ của nền tảng học tập.
             console.log("Điều hướng quay về web chính...");
-            // event.preventDefault(); // Giữ lại nếu không muốn chuyển trang thực
-            // window.location.href = "/"; // Ví dụ về chuyển hướng thực tế
         };
         
         // Khởi tạo icons lần đầu
