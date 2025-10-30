@@ -3,266 +3,550 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kỹ Năng Sống - Quyết Định Tình Huống</title>
-    <!-- Tải Tailwind CSS để tạo giao diện hiện đại -->
+    <title>Siêu Anh Hùng Kỹ Năng Sống</title>
+    <!-- Tải Tailwind CSS để tạo giao diện hiện đại, responsive -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Cài đặt font Inter cho giao diện thân thiện -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0fdfa; /* Teal 50 */
+            background-color: #f0f4f8; /* Màu nền nhẹ nhàng */
+            min-height: 100vh;
         }
-        .game-card {
-            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .choice-button {
+        /* Hiệu ứng cho nút hành động */
+        .btn-action {
             transition: all 0.2s;
-            transform: scale(1);
         }
-        .choice-button:hover:not(:disabled) {
-            transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        .btn-action:hover {
+            transform: translateY(-3px); /* Tăng độ nảy */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
-        .correct-choice {
-            background-color: #34d399 !important; /* Green 400 */
-            color: white;
-            border: 2px solid #059669;
+        /* Thẻ câu hỏi cơ bản */
+        .question-card {
+            min-height: 400px;
+            transition: transform 0.5s ease-out; /* Thêm hiệu ứng chuyển đổi */
         }
-        .incorrect-choice {
-            background-color: #f87171 !important; /* Red 400 */
-            color: white;
-            border: 2px solid #dc2626;
+        /* Animation nhỏ khi câu hỏi mới được tải */
+        @keyframes subtle-shake {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.005); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-subtle-shake {
+            animation: subtle-shake 0.3s ease-out;
+        }
+        /* Style cho các nút đáp án */
+        #answer-buttons button {
+            transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
         }
     </style>
 </head>
-<body class="p-4 md:p-8 min-h-screen flex flex-col items-center">
+<body class="p-4 md:p-8">
 
-    <!-- Thanh Tiêu đề và Nút Quay lại -->
-    <header class="w-full max-w-2xl flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-teal-700">Giải Quyết Tình Huống</h1>
-        <a href="/index.html" class="px-4 py-2 bg-teal-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-teal-700 transition duration-200">
-            Quay lại Web Chính
+    <!-- Header & Nút Quay Về Web Chính -->
+    <header class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-blue-700">
+            Siêu Anh Hùng Kỹ Năng Sống
+        </h1>
+        <!-- Nút Quay Về Web Chính - Dùng placeholder URL -->
+        <a href="/index.html" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm md:text-base">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Quay Về Web Chính
         </a>
     </header>
 
-    <!-- Khu vực Trò chơi Chính -->
-    <main id="gameContainer" class="game-card w-full max-w-2xl bg-white p-6 md:p-10 rounded-xl flex flex-col gap-6">
+    <!-- Container Chính Của Ứng Dụng -->
+    <main class="max-w-3xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-2xl border-b-4 border-blue-500">
 
-        <!-- Phần Thông tin Tình huống -->
-        <div id="scenarioSection" class="border-b pb-6 mb-6">
-            <p class="text-lg font-semibold text-teal-600 mb-2">Tình huống <span id="currentNumber">1</span>/<span id="totalNumber">5</span></p>
-            <div id="scoreDisplay" class="text-2xl font-bold text-blue-600 mb-4">
-                Điểm Kỹ năng: 0
+        <!-- Màn Hình 1: Bắt Đầu Game -->
+        <div id="start-screen" class="screen flex flex-col items-center text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Chào Mừng! Hãy Sẵn Sàng Trở Thành Người Hùng!</h2>
+            <p class="text-7xl mb-8">🛡️</p>
+            <p class="text-gray-600 mb-8 text-lg">Bạn sẽ đối mặt với **10 THỬ THÁCH** kỹ năng sống, được chia thành 3 Sứ Mệnh quan trọng. Hãy sẵn sàng!</p>
+            
+            <button onclick="startGame()" class="btn-action bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-xl shadow-md">
+                BẮT ĐẦU NHIỆM VỤ
+            </button>
+        </div>
+
+        <!-- Màn Hình 2: Trò Chơi Quiz -->
+        <div id="quiz-screen" class="screen hidden">
+            <!-- Khu vực Hiển thị điểm số và tiến trình -->
+            <div class="flex justify-between items-center mb-4">
+                <p class="text-lg font-semibold text-blue-600">
+                    Sứ Mệnh <span id="current-level">1</span>: <span id="level-title">An Toàn Cơ Bản</span>
+                </p>
+                <p class="text-lg font-semibold text-green-600">Điểm: <span id="current-score">0</span></p>
             </div>
-            <h2 id="scenarioText" class="text-xl md:text-2xl font-semibold text-gray-800 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                Tải tình huống...
-            </h2>
+            
+            <!-- Thanh tiến trình cấp độ -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="level-progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            
+            <div id="question-card" class="question-card bg-blue-50 p-6 rounded-xl shadow-inner mb-6 animate-subtle-shake">
+                <p class="text-sm font-medium text-blue-500 mb-2">Câu Hỏi: <span id="question-index"></span></p>
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 leading-relaxed">
+                    <!-- Nội dung câu hỏi và icon chủ đề sẽ hiển thị ở đây. -->
+                </h3>
+            </div>
+            
+            <!-- Khu Vực Đáp Án -->
+            <div id="answer-buttons" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Buttons will be injected here by JavaScript -->
+            </div>
+
+            <!-- Khu Vực Phản Hồi -->
+            <div id="feedback-message" class="mt-6 p-4 rounded-lg text-center hidden font-bold text-lg">
+                <!-- Feedback (Correct/Incorrect) will be injected here -->
+            </div>
         </div>
 
-        <!-- Phần Lựa chọn Hành động -->
-        <div id="choicesSection" class="grid grid-cols-1 gap-4">
-            <!-- Các nút lựa chọn sẽ được chèn tại đây bởi JavaScript -->
-        </div>
+        <!-- Màn Hình 3: Kết Quả -->
+        <div id="result-screen" class="screen hidden flex flex-col items-center text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">HOÀN THÀNH SỨ MỆNH!</h2>
+            <p id="final-icon" class="text-8xl mb-4">🏆</p>
+            <p class="text-5xl font-extrabold mb-6 text-indigo-600">
+                <span id="final-score">0</span> / <span id="final-total-questions"></span>
+            </p>
 
-        <!-- Phần Phản hồi (Feedback) và Nút Tiếp tục -->
-        <div id="feedbackSection" class="mt-4 flex flex-col items-center hidden">
-            <p id="feedbackMessage" class="text-xl font-bold p-3 rounded-lg"></p>
-            <button id="nextButton" onclick="nextScenario()" class="mt-4 px-8 py-3 bg-teal-500 text-white text-lg font-semibold rounded-lg hover:bg-teal-600 transition duration-200 focus:outline-none focus:ring-4 focus:ring-teal-300">
-                Tiếp tục
+            <div id="result-message" class="text-xl mb-8 p-4 rounded-lg border-2 w-full max-w-sm">
+                <!-- Custom message based on score -->
+            </div>
+            
+
+            <button onclick="window.location.reload()" class="btn-action bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full text-lg shadow-md mt-4">
+                CHƠI LẠI (THỬ THÁCH MỚI)
             </button>
         </div>
 
-        <!-- Phần Kết thúc Game -->
-        <div id="endGameSection" class="text-center p-8 hidden">
-            <h2 class="text-3xl font-bold text-teal-700 mb-4">Hoàn thành Thử thách Kỹ năng Sống!</h2>
-            <p class="text-xl text-gray-700 mb-6">Bạn đã hoàn thành tất cả các tình huống.</p>
-            <p class="text-4xl font-extrabold text-blue-700">Điểm Kỹ năng Cuối cùng: <span id="finalScore">0</span></p>
-            <p id="skillLevel" class="text-2xl mt-4 font-semibold text-teal-600"></p>
-            <button onclick="window.location.reload()" class="mt-8 px-8 py-3 bg-pink-500 text-white text-lg font-semibold rounded-lg hover:bg-pink-600 transition duration-200 focus:outline-none focus:ring-4 focus:ring-pink-300">
-                Chơi Lại
-            </button>
-        </div>
     </main>
 
     <script>
-        // Mảng chứa các tình huống, lựa chọn và kết quả (kỹ năng sống)
-        const scenarios = [
+        // Khai báo dữ liệu câu hỏi, thêm level và topicIcon
+        const quizData = [
             {
-                id: 1,
-                text: "Bạn thấy một chiếc ví dày cộm bị đánh rơi trên đường đi học. Không có ai xung quanh.",
-                choices: [
-                    { text: "Bỏ qua và tiếp tục đi, sợ bị liên lụy.", isCorrect: false, feedback: "Hành động này thiếu trách nhiệm. Kỹ năng sống quan trọng là phải có tính trung thực và trách nhiệm với cộng đồng." },
-                    { text: "Nhặt lên, tìm thông tin liên lạc và tìm cách trả lại cho chủ nhân.", isCorrect: true, feedback: "Rất tốt! Bạn đã thể hiện tính Trung thực và Trách nhiệm. Đây là một kỹ năng sống nền tảng." },
-                    { text: "Mở ví ra đếm tiền, sau đó nhờ người lớn giữ hộ.", isCorrect: false, feedback: "Mục đích là tốt, nhưng không nên mở ví ra. Tốt nhất là nhờ người lớn (như giáo viên hoặc bảo vệ) xử lý ngay lập tức để đảm bảo tính minh bạch." }
-                ]
+                level: 1, // Sứ Mệnh 1: An Toàn Cơ Bản (Gia Đình)
+                topic: "Phòng Cháy",
+                topicIcon: "🔥",
+                question: "Khi phát hiện một đám cháy nhỏ trong nhà, hành động ưu tiên nhất của bạn là gì?",
+                options: [
+                    "Bỏ chạy ra ngoài ngay lập tức.",
+                    "Sử dụng bình chữa cháy mini hoặc vật dụng sẵn có để dập lửa, đồng thời hô hoán.",
+                    "Đứng nhìn và chờ người lớn đến giải quyết.",
+                    "Dùng nước dội vào đám cháy (Áp dụng cho mọi loại cháy)."
+                ],
+                correct: 1, 
+                explanation: "Ưu tiên hàng đầu là sử dụng các công cụ chữa cháy tại chỗ để dập lửa khi đám cháy còn nhỏ, và gọi sự giúp đỡ. Tuyệt đối không dùng nước dập các đám cháy do điện hoặc dầu mỡ."
             },
             {
-                id: 2,
-                text: "Một người bạn thân của bạn đang rất buồn vì trượt kỳ thi quan trọng. Bạn nên làm gì?",
-                choices: [
-                    { text: "Nói rằng: 'Thôi đừng buồn nữa, chuyện nhỏ mà.'", isCorrect: false, feedback: "Việc phủ nhận cảm xúc của người khác không giúp ích. Kỹ năng lắng nghe đồng cảm là quan trọng hơn." },
-                    { text: "Lắng nghe một cách chân thành, để bạn ấy nói hết nỗi lòng, và đề nghị giúp đỡ ôn tập cho lần sau.", isCorrect: true, feedback: "Tuyệt vời! Bạn đã thể hiện Kỹ năng Lắng nghe Đồng cảm và Hỗ trợ. Đây là cách tốt nhất để xây dựng mối quan hệ." },
-                    { text: "Kể về một lần bạn cũng trượt để họ thấy 'không sao cả'.", isCorrect: false, feedback: "Chia sẻ kinh nghiệm cá nhân có thể tốt, nhưng trước tiên, hãy ưu tiên Lắng nghe và xác nhận cảm xúc của họ." }
-                ]
+                level: 1,
+                topic: "An Toàn Điện",
+                topicIcon: "⚡",
+                question: "Nếu thấy dây điện bị đứt và rơi xuống đất, bạn nên làm gì?",
+                options: [
+                    "Dùng tay không kéo dây điện ra khỏi nơi nguy hiểm.",
+                    "Đứng xa, giữ khoảng cách an toàn và gọi ngay cho người lớn hoặc tổng đài khẩn cấp.",
+                    "Dùng một thanh gỗ dài để đẩy dây điện đi.",
+                    "Lấy nước dội lên dây điện để ngăn cháy."
+                ],
+                correct: 1,
+                explanation: "Tuyệt đối không chạm vào dây điện trần. Giữ khoảng cách an toàn và gọi cứu hộ là hành động đúng đắn nhất."
             },
             {
-                id: 3,
-                text: "Bạn cảm thấy quá tải và căng thẳng vì có quá nhiều bài tập và dự án phải hoàn thành trong tuần.",
-                choices: [
-                    { text: "Cố gắng thức khuya để làm hết mọi thứ ngay lập tức.", isCorrect: false, feedback: "Việc này gây hại cho sức khỏe và thường dẫn đến hiệu suất thấp. Kỹ năng Quản lý Căng thẳng và Sắp xếp Công việc chưa được áp dụng." },
-                    { text: "Dành 15 phút để lập danh sách ưu tiên, chọn việc quan trọng nhất làm trước, sau đó nghỉ giải lao ngắn.", isCorrect: true, feedback: "Chính xác! Bạn đã áp dụng Kỹ năng Quản lý Thời gian, Quản lý Căng thẳng và Tự chăm sóc bản thân (Self-care)."},
-                    { text: "Xin phép giáo viên cho nghỉ học một ngày để làm bài tập.", isCorrect: false, feedback: "Việc né tránh trách nhiệm không giải quyết vấn đề lâu dài. Hãy đối mặt bằng cách lập kế hoạch." }
-                ]
+                level: 1,
+                topic: "Sơ Cứu Đứt Tay",
+                topicIcon: "🔪",
+                question: "Khi bị vết thương đứt tay nhẹ chảy máu, bạn nên làm gì đầu tiên?",
+                options: [
+                    "Chườm đá lạnh trực tiếp lên vết thương.",
+                    "Rửa vết thương dưới vòi nước sạch và dùng băng gạc sạch cầm máu.",
+                    "Bôi trực tiếp kem đánh răng hoặc lá cây.",
+                    "Dùng tay bóp mạnh vết thương để máu chảy ra hết."
+                ],
+                correct: 1,
+                explanation: "Rửa sạch vết thương để loại bỏ bụi bẩn, sau đó cầm máu bằng băng gạc sạch là quy trình sơ cứu chuẩn."
             },
             {
-                id: 4,
-                text: "Bạn đang làm việc nhóm và một thành viên liên tục chỉ trích ý kiến của bạn một cách gay gắt.",
-                choices: [
-                    { text: "Cãi lại họ bằng thái độ tương tự, bảo vệ ý kiến của mình đến cùng.", isCorrect: false, feedback: "Điều này làm leo thang xung đột. Cần áp dụng Kỹ năng Giải quyết Xung đột và Giao tiếp Tích cực." },
-                    { text: "Bình tĩnh hít thở, nói: 'Tôi hiểu quan điểm của bạn. Chúng ta có thể thảo luận từng điểm một được không?'", isCorrect: true, feedback: "Xuất sắc! Bạn đã sử dụng Kỹ năng Giải quyết Xung đột và Tự kiểm soát Cảm xúc. Điều này giúp giữ cho cuộc thảo luận mang tính xây dựng." },
-                    { text: "Im lặng và chấp nhận ý kiến của họ để tránh xung đột.", isCorrect: false, feedback: "Né tránh xung đột không phải là giải pháp tốt nhất. Kỹ năng Thuyết phục và Bảo vệ Quan điểm Lành mạnh là cần thiết." }
-                ]
+                level: 2, // Sứ Mệnh 2: Đối Phó Thiên Tai
+                topic: "Phòng Lũ Lụt",
+                topicIcon: "🌊",
+                question: "Nghe tin cảnh báo lũ lụt lớn sắp đến, bạn nên chuẩn bị những vật dụng thiết yếu nào?",
+                options: [
+                    "Chỉ cần quần áo và điện thoại di động.",
+                    "Thực phẩm khô, nước uống sạch, đèn pin, bộ sơ cứu y tế, áo phao.",
+                    "Chỉ cần tiền mặt và giấy tờ tùy thân.",
+                    "Sách vở và đồ chơi yêu thích để giết thời gian."
+                ],
+                correct: 1,
+                explanation: "Thực phẩm, nước sạch, sơ cứu, và các công cụ chiếu sáng là vật dụng quan trọng nhất để tồn tại an toàn trong và sau lũ lụt."
             },
             {
-                id: 5,
-                text: "Bạn vô tình làm đổ nước lên bàn phím máy tính của thư viện. Không có ai nhìn thấy.",
-                choices: [
-                    { text: "Lén lau khô rồi giả vờ như không có gì xảy ra.", isCorrect: false, feedback: "Che giấu vấn đề là thiếu trách nhiệm. Hư hỏng có thể tệ hơn nếu không được xử lý ngay." },
-                    { text: "Báo cáo ngay lập tức với nhân viên thư viện, xin lỗi và đề xuất giúp đỡ khắc phục.", isCorrect: true, feedback: "Tuyệt vời! Bạn đã áp dụng Kỹ năng Chịu trách nhiệm và Giao tiếp Chủ động. Trung thực là điều quan trọng nhất." },
-                    { text: "Đợi người khác đến và hỏi xem họ có thấy gì không.", isCorrect: false, feedback: "Bạn nên chủ động chịu trách nhiệm về hành động của mình, không nên chờ đợi." }
-                ]
+                level: 2,
+                topic: "Động Đất",
+                topicIcon: "🚨",
+                question: "Khi đang ở trong nhà và cảm thấy động đất, bạn nên làm gì?",
+                options: [
+                    "Chạy thật nhanh ra khỏi nhà.",
+                    "Đứng gần cửa sổ hoặc tường.",
+                    "Thực hiện động tác 'Drop, Cover, and Hold On' (Cúi xuống, Che chắn, và Nắm chặt) dưới gầm bàn chắc chắn.",
+                    "Chạy lên tầng cao hơn để tránh đổ vỡ."
+                ],
+                correct: 2,
+                explanation: "Nguyên tắc 'Drop, Cover, and Hold On' dưới gầm bàn chắc chắn là phương pháp tốt nhất khi động đất xảy ra trong nhà để tránh các vật thể rơi xuống đầu."
+            },
+            {
+                level: 2,
+                topic: "Vệ Sinh & Thực Phẩm",
+                topicIcon: "🍽️",
+                question: "Làm thế nào để phân biệt thực phẩm an toàn và thực phẩm không an toàn sau một trận lũ?",
+                options: [
+                    "Tất cả thực phẩm đóng hộp đều an toàn.",
+                    "Chỉ ăn những thực phẩm khô, không bị ngấm nước lũ.",
+                    "Ăn bất cứ thứ gì có sẵn vì đói.",
+                    "Ăn cả thực phẩm tươi và thực phẩm đã bị nước lũ chạm vào sau khi rửa sạch."
+                ],
+                correct: 1,
+                explanation: "Thực phẩm bị nước lũ chạm vào có nguy cơ nhiễm khuẩn cao và nên được loại bỏ. Chỉ nên ăn thực phẩm đóng gói kín hoặc thực phẩm khô không tiếp xúc với nước lũ."
+            },
+            {
+                level: 3, // Sứ Mệnh 3: Phản Ứng Khẩn Cấp & Công Cộng
+                topic: "An Toàn Nước",
+                topicIcon: "🏊",
+                question: "Nếu thấy một người đang bị đuối nước mà bạn không biết bơi, hành động nào là đúng đắn nhất?",
+                options: [
+                    "Nhảy xuống nước ngay lập tức để cứu người đó.",
+                    "Nhanh chóng tìm kiếm vật dụng nổi (phao, dây, gậy) để ném cho nạn nhân và hô hoán cầu cứu.",
+                    "Đứng trên bờ la hét.",
+                    "Chạy đi tìm điện thoại để gọi 113."
+                ],
+                correct: 1,
+                explanation: "Tuyệt đối không tự mình nhảy xuống nếu không có kỹ năng cứu hộ. Sử dụng vật dụng nổi để kéo nạn nhân lên bờ là ưu tiên hàng đầu."
+            },
+            {
+                level: 3,
+                topic: "An Toàn Giao Thông",
+                topicIcon: "🚦",
+                question: "Khi tín hiệu đèn giao thông chuyển từ xanh sang vàng, bạn cần làm gì?",
+                options: [
+                    "Tăng tốc nhanh chóng để vượt qua ngã tư.",
+                    "Giữ tốc độ, chuẩn bị dừng lại trước vạch.",
+                    "Dừng lại ngay lập tức (trừ khi quá gần vạch dừng).",
+                    "Quan sát và nếu không có xe khác thì đi tiếp."
+                ],
+                correct: 1,
+                explanation: "Đèn vàng báo hiệu sắp chuyển sang đèn đỏ. Bạn phải dừng lại trước vạch dừng. Chỉ tiếp tục đi nếu bạn đã vượt qua vạch hoặc quá gần vạch dừng và không thể dừng an toàn."
+            },
+            {
+                level: 3,
+                topic: "Sơ Cứu",
+                topicIcon: "🚑",
+                question: "Khi có người bị ngất xỉu, hành động sơ cứu nào là **không** nên làm?",
+                options: [
+                    "Để nạn nhân nằm ngửa, kê chân cao hơn đầu một chút.",
+                    "Nới lỏng quần áo, thắt lưng, khăn quàng cổ.",
+                    "Xoa dầu gió hoặc tát vào mặt nạn nhân để gọi tỉnh.",
+                    "Kiểm tra đường thở của nạn nhân và gọi cấp cứu."
+                ],
+                correct: 2,
+                explanation: "Việc xoa dầu gió hoặc tát mạnh không có tác dụng và có thể làm tình trạng nạn nhân tệ hơn. Việc cần làm là giữ thông thoáng, kiểm tra hơi thở và gọi sự trợ giúp y tế."
+            },
+            {
+                level: 3,
+                topic: "Tránh xa nguy hiểm",
+                topicIcon: "🚧",
+                question: "Khi thấy biển báo 'Công trường đang thi công' hoặc 'Khu vực nguy hiểm', bạn nên làm gì?",
+                options: [
+                    "Tiến lại gần để xem có gì thú vị.",
+                    "Đi vòng qua, giữ khoảng cách và cảnh báo cho bạn bè.",
+                    "Tìm cách thử thách sự nguy hiểm.",
+                    "Đứng yên tại chỗ."
+                ],
+                correct: 1,
+                explanation: "Các biển báo này nhằm cảnh báo các mối nguy hiểm tiềm ẩn (như sụp lún, vật liệu rơi). Việc tránh xa và cảnh báo là hành động bảo vệ bản thân và cộng đồng."
             }
         ];
 
-        let currentScenarioIndex = 0;
-        let skillScore = 0;
-        let isProcessing = false; // Ngăn chặn người dùng click nhiều lần
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let shuffledQuizData = [];
+        const totalQuestions = quizData.length;
+        let currentLevel = 1;
+        const maxLevel = 3;
 
-        const gameContainer = document.getElementById('gameContainer');
-        const scenarioText = document.getElementById('scenarioText');
-        const choicesSection = document.getElementById('choicesSection');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const feedbackSection = document.getElementById('feedbackSection');
-        const feedbackMessage = document.getElementById('feedbackMessage');
-        const nextButton = document.getElementById('nextButton');
-        const endGameSection = document.getElementById('endGameSection');
-        const currentNumber = document.getElementById('currentNumber');
-        const totalNumber = document.getElementById('totalNumber');
-        const finalScore = document.getElementById('finalScore');
-        const skillLevel = document.getElementById('skillLevel');
 
-        totalNumber.textContent = scenarios.length;
+        // Lấy các element cần thiết
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const questionCard = document.getElementById('question-card');
+        const answerButtonsContainer = document.getElementById('answer-buttons');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const questionIndexSpan = document.getElementById('question-index');
+        // const totalQuestionsSpan = document.getElementById('total-questions'); // Lỗi: ID này không còn tồn tại trong HTML
+        const finalScoreSpan = document.getElementById('final-score');
+        const finalTotalQuestionsSpan = document.getElementById('final-total-questions');
+        const resultMessageDiv = document.getElementById('result-message');
+        const finalIconDiv = document.getElementById('final-icon');
+        const currentScoreSpan = document.getElementById('current-score');
+        const currentLevelSpan = document.getElementById('current-level');
+        const levelTitleSpan = document.getElementById('level-title');
+        const levelProgressBar = document.getElementById('level-progress-bar');
 
-        // Hàm cập nhật điểm
-        function updateScore(points) {
-            skillScore += points;
-            scoreDisplay.textContent = `Điểm Kỹ năng: ${skillScore}`;
+
+        // Thiết lập tổng số câu hỏi khi tải trang
+        // totalQuestionsSpan.textContent = totalQuestions; // Lỗi: ID này không còn tồn tại trong HTML
+
+
+        /**
+         * Hàm xáo trộn mảng (Fisher-Yates Shuffle)
+         * @param {Array} array - Mảng cần xáo trộn
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
-        // Hàm tải tình huống hiện tại
-        function loadScenario() {
-            if (currentScenarioIndex >= scenarios.length) {
-                endGame();
+        /**
+         * Hàm ẩn tất cả màn hình
+         */
+        function hideAllScreens() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+        }
+
+        function getLevelTitle(level) {
+            switch(level) {
+                case 1: return "An Toàn Cơ Bản (Gia Đình)";
+                case 2: return "Đối Phó Thiên Tai";
+                case 3: return "Phản Ứng Khẩn Cấp & Công Cộng";
+                default: return "Sứ Mệnh Đã Hoàn Thành";
+            }
+        }
+
+        /**
+         * Bắt đầu trò chơi và khởi tạo cấp độ
+         */
+        function startGame() {
+            // Xáo trộn câu hỏi TỔNG THỂ
+            let shuffledAllData = shuffleArray([...quizData]);
+            
+            // Group questions by level and shuffle them internally for good measure
+            const groupedQuestions = {};
+            shuffledAllData.forEach(q => {
+                const level = q.level;
+                if (!groupedQuestions[level]) {
+                    groupedQuestions[level] = [];
+                }
+                groupedQuestions[level].push(q);
+            });
+            
+            // Re-order the levels (1, 2, 3) and flatten them back into shuffledQuizData
+            shuffledQuizData = [];
+            for (let l = 1; l <= maxLevel; l++) {
+                if (groupedQuestions[l]) {
+                    shuffledQuizData.push(...groupedQuestions[l]);
+                }
+            }
+
+            hideAllScreens();
+            quizScreen.classList.remove('hidden');
+            currentQuestionIndex = 0;
+            currentLevel = 1;
+            score = 0;
+            currentScoreSpan.textContent = score;
+            
+            loadLevel();
+        }
+
+        /**
+         * Tải các thông tin của cấp độ hiện tại
+         */
+        function loadLevel() {
+            if (currentLevel > maxLevel) {
+                showResult();
+                return;
+            }
+            
+            currentLevelSpan.textContent = currentLevel;
+            levelTitleSpan.textContent = getLevelTitle(currentLevel);
+            
+            // Đảm bảo loadQuestion được gọi để hiển thị câu hỏi đầu tiên của level mới
+            loadQuestion();
+        }
+
+        /**
+         * Cập nhật thanh tiến trình
+         */
+        function updateProgress() {
+            const currentLevelQuestions = shuffledQuizData.filter(q => q.level === currentLevel);
+            // Tìm index trong mảng tổng thể
+            const startIndex = shuffledQuizData.findIndex(q => q.level === currentLevel);
+            // Vị trí câu hỏi hiện tại trong cấp độ (từ 0)
+            const questionsAnsweredInLevel = currentQuestionIndex - startIndex;
+            const totalQuestionsInLevel = currentLevelQuestions.length;
+            
+            const progressPercentage = (questionsAnsweredInLevel / totalQuestionsInLevel) * 100;
+            levelProgressBar.style.width = `${progressPercentage}%`;
+        }
+
+        /**
+         * Tải câu hỏi hiện tại và hiển thị lên giao diện
+         */
+        function loadQuestion() {
+            feedbackMessage.classList.add('hidden');
+            answerButtonsContainer.innerHTML = ''; // Xóa các nút cũ
+            
+            // Xóa hiệu ứng lắc cũ và thêm lại để kích hoạt animation
+            questionCard.classList.remove('animate-subtle-shake');
+            void questionCard.offsetWidth; // Force reflow/repaint
+            questionCard.classList.add('animate-subtle-shake');
+
+
+            if (currentQuestionIndex >= shuffledQuizData.length) {
+                showResult();
                 return;
             }
 
-            isProcessing = false;
-            feedbackSection.classList.add('hidden');
-            nextButton.classList.add('hidden');
-            choicesSection.innerHTML = '';
-            choicesSection.classList.remove('hidden');
-
-            const current = scenarios[currentScenarioIndex];
+            const currentQuestion = shuffledQuizData[currentQuestionIndex];
             
-            // Cập nhật giao diện
-            currentNumber.textContent = currentScenarioIndex + 1;
-            scenarioText.textContent = current.text;
+            // Cập nhật chỉ số câu hỏi
+            // Tìm vị trí của câu hỏi hiện tại trong mảng tổng thể, sau đó +1
+            const globalIndex = shuffledQuizData.indexOf(currentQuestion) + 1;
+            questionIndexSpan.textContent = globalIndex;
 
-            // Tạo các nút lựa chọn
-            current.choices.forEach((choice, index) => {
+            // Cập nhật nội dung câu hỏi (thêm icon chủ đề)
+            questionText.innerHTML = `<span class="text-4xl mr-3 align-middle">${currentQuestion.topicIcon}</span> ${currentQuestion.question}`;
+
+            // Tạo các nút đáp án
+            currentQuestion.options.forEach((option, index) => {
                 const button = document.createElement('button');
-                button.textContent = choice.text;
-                button.className = 'choice-button w-full text-left p-4 bg-gray-100 text-gray-800 rounded-lg hover:bg-teal-100 font-medium transition duration-200';
-                button.onclick = () => handleChoice(index, button);
-                button.disabled = false;
-                choicesSection.appendChild(button);
+                button.textContent = option;
+                button.setAttribute('data-index', index);
+                button.onclick = () => checkAnswer(index);
+
+                // Styling cho nút đáp án (Tailwind Classes)
+                button.className = 'btn-action text-left p-4 rounded-xl font-medium shadow-md transition duration-150 ' + 
+                                   'bg-white text-gray-700 hover:bg-yellow-100 hover:text-blue-800 border-2 border-gray-200';
+                
+                answerButtonsContainer.appendChild(button);
             });
+            
+            updateProgress(); // Cập nhật tiến trình sau khi tải câu hỏi
         }
 
-        // Hàm xử lý khi người dùng chọn
-        function handleChoice(choiceIndex, clickedButton) {
-            if (isProcessing) return;
-            isProcessing = true;
+        /**
+         * Kiểm tra đáp án người chơi chọn
+         * @param {number} selectedIndex - Index của đáp án người chơi chọn
+         */
+        function checkAnswer(selectedIndex) {
+            const currentQuestion = shuffledQuizData[currentQuestionIndex];
+            const isCorrect = selectedIndex === currentQuestion.correct;
             
-            const current = scenarios[currentScenarioIndex];
-            const chosen = current.choices[choiceIndex];
-
-            // Vô hiệu hóa tất cả các nút sau khi chọn
-            Array.from(choicesSection.children).forEach(button => {
+            // Vô hiệu hóa tất cả các nút để ngăn chặn chọn lại
+            Array.from(answerButtonsContainer.children).forEach(button => {
                 button.disabled = true;
-                // Thêm hiệu ứng cho các lựa chọn khác
-                if (button !== clickedButton) {
-                    button.classList.remove('hover:bg-teal-100');
-                    button.classList.add('opacity-50');
+                button.classList.remove('hover:bg-yellow-100', 'hover:text-blue-800');
+
+                const index = parseInt(button.getAttribute('data-index'));
+                
+                // Đánh dấu đáp án đúng/sai
+                if (index === currentQuestion.correct) {
+                    // Đáp án đúng (Màu xanh lá)
+                    button.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
+                    button.classList.add('bg-green-100', 'border-green-500', 'text-green-700', 'font-bold', 'shadow-lg');
+                } else if (index === selectedIndex) {
+                    // Đáp án người chơi chọn sai (Màu đỏ)
+                    button.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
+                    button.classList.add('bg-red-100', 'border-red-500', 'text-red-700', 'shadow-lg');
                 }
             });
 
-
-            if (chosen.isCorrect) {
-                updateScore(10); // Cộng 10 điểm cho hành động đúng
-                clickedButton.classList.add('correct-choice');
-                showFeedback(true, chosen.feedback);
-            } else {
-                clickedButton.classList.add('incorrect-choice');
-                // Highlight đáp án đúng
-                current.choices.forEach((choice, index) => {
-                    if (choice.isCorrect) {
-                        choicesSection.children[index].classList.add('correct-choice', 'animate-pulse');
-                    }
-                });
-                showFeedback(false, chosen.feedback);
-            }
-
-            // Hiện nút Tiếp tục
-            feedbackSection.classList.remove('hidden');
-            nextButton.classList.remove('hidden');
-        }
-
-        // Hàm hiển thị phản hồi
-        function showFeedback(isCorrect, message) {
-            feedbackMessage.textContent = message;
+            // Hiển thị phản hồi
+            feedbackMessage.classList.remove('hidden');
             if (isCorrect) {
-                feedbackMessage.className = 'text-xl font-bold p-3 rounded-lg bg-green-100 text-green-700 border border-green-300';
+                score++;
+                currentScoreSpan.textContent = score;
+                feedbackMessage.innerHTML = '🎉 **Chính Xác!** ' + currentQuestion.explanation;
+                feedbackMessage.className = 'mt-6 p-4 rounded-lg text-center font-bold text-lg bg-green-100 text-green-700 border-l-4 border-green-500 shadow-md';
             } else {
-                feedbackMessage.className = 'text-xl font-bold p-3 rounded-lg bg-red-100 text-red-700 border border-red-300';
+                feedbackMessage.innerHTML = '❌ **Chưa Chính Xác!** ' + currentQuestion.explanation;
+                feedbackMessage.className = 'mt-6 p-4 rounded-lg text-center font-bold text-lg bg-red-100 text-red-700 border-l-4 border-red-500 shadow-md';
             }
+
+            // Cập nhật tiến trình ngay sau khi trả lời
+            updateProgress();
+
+            // Chuyển sang câu hỏi tiếp theo sau 3.5 giây
+            setTimeout(() => {
+                currentQuestionIndex++;
+                
+                // Kiểm tra nếu câu hỏi tiếp theo là của cấp độ mới
+                if (currentQuestionIndex < shuffledQuizData.length) {
+                    const nextQuestion = shuffledQuizData[currentQuestionIndex];
+                    if (nextQuestion.level !== currentLevel) {
+                        currentLevel = nextQuestion.level;
+                        loadLevel();
+                    } else {
+                        loadQuestion();
+                    }
+                } else {
+                    showResult();
+                }
+
+            }, 3500); 
         }
 
-        // Hàm chuyển sang tình huống tiếp theo
-        function nextScenario() {
-            currentScenarioIndex++;
-            loadScenario();
-        }
+        /**
+         * Hiển thị màn hình kết quả
+         */
+        function showResult() {
+            hideAllScreens();
+            resultScreen.classList.remove('hidden');
 
-        // Hàm kết thúc trò chơi
-        function endGame() {
-            gameContainer.classList.add('hidden');
-            endGameSection.classList.remove('hidden');
-            finalScore.textContent = skillScore;
+            finalScoreSpan.textContent = score;
+            finalTotalQuestionsSpan.textContent = totalQuestions;
 
-            let levelMessage = "";
-            if (skillScore >= scenarios.length * 10 * 0.8) {
-                levelMessage = "Cấp độ Kỹ năng: Siêu Đẳng (Xuất sắc! Bạn có những quyết định rất chín chắn.)";
-            } else if (skillScore >= scenarios.length * 10 * 0.5) {
-                levelMessage = "Cấp độ Kỹ năng: Khá (Bạn có nền tảng vững vàng, cần cải thiện thêm kỹ năng giải quyết xung đột.)";
+            let message = "";
+            let messageClass = "";
+            let finalIcon = "";
+
+            if (score === totalQuestions) {
+                message = "🌟 HOÀN HẢO! Bạn đã hoàn thành 3 Sứ Mệnh và là một SIÊU ANH HÙNG KỸ NĂNG SỐNG thực thụ!";
+                messageClass = "text-green-700 bg-green-50 border-green-500";
+                finalIcon = "🥇";
+            } else if (score >= totalQuestions * 0.7) {
+                message = "Tuyệt Vời! Bạn đã vượt qua hầu hết các thử thách. Tiếp tục rèn luyện để chinh phục điểm tuyệt đối!";
+                messageClass = "text-blue-700 bg-blue-50 border-blue-500";
+                finalIcon = "🏆";
+            } else if (score >= totalQuestions / 2) {
+                 message = "Rất Tốt! Bạn đã nắm được những kiến thức cơ bản. Hãy thử lại để trở thành người hùng!";
+                messageClass = "text-yellow-700 bg-yellow-50 border-yellow-500";
+                finalIcon = "💪";
             } else {
-                levelMessage = "Cấp độ Kỹ năng: Cần Cố gắng (Hãy xem lại phần giải thích để rút ra bài học kinh nghiệm!)";
+                message = "Cần cố gắng hơn. Kiến thức kỹ năng sống rất quan trọng, hãy xem lại phần giải thích và thử lại nhé!";
+                messageClass = "text-red-700 bg-red-50 border-red-500";
+                finalIcon = "💡";
             }
-            skillLevel.textContent = levelMessage;
+
+            resultMessageDiv.textContent = message;
+            resultMessageDiv.className = `text-xl mb-8 p-4 rounded-lg border-2 w-full max-w-sm font-semibold ${messageClass}`;
+            finalIconDiv.textContent = finalIcon;
         }
 
-        // Khởi động game khi tải trang
-        window.onload = loadScenario;
+        // Khởi động màn hình ban đầu
+        window.onload = function() {
+            hideAllScreens();
+            startScreen.classList.remove('hidden');
+        };
+
     </script>
 </body>
 </html>
+
