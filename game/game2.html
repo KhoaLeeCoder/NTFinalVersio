@@ -49,7 +49,7 @@
         </div>
 
         <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">Luyện Kỹ Năng Mềm Cùng AI</h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">KỸ NĂNG MỀM CÙNG AI</h1>
             <p class="text-lg text-gray-600 mt-2">Trình Giả Lập & Huấn Luyện Kỹ Năng Mềm Ứng Dụng AI</p>
         </header>
 
@@ -179,9 +179,18 @@
 
         // Hỗ trợ đánh dấu icon
         const lucide = window.lucide;
-        // lucide.createIcons(); // Đã xóa khỏi DOMContentLoaded, chỉ gọi khi cần
+        
+        // *******************************************************************
+        // HÀM CẢI TIẾN: Giải mã HTML Entities bằng cách sử dụng div tạm thời
+        // *******************************************************************
+        function decodeHtmlEntities(text) {
+            // Sử dụng một div tạm thời. Gán innerHTML sẽ buộc trình duyệt decode các entities.
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text;
+            return tempDiv.textContent;
+        }
 
-        // Hàm chung để hiển thị tin nhắn trong giao diện (ĐÃ CẬP NHẬT ĐỂ SỬ DỤNG MARKED)
+        // Hàm chung để hiển thị tin nhắn trong giao diện (CẬP NHẬT FALLBACK)
         window.displayMessage = (sender, text) => {
             const outputArea = document.getElementById('scenario-output');
             const messageDiv = document.createElement('div');
@@ -190,15 +199,26 @@
             const bgColor = sender === 'ai' ? 'ai-message' : 'user-message';
             const icon = sender === 'ai' ? 'scroll-text' : 'user';
 
-            // CHUYỂN ĐỔI MARKDOWN SANG HTML TRƯỚC KHI HIỂN THỊ
-            // FIX: Thêm kiểm tra 'window.marked' trước khi gọi 'parse'
-            let htmlContent = `<p>${text}</p>`; // Mặc định là plain text
-            if (sender === 'ai' && typeof window.marked !== 'undefined') {
-                 // Dùng window.marked.parse(text)
-                htmlContent = window.marked.parse(text); 
-            } else if (sender === 'ai') {
-                console.warn("Thư viện Marked chưa được tải. Hiển thị dưới dạng plain text.");
+            let processedText = text;
+            let htmlContent = ''; 
+
+            if (sender === 'ai') {
+                // BƯỚC 1: Giải mã HTML Entities 
+                processedText = decodeHtmlEntities(text);
+
+                if (typeof window.marked !== 'undefined') {
+                    // BƯỚC 2: Chuyển đổi Markdown sang HTML (Thành công)
+                    htmlContent = window.marked.parse(processedText); 
+                } else {
+                    // BƯỚC 2: FALLBACK - Marked không tải được. Hiển thị thô trong <pre>
+                    console.warn("Thư viện Marked chưa được tải. Hiển thị nội dung Markdown thô.");
+                    htmlContent = `<pre class="whitespace-pre-wrap font-mono text-sm bg-gray-50 p-2 rounded">${processedText}</pre>`;
+                }
+            } else {
+                // Tin nhắn người dùng là văn bản thuần
+                htmlContent = `<p>${processedText}</p>`;
             }
+
 
             messageDiv.className = `${bgColor} p-4 rounded-xl shadow-sm break-words`;
             messageDiv.innerHTML = `
@@ -206,7 +226,7 @@
                     <i data-lucide="${icon}" class="w-4 h-4"></i>
                     <span>${senderName}</span>
                 </div>
-                <!-- Sử dụng innerHTML để hiển thị nội dung đã được Markdown render -->
+                <!-- Sử dụng innerHTML để hiển thị nội dung đã được Markdown render hoặc fallback -->
                 <div class="text-gray-800">
                     ${htmlContent}
                 </div>
@@ -342,7 +362,9 @@
                         Nhiệm vụ của bạn là đánh giá phản hồi gần nhất của người dùng, cung cấp lời khuyên chuyên sâu và sau đó tạo ra một kịch bản mới cho họ để tiếp tục luyện tập. 
                         Đảm bảo tính chuyên nghiệp, khích lệ và thân thiện.
                         
-                        CẤU TRÚC PHẢN HỒI CỦA BẠN PHẢI TUÂN THỦ CHẶT CHẼ ĐỊNH DẠNG SỐ VÀ IN ĐẬM SAU (Sử dụng Markdown). KHÔNG ĐƯỢC DÙNG DẤU THĂNG (#) HOẶC BẤT KỲ HEADER NÀO KHÁC TRONG TOÀN BỘ PHẢN HỒI.
+                        Lưu ý quan trọng: TUYỆT ĐỐI KHÔNG SỬ DỤNG BẤT KỲ HTML ENTITY nào (ví dụ: KHÔNG DÙNG &quot;, &rsquo;, &#x2019;, &eacute;...). CHỈ SỬ DỤNG KÝ TỰ UNICODE thuần túy (ví dụ: ", ', é, á) trong toàn bộ phản hồi.
+
+                        CẤU TRÚC PHẢN HỒI CỦA BẠN PHẢI TUÂN THỦ CHẶT CHẼ ĐỊNH DẠNG SỐ VÀ IN ĐẬM SAU (Sử dụng Markdown). KHÔNG ĐƯỢC DÙNG DẤU THĂNG (#) HOẶC BẤT KỲ HEADER NÀO KHÁC TRONG TOÀN BỘ PHẢN HỒI:
                         
                         1. **Phân tích Phản hồi:** Đánh giá hành động của người dùng (Khoảng 2-3 câu).
                         2. **Lời khuyên Chuyên sâu:** Đưa ra 1-2 mẹo/kỹ thuật cụ thể để cải thiện (Sử dụng gạch đầu dòng \`-\` hoặc dấu sao \`*\`).
