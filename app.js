@@ -42,6 +42,19 @@ document.querySelectorAll('.dropdown-toggle').forEach(btn => {
   });
 });
 
+function cleanMarkdown(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/`(.*?)`/g, '$1')
+    .replace(/#+\s?(.*)/g, '$1')
+    .replace(/\n{2,}/g, '\n')
+    .trim();
+}
+
+
+
+
 // === Chatbot Google AI ===
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("chatbot-toggle");
@@ -81,6 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+
+
   async function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
@@ -93,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document
         .querySelectorAll(".bot-msg")
         [document.querySelectorAll(".bot-msg").length - 1].remove();
-      addMessage(reply, "bot-msg");
+      addMessage(cleanMarkdown(reply), "bot-msg");
     } catch (err) {
       addMessage("⚠️ Lỗi kết nối API Google AI.", "bot-msg");
     }
