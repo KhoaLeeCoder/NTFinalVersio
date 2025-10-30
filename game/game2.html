@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Tải Icon Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Tải thư viện Marked để render Markdown (khắc phục lỗi chữ) -->
+    <!-- Tải thư viện Marked để render Markdown (Không còn cần thiết cho hiển thị AI, nhưng giữ lại phòng trường hợp cần sử dụng sau) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
     <style>
         /* Thiết lập font Inter mặc định */
@@ -30,6 +30,7 @@
         .user-message {
             background-color: #eff6ff; /* Blue light */
         }
+        /* Loại bỏ các style Markdown cũ không còn áp dụng */
         /* Style cho nội dung Markdown đã được chuyển đổi */
         #scenario-output p { margin-bottom: 0.5rem; }
         #scenario-output ul, #scenario-output ol { margin-left: 1.5rem; list-style-type: disc; margin-bottom: 0.5rem; }
@@ -51,6 +52,7 @@
         <header class="text-center mb-8">
             <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">KỸ NĂNG MỀM CÙNG AI</h1>
             <p class="text-lg text-gray-600 mt-2">Trình Giả Lập & Huấn Luyện Kỹ Năng Mềm Ứng Dụng AI</p>
+            <p class="text-sm text-gray-600 mt-1">Thông tin AI chỉ mang tính chất tham khảo, hãy sử dụng AI có trách nhiệm</p>
         </header>
 
         <main id="main-content" class="w-full max-w-4xl bg-white p-6 md:p-10 rounded-xl shadow-2xl transition duration-500">
@@ -190,7 +192,7 @@
             return tempDiv.textContent;
         }
 
-        // Hàm chung để hiển thị tin nhắn trong giao diện (CẬP NHẬT FALLBACK)
+        // Hàm chung để hiển thị tin nhắn trong giao diện (Bỏ qua Marked.js cho AI)
         window.displayMessage = (sender, text) => {
             const outputArea = document.getElementById('scenario-output');
             const messageDiv = document.createElement('div');
@@ -206,17 +208,16 @@
                 // BƯỚC 1: Giải mã HTML Entities 
                 processedText = decodeHtmlEntities(text);
 
-                if (typeof window.marked !== 'undefined') {
-                    // BƯỚC 2: Chuyển đổi Markdown sang HTML (Thành công)
-                    htmlContent = window.marked.parse(processedText); 
-                } else {
-                    // BƯỚC 2: FALLBACK - Marked không tải được. Hiển thị thô trong <pre>
-                    console.warn("Thư viện Marked chưa được tải. Hiển thị nội dung Markdown thô.");
-                    htmlContent = `<pre class="whitespace-pre-wrap font-mono text-sm bg-gray-50 p-2 rounded">${processedText}</pre>`;
-                }
+                // BƯỚC 2: Hiển thị như văn bản thuần (theo yêu cầu người dùng)
+                // Thay thế ký tự xuống dòng bằng thẻ <br> để giữ định dạng đoạn văn
+                processedText = processedText.replace(/\n/g, '<br>');
+                htmlContent = `<p class="whitespace-pre-wrap">${processedText}</p>`;
+                
             } else {
                 // Tin nhắn người dùng là văn bản thuần
-                htmlContent = `<p>${processedText}</p>`;
+                // Thay thế ký tự xuống dòng bằng thẻ <br> để giữ định dạng đoạn văn
+                processedText = processedText.replace(/\n/g, '<br>');
+                htmlContent = `<p class="whitespace-pre-wrap">${processedText}</p>`;
             }
 
 
@@ -255,22 +256,20 @@
             }
         }
         
-        // --- CHỨC NĂNG MOCK API ĐỂ CHẠY CỤC BỘ (CẬP NHẬT ĐỊNH DẠNG MARKDOWN) ---
+        // --- CHỨC NĂNG MOCK API ĐỂ CHẠY CỤC BỘ (CẬP NHẬT ĐỊNH DẠNG VĂN BẢN THUẦN) ---
         function mockApiCall(history, skill) {
             console.warn("Chạy trong môi trường cục bộ: Sử dụng phản hồi giả lập (mock API).");
             return new Promise(resolve => {
                 // Mô phỏng độ trễ mạng 1.5 giây
                 setTimeout(() => {
                     const skillText = skill === 'presentation' ? 'Thuyết trình' : 'Quản lý Cảm xúc';
-                    // Đảm bảo phản hồi Markdown được định dạng tốt để thư viện marked xử lý
+                    // Định dạng văn bản thuần, không Markdown
                     const mockResponseText = `
-1. **Phân tích Phản hồi:** Phản hồi của bạn cho thấy bạn đã ưu tiên việc điều chỉnh trạng thái tâm lý trước khi hành động, đây là một bước khởi đầu rất tốt trong tình huống áp lực của bài tập ${skillText}! Hành động "bình tĩnh" là nền tảng vững chắc.
+Phân tích Phản hồi: Phản hồi của bạn cho thấy bạn đã ưu tiên việc điều chỉnh trạng thái tâm lý trước khi hành động, đây là một bước khởi đầu rất tốt trong tình huống áp lực của bài tập ${skillText}! Hành động "bình tĩnh" là nền tảng vững chắc.
 
-2. **Lời khuyên Chuyên sâu:**
-* Hãy xác định **mục tiêu cụ thể** của lần phản hồi/thuyết trình tiếp theo (VD: mục tiêu cao nhất là gì?).
-* Áp dụng kỹ thuật **Tóm tắt (T.A.C):** **T**hông cảm, **A**p dụng giải pháp, **C**am kết hành động, để tạo ra phản hồi/bài nói chuyên nghiệp.
+Lời khuyên Chuyên sâu: Hãy xác định mục tiêu cụ thể của lần phản hồi/thuyết trình tiếp theo (VD: mục tiêu cao nhất là gì?). Đồng thời, áp dụng kỹ thuật Tóm tắt (T.A.C): Thông cảm, Áp dụng giải pháp, Cam kết hành động, để tạo ra phản hồi/bài nói chuyên nghiệp.
 
-3. **Kịch bản Tiếp theo:** Sau khi đã giữ được sự bình tĩnh, ban lãnh đạo yêu cầu bạn tập trung vào phần Tài chính trong bài thuyết trình 5 phút. Bạn sẽ sử dụng những luận điểm nào và nói như thế nào để gây ấn tượng trong thời gian ngắn ngủi này?
+Kịch bản Tiếp theo: Sau khi đã giữ được sự bình tĩnh, ban lãnh đạo yêu cầu bạn tập trung vào phần Tài chính trong bài thuyết trình 5 phút. Bạn sẽ sử dụng những luận điểm nào và nói như thế nào để gây ấn tượng trong thời gian ngắn ngủi này?
                     `;
 
                     // Cấu trúc phản hồi giả lập giống với cấu trúc API thật
@@ -362,13 +361,13 @@
                         Nhiệm vụ của bạn là đánh giá phản hồi gần nhất của người dùng, cung cấp lời khuyên chuyên sâu và sau đó tạo ra một kịch bản mới cho họ để tiếp tục luyện tập. 
                         Đảm bảo tính chuyên nghiệp, khích lệ và thân thiện.
                         
-                        Lưu ý quan trọng: TUYỆT ĐỐI KHÔNG SỬ DỤNG BẤT KỲ HTML ENTITY nào (ví dụ: KHÔNG DÙNG &quot;, &rsquo;, &#x2019;, &eacute;...). CHỈ SỬ DỤNG KÝ TỰ UNICODE thuần túy (ví dụ: ", ', é, á) trong toàn bộ phản hồi.
+                        Lưu ý quan trọng: TUYỆT ĐỐI KHÔNG SỬ DỤNG BẤT CỨ CÚ PHÁP MARKDOWN NÀO (bao gồm **in đậm**, *nghiêng*, danh sách gạch đầu dòng -, hoặc số thứ tự 1., 2., 3.). Phản hồi phải là văn bản thuần túy, conversational, được chia thành các đoạn văn rõ ràng. KHÔNG SỬ DỤNG HTML ENTITY.
 
-                        CẤU TRÚC PHẢN HỒI CỦA BẠN PHẢI TUÂN THỦ CHẶT CHẼ ĐỊNH DẠNG SỐ VÀ IN ĐẬM SAU (Sử dụng Markdown). KHÔNG ĐƯỢC DÙNG DẤU THĂNG (#) HOẶC BẤT KỲ HEADER NÀO KHÁC TRONG TOÀN BỘ PHẢN HỒI:
+                        CẤU TRÚC PHẢN HỒI CỦA BẠN PHẢI TUÂN THỦ CÁC PHẦN SAU (viết dưới dạng đoạn văn thuần túy, không đánh số hoặc in đậm tiêu đề):
                         
-                        1. **Phân tích Phản hồi:** Đánh giá hành động của người dùng (Khoảng 2-3 câu).
-                        2. **Lời khuyên Chuyên sâu:** Đưa ra 1-2 mẹo/kỹ thuật cụ thể để cải thiện (Sử dụng gạch đầu dòng \`-\` hoặc dấu sao \`*\`).
-                        3. **Kịch bản Tiếp theo:** Đặt ra một tình huống mới liên quan để người dùng phản hồi tiếp.
+                        1. Đánh giá Phản hồi của người dùng.
+                        2. Lời khuyên Chuyên sâu và Cải thiện.
+                        3. Kịch bản Tiếp theo để người dùng luyện tập.
                         
                         Giới hạn tổng thể phản hồi của bạn dưới 200 từ tiếng Việt.`;
                     
