@@ -361,3 +361,7 @@ body{
   background-color: #005fcc;
 }
 
+.bot-msg {
+  white-space: pre-line;
+}
+
