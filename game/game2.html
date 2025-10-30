@@ -3,384 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Kỹ Năng Sống Survival</title>
-    
+    <title>Kỹ Năng Siêu Việt - Trình Giả Lập AI</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải Icon Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* === CÀI ĐẶT CHUNG === */
-        :root {
-            --primary-color: #007bff; /* Màu xanh chuyên nghiệp */
-            --light-color: #f8f9fa;
-            --dark-color: #333;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
+        /* Thiết lập font Inter mặc định */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            background-color: var(--light-color);
-            color: var(--dark-color);
-            margin: 0;
-            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
         }
-
-        main {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 15px;
+        /* Custom scrollbar cho khu vực chat/scenario */
+        #scenario-output {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 0.5rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
         }
-
-        /* === HEADER & FOOTER === */
-        .main-header, .main-footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: var(--box-shadow);
+        .ai-message {
+            background-color: #e0f2f1; /* Teal light */
         }
-
-        .main-header h1 {
-            color: var(--primary-color);
-            margin: 0;
+        .user-message {
+            background-color: #eff6ff; /* Blue light */
         }
-
-        /* === THANH ĐIỀU HƯỚNG (NAV) === */
-        .main-nav ul {
-            display: flex;
-            flex-wrap: wrap; 
-            justify-content: center;
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            background-color: var(--primary-color);
-        }
-
-        .main-nav a {
-            display: block;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .main-nav a:hover {
-            background-color: #0056b3;
-        }
-
-        .main-nav a.active {
-            background-color: #004a99;
-            border-bottom: 4px solid #ffc107;
-        }
-
-        /* === KHU VỰC TRÒ CHƠI === */
-        .game-topic {
-            display: none; /* Ẩn theo mặc định */
-            background-color: #fff;
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin-top: 20px;
-        }
-
-        .game-topic.active {
-            display: block; /* Chỉ hiển thị chủ đề có class 'active' */
-        }
-
-        .game-topic h2 {
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-            color: var(--primary-color);
-        }
-
-        /* === THẺ CÂU HỎI (CARD) === */
-        .question-card {
-            background-color: var(--light-color);
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
-            padding: 0 20px;
-        }
-
-        .question-card fieldset {
-            border: none;
-            padding: 0;
-        }
-
-        .question-card legend {
-            font-size: 1.1em;
-            font-weight: bold;
-            padding: 15px 0;
-        }
-
-        .question-card div {
-            margin-bottom: 12px;
-        }
-
-        .question-card label {
-            display: block;
-            padding: 10px 15px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        .question-card label:hover {
-            background-color: #eef8ff;
-            border-color: var(--primary-color);
-        }
-
-        /* Ẩn nút radio gốc */
-        .question-card input[type="radio"] {
-            display: none;
-        }
-
-        /* Tạo kiểu cho label khi radio được chọn */
-        .question-card input[type="radio"]:checked + label {
-            background-color: #d4edda; 
-            border-color: #28a745; 
-            font-weight: bold;
-        }
-
-        /* === NÚT BẤM & KẾT QUẢ === */
-        .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #fff;
-            background-color: #28a745; 
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .submit-btn:hover {
-            background-color: #218838;
-        }
-
-        .results-container {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            font-size: 1.2em;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .results-container.correct {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .results-container.incorrect {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        /* Thêm vào cuối phần CSS trong thẻ <style> */
-
-/* === NÚT QUAY VỀ TRANG CHỦ === */
-.back-to-home-btn {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #ffc107; /* Màu vàng nổi bật */
-    color: var(--dark-color);
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: var(--border-radius);
-    transition: background-color 0.3s, transform 0.1s;
-    border: 2px solid #ffc107;
-}
-
-.back-to-home-btn:hover {
-    background-color: #e0a800;
-    transform: translateY(-2px); /* Hiệu ứng nhấn nhẹ */
-}
-
-/* Tạo kiểu cho liên kết trong footer */
-.main-footer a {
-    color: var(--primary-color);
-    text-decoration: none;
-}
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-    <header class="main-header">
-    <h1>🚀 Game Kỹ Năng Sống 🚀</h1>
-    <p>Cùng củng cố kiến thức để bảo vệ bản thân và những người xung quanh!</p>
-    
-    <a href="/index.html" target="_blank" class="back-to-home-btn">
-        Trang Web Chính Dự Án
-    </a>
-    </header>
+    <div id="app" class="flex flex-col flex-grow items-center justify-center p-4 md:p-8">
+        <!-- Nút Quay về Web Chính (Yêu cầu bắt buộc) -->
+        <div class="w-full max-w-4xl flex justify-end mb-4">
+             <!-- Vui lòng thay thế '#' bằng URL web chính của bạn -->
+            <a href="#" id="return-button" onclick="returnToMainWeb(event)" class="flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition duration-150">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Quay về Web Chính</span>
+            </a>
+        </div>
 
-    <nav class="main-nav">
-        <ul>
-            <li><a href="#dong-dat" data-topic="dong-dat" class="active">Động đất</a></li>
-            <li><a href="#lu-lut" data-topic="lu-lut">Lũ lụt</a></li>
-            <li><a href="#chay-rung" data-topic="chay-rung">Cháy rừng</a></li>
-            <li><a href="#thuyet-trinh" data-topic="thuyet-trinh">Thuyết trình</a></li>
-            <li><a href="#cam-xuc" data-topic="cam-xuc">Quản lý cảm xúc</a></li>
-        </ul>
-    </nav>
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">KỸ NĂNG SIÊU VIỆT</h1>
+            <p class="text-lg text-gray-600 mt-2">Trình Giả Lập & Huấn Luyện Kỹ Năng Mềm Ứng Dụng AI</p>
+        </header>
 
-    <main>
-        <section id="dong-dat" class="game-topic active">
-            <h2>Chủ đề: Kỹ năng khi có Động đất 🌋</h2>
+        <main id="main-content" class="w-full max-w-4xl bg-white p-6 md:p-10 rounded-xl shadow-2xl transition duration-500">
             
-            <form id="form-dong-dat" class="quiz-form">
-                <article class="question-card">
-                    <fieldset>
-                        <legend>Câu 1: Khi đang ở trong nhà và xảy ra động đất, bạn nên làm gì ĐẦU TIÊN?</legend>
-                        <div>
-                            <input type="radio" id="q1-a" name="question1" value="a">
-                            <label for="q1-a">A. Lập tức chạy ra ngoài ban công kêu cứu.</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="q1-b" name="question1" value="b">
-                            <label for="q1-b">B. Chui xuống gầm bàn chắc chắn, che đầu và giữ chặt.</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="q1-c" name="question1" value="c">
-                            <label for="q1-c">C. Chạy ngay vào thang máy để thoát hiểm.</label>
-                        </div>
-                    </fieldset>
-                </article>
+            <!-- Vùng 1: Chọn Kỹ Năng -->
+            <div id="skill-selection" class="space-y-6">
+                <h2 class="text-2xl font-bold text-gray-800 border-b pb-3 mb-4 flex items-center">
+                    <i data-lucide="brain-circuit" class="w-6 h-6 mr-3 text-indigo-500"></i>
+                    Chọn Kỹ Năng Bạn Muốn Phát Triển
+                </h2>
 
-                <article class="question-card">
-                    <fieldset>
-                        <legend>Câu 2: Nếu bạn đang ở ngoài trời khi động đất xảy ra, bạn nên di chuyển đến đâu?</legend>
-                        <div>
-                            <input type="radio" id="q2-a" name="question2" value="a">
-                            <label for="q2-a">A. Một khu đất trống, tránh xa tòa nhà, cây cối và đường dây điện.</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="q2-b" name="question2" value="b">
-                            <label for="q2-b">B. Đứng sát vào tường của một tòa nhà cao tầng để tránh bị đè.</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="q2-c" name="question2" value="c">
-                            <label for="q2-c">C. Chạy xuống một cây cầu hoặc cầu vượt.</label>
-                        </div>
-                    </fieldset>
-                </article>
-                
-                <button type="submit" class="submit-btn" data-topic-id="dong-dat">Kiểm tra Đáp án Động đất</button>
-                <div id="results-dong-dat" class="results-container"></div>
-            </form>
-        </section>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Kỹ năng Thuyết Trình -->
+                    <button onclick="selectSkill('presentation')" class="skill-card bg-white p-6 border-2 border-indigo-200 rounded-lg shadow-md hover:shadow-lg transition transform hover:scale-[1.02] duration-300 flex flex-col items-start text-left">
+                        <i data-lucide="mic-2" class="w-8 h-8 text-indigo-600 mb-3"></i>
+                        <span class="text-xl font-semibold text-gray-800">Kỹ Năng Thuyết Trình</span>
+                        <p class="text-gray-500 text-sm mt-1">Luyện tập sự tự tin, cấu trúc bài nói và tương tác với khán giả.</p>
+                    </button>
+                    <!-- Kỹ năng Quản Lý Cảm Xúc -->
+                    <button onclick="selectSkill('emotion')" class="skill-card bg-white p-6 border-2 border-green-200 rounded-lg shadow-md hover:shadow-lg transition transform hover:scale-[1.02] duration-300 flex flex-col items-start text-left">
+                        <i data-lucide="leaf" class="w-8 h-8 text-green-600 mb-3"></i>
+                        <span class="text-xl font-semibold text-gray-800">Kỹ Năng Quản Lý Cảm Xúc</span>
+                        <p class="text-gray-500 text-sm mt-1">Học cách nhận diện, điều chỉnh cảm xúc trong các tình huống áp lực.</p>
+                    </button>
+                </div>
+            </div>
 
-        <section id="lu-lut" class="game-topic">
-            <h2>Chủ đề: Kỹ năng khi có Lũ lụt 🌊</h2>
-            <form id="form-lu-lut" class="quiz-form">
-                 <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
-                <button type="submit" class="submit-btn" data-topic-id="lu-lut">Kiểm tra Đáp án Lũ lụt</button>
-                <div id="results-lu-lut" class="results-container"></div>
-            </form>
-        </section>
+            <!-- Vùng 2: Giả Lập Kịch Bản -->
+            <div id="simulation-area" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-gray-800 border-b pb-3 mb-4 flex items-center">
+                    <i data-lucide="scroll-text" id="skill-icon" class="w-6 h-6 mr-3 text-indigo-500"></i>
+                    Huấn Luyện Viên AI: <span id="current-skill-name" class="ml-2 text-indigo-600"></span>
+                </h2>
 
-        <section id="chay-rung" class="game-topic">
-            <h2>Chủ đề: Kỹ năng khi có Cháy rừng 🔥</h2>
-            <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
-        </section>
+                <!-- Khu vực hiển thị Kịch bản & Phản hồi -->
+                <div id="scenario-output" class="bg-gray-100 p-4 space-y-4 shadow-inner">
+                    <!-- Nội dung hội thoại sẽ được thêm vào đây -->
+                </div>
 
-        <section id="thuyet-trinh" class="game-topic">
-            <h2>Chủ đề: Kỹ năng Thuyết trình 🎙️</h2>
-            <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
-        </section>
-
-        <section id="cam-xuc" class="game-topic">
-            <h2>Chủ đề: Kỹ năng Quản lý Cảm xúc 😊</h2>
-            <p>***Hãy bổ sung câu hỏi vào đây theo cấu trúc form bên trên.***</p>
-        </section>
-
-    </main>
-
-    <footer class="main-footer">
-        <p>&copy; 2025 - Một sản phẩm web giáo dục vì cộng đồng.</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // === PHẦN 1: DỮ LIỆU ĐÁP ÁN (DỄ DÀNG THAY ĐỔI) ===
-            const correctAnswers = {
-                // Chủ đề Động đất
-                'dong-dat': {
-                    question1: 'b', 
-                    question2: 'a'  
-                },
-                // Thêm đáp án cho các chủ đề khác ở đây
-                'lu-lut': { question1: 'b' }, 
-                'chay-rung': { question1: 'c' }, 
-                'thuyet-trinh': { question1: 'b' }, 
-                'cam-xuc': { question1: 'a' } 
-            };
-
-
-            // === PHẦN 2: XỬ LÝ CHUYỂN TAB (ĐIỀU HƯỚNG) ===
-            const navLinks = document.querySelectorAll('.main-nav a');
-            const gameTopics = document.querySelectorAll('.game-topic');
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault(); 
-                    const topicId = link.getAttribute('data-topic');
-                    const targetTopic = document.getElementById(topicId);
-
-                    // Ẩn tất cả, rồi hiển thị cái được chọn
-                    navLinks.forEach(nav => nav.classList.remove('active'));
-                    gameTopics.forEach(topic => topic.classList.remove('active'));
-
-                    link.classList.add('active');
-                    targetTopic.classList.add('active');
-                });
-            });
-
-
-            // === PHẦN 3: XỬ LÝ LOGIC QUIZ ===
-            const quizForms = document.querySelectorAll('.quiz-form');
-
-            quizForms.forEach(form => {
-                form.addEventListener('submit', (event) => {
-                    event.preventDefault(); 
+                <!-- Vùng nhập phản hồi của người dùng -->
+                <div class="mt-6">
+                    <label for="user-response" class="block text-lg font-medium text-gray-700 mb-2">Phản hồi của bạn:</label>
+                    <textarea id="user-response" rows="4" placeholder="Nhập câu trả lời hoặc hành động của bạn tại đây để AI đánh giá và đưa ra kịch bản mới..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"></textarea>
                     
-                    // Lấy ID của chủ đề từ nút submit
-                    const topicId = event.submitter.getAttribute('data-topic-id');
-                    const currentAnswers = correctAnswers[topicId];
-                    const resultsContainer = document.getElementById(`results-${topicId}`);
-                    
-                    let score = 0;
-                    const totalQuestions = Object.keys(currentAnswers).length;
-                    const formData = new FormData(form);
+                    <button onclick="submitResponse()" id="submit-button" class="mt-3 w-full md:w-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 flex items-center justify-center space-x-2">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                        <span>Gửi Phản Hồi & Nhận Phân Tích</span>
+                    </button>
+                </div>
 
-                    for (const [question, correctAnswer] of Object.entries(currentAnswers)) {
-                        const userAnswer = formData.get(question);
+                <!-- Vùng Loading/Thông báo -->
+                <div id="loading-message" class="hidden mt-4 p-4 bg-yellow-100 text-yellow-800 rounded-lg flex items-center space-x-3">
+                    <i data-lucide="loader-circle" class="w-5 h-5 animate-spin"></i>
+                    <span>AI đang phân tích phản hồi và tạo kịch bản tiếp theo. Vui lòng chờ...</span>
+                </div>
+            </div>
+            
+            <!-- Vùng Thông báo/Lỗi -->
+            <div id="error-message" class="hidden mt-4 p-4 bg-red-100 text-red-800 rounded-lg">
+                Đã xảy ra lỗi trong quá trình giao tiếp với AI. Vui lòng thử lại.
+            </div>
+        </main>
+    </div>
 
-                        if (userAnswer === correctAnswer) {
-                            score++; 
+    <!-- Firebase SDKs và Scripts (MANDATORY BOILERPLATE) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // --- 1. BIẾN TOÀN CỤC BẮT BUỘC TỪ MÔI TRƯỜNG CANVAS ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId = 'loading';
+        let isAuthReady = false;
+
+        // --- 2. KHỞI TẠO FIREBASE VÀ XÁC THỰC ---
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Xác thực người dùng
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                } else {
+                    if (initialAuthToken) {
+                        try {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } catch (error) {
+                            console.error("Lỗi đăng nhập bằng custom token:", error);
+                            await signInAnonymously(auth);
+                            userId = auth.currentUser.uid;
                         }
-                    }
-
-                    // Hiển thị kết quả
-                    resultsContainer.innerHTML = `Bạn đã trả lời đúng ${score} / ${totalQuestions} câu!`;
-
-                    if (score === totalQuestions) {
-                        resultsContainer.className = 'results-container correct'; 
-                        resultsContainer.innerHTML += " 🌟 Tuyệt vời! Bạn là một chuyên gia sinh tồn!";
                     } else {
-                        resultsContainer.className = 'results-container incorrect'; 
-                        resultsContainer.innerHTML += " 😟 Hãy ôn lại kiến thức để an toàn hơn nhé!";
+                        await signInAnonymously(auth);
+                        userId = auth.currentUser.uid;
                     }
-                });
+                }
+                isAuthReady = true;
+                console.log("Firebase Auth đã sẵn sàng. User ID:", userId);
+                // Bắt đầu ứng dụng khi auth sẵn sàng (nếu cần)
             });
-        });
-    </script>
 
+        } catch (e) {
+            console.error("Lỗi khởi tạo Firebase:", e);
+        }
+
+        // --- 3. LOGIC APP CHÍNH (Gán cho window để có thể gọi từ HTML) ---
+        
+        // API Configuration (Model: gemini-2.5-flash-preview-09-2025)
+        const API_KEY = ""; // Sẽ được Canvas tự động cung cấp
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+        
+        let currentSkill = '';
+        let conversationHistory = [];
+
+        // Hỗ trợ đánh dấu icon
+        const lucide = window.lucide;
+        lucide.createIcons();
+
+        // Hàm chung để hiển thị tin nhắn trong giao diện
+        window.displayMessage = (sender, text) => {
+            const outputArea = document.getElementById('scenario-output');
+            const messageDiv = document.createElement('div');
+            
+            const senderName = sender === 'ai' ? 'Huấn Luyện Viên AI' : 'Phản Hồi Của Bạn';
+            const bgColor = sender === 'ai' ? 'ai-message' : 'user-message';
+            const icon = sender === 'ai' ? 'scroll-text' : 'user';
+
+            messageDiv.className = `${bgColor} p-4 rounded-xl shadow-sm break-words`;
+            messageDiv.innerHTML = `
+                <div class="font-bold text-gray-700 flex items-center space-x-2">
+                    <i data-lucide="${icon}" class="w-4 h-4"></i>
+                    <span>${senderName}</span>
+                </div>
+                <div class="mt-2 text-gray-800">${text}</div>
+            `;
+            outputArea.appendChild(messageDiv);
+            outputArea.scrollTop = outputArea.scrollHeight; // Cuộn xuống dưới cùng
+            lucide.createIcons(); // Re-render icons for new elements
+        };
+
+        // Hàm Xử lý API Call với Exponential Backoff
+        async function fetchWithBackoff(url, options, maxRetries = 5) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error(`Lỗi API (thử lại lần ${i + 1}/${maxRetries}):`, error);
+                    if (i === maxRetries - 1) throw error; 
+                    const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+        
+        window.selectSkill = async (skill) => {
+            currentSkill = skill;
+            conversationHistory = [];
+            
+            const skillName = skill === 'presentation' ? 'Kỹ Năng Thuyết Trình' : 'Kỹ Năng Quản Lý Cảm Xúc';
+            const skillIcon = skill === 'presentation' ? 'mic-2' : 'leaf';
+            
+            document.getElementById('current-skill-name').textContent = skillName;
+            document.getElementById('skill-icon').setAttribute('data-lucide', skillIcon);
+            document.getElementById('scenario-output').innerHTML = ''; // Xóa nội dung cũ
+            
+            document.getElementById('skill-selection').classList.add('hidden');
+            document.getElementById('simulation-area').classList.remove('hidden');
+            
+            lucide.createIcons();
+
+            // Bắt đầu kịch bản đầu tiên
+            const initialPrompt = skill === 'presentation' 
+                ? "Chào mừng bạn đến với mô phỏng kỹ năng Thuyết trình. Hãy bắt đầu với kịch bản đầu tiên: Bạn được yêu cầu trình bày nhanh (5 phút) về một dự án mới trước ban lãnh đạo trong 10 phút nữa. Bạn sẽ chuẩn bị và hành động như thế nào?"
+                : "Chào mừng bạn đến với mô phỏng kỹ năng Quản lý Cảm xúc. Hãy bắt đầu với kịch bản đầu tiên: Bạn vừa nhận được email phản hồi gay gắt từ một khách hàng quan trọng. Bạn cảm thấy khó chịu và muốn phản ứng ngay lập tức. Bạn sẽ xử lý cảm xúc và phản hồi email này như thế nào?";
+            
+            displayMessage('ai', initialPrompt);
+            
+            conversationHistory.push({ role: "user", parts: [{ text: `Tôi muốn luyện tập ${skillName}. Hãy bắt đầu kịch bản đầu tiên. Huấn luyện viên AI: ${initialPrompt}` }] });
+        };
+
+        window.submitResponse = async () => {
+            const userResponseText = document.getElementById('user-response').value.trim();
+            const submitBtn = document.getElementById('submit-button');
+            const loadingMsg = document.getElementById('loading-message');
+            const errorMsg = document.getElementById('error-message');
+
+            if (!userResponseText) {
+                errorMsg.textContent = "Vui lòng nhập phản hồi của bạn.";
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            errorMsg.classList.add('hidden');
+
+            displayMessage('user', userResponseText);
+            
+            // Thêm phản hồi của người dùng vào lịch sử trò chuyện (dùng cho API)
+            conversationHistory.push({ role: "user", parts: [{ text: userResponseText }] });
+
+            // Vô hiệu hóa nút và hiển thị loading
+            submitBtn.disabled = true;
+            loadingMsg.classList.remove('hidden');
+
+            const systemInstruction = 
+                `Bạn là một chuyên gia huấn luyện kỹ năng mềm (${currentSkill === 'presentation' ? 'Kỹ Năng Thuyết Trình' : 'Kỹ Năng Quản Lý Cảm Xúc'}). 
+                Nhiệm vụ của bạn là đánh giá phản hồi gần nhất của người dùng, cung cấp lời khuyên chuyên sâu và sau đó tạo ra một kịch bản mới cho họ để tiếp tục luyện tập. 
+                Đảm bảo tính chuyên nghiệp, khích lệ và thân thiện.
+                
+                CẤU TRÚC PHẢN HỒI CỦA BẠN PHẢI THEO ĐỊNH DẠNG SAU (Sử dụng Markdown):
+                1. **Phân tích Phản hồi:** Đánh giá hành động của người dùng (Khoảng 2-3 câu).
+                2. **Lời khuyên Chuyên sâu:** Đưa ra 1-2 mẹo/kỹ thuật cụ thể để cải thiện (Sử dụng gạch đầu dòng).
+                3. **Kịch bản Tiếp theo:** Đặt ra một tình huống mới liên quan để người dùng phản hồi tiếp.
+                
+                Giới hạn tổng thể phản hồi của bạn dưới 200 từ tiếng Việt.`;
+
+            try {
+                const payload = {
+                    contents: conversationHistory,
+                    tools: [{ "google_search": {} }], // Bật tìm kiếm để cung cấp thông tin thực tế, không giới hạn
+                    systemInstruction: {
+                        parts: [{ text: systemInstruction }]
+                    },
+                };
+
+                const result = await fetchWithBackoff(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const candidate = result.candidates?.[0];
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const aiText = candidate.content.parts[0].text;
+                    displayMessage('ai', aiText);
+
+                    // Thêm phản hồi của AI vào lịch sử trò chuyện (dùng cho API)
+                    conversationHistory.push({ role: "model", parts: [{ text: aiText }] });
+                    
+                    document.getElementById('user-response').value = ''; // Xóa input
+                } else {
+                    throw new Error("Cấu trúc phản hồi AI không hợp lệ.");
+                }
+
+            } catch (e) {
+                console.error("Lỗi trong quá trình gọi API AI:", e);
+                errorMsg.textContent = "Không thể kết nối với Huấn luyện viên AI. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.";
+                errorMsg.classList.remove('hidden');
+            } finally {
+                // Khôi phục trạng thái nút và loading
+                submitBtn.disabled = false;
+                loadingMsg.classList.add('hidden');
+            }
+        };
+
+        window.returnToMainWeb = (event) => {
+            // Đây là chức năng giả định. Trong môi trường thực tế, 
+            // nó sẽ điều hướng người dùng quay lại trang chủ của nền tảng học tập.
+            console.log("Điều hướng quay về web chính...");
+            // event.preventDefault(); // Giữ lại nếu không muốn chuyển trang thực
+            // window.location.href = "/"; // Ví dụ về chuyển hướng thực tế
+        };
+        
+        // Khởi tạo icons lần đầu
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+
+    </script>
 </body>
 </html>
