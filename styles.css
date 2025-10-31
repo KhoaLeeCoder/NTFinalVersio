@@ -456,10 +456,48 @@ button {
     padding-top: 65px; /* từ 120px giảm còn 65px */
   }
 }
+
+
+
+
+
+
 /* Căn lại tiêu đề AI Life Skills khi ở mobile để không bị nút menu đè lên */
 @media (max-width: 768px) {
   .sidebar-header h1 {
     margin-top: 50px !important; /* Đẩy chữ AI Life Skills xuống một chút */
+  }
+}
+/* Đảm bảo nút 3 gạch luôn nằm trên cùng và không đè chữ */
+.sidebar-toggle {
+  position: relative;
+  z-index: 9999; /* đảm bảo luôn trên layer cao nhất */
+}
+
+/* Khi sidebar mở, đẩy chữ “AI Life Skills” ra xa hơn một chút */
+.sidebar.open ~ .main-header h1,
+.sidebar.open ~ .main-header .site-title {
+  margin-left: 60px; /* hoặc tuỳ em chỉnh khoảng cách cho hợp lý */
+}
+
+/* Nếu chữ bị sát nút menu khi sidebar đóng */
+.main-header .site-title {
+  margin-left: 10px; /* tạo khoảng cách nhỏ khi bình thường */
+}
+
+/* Nếu header hoặc logo bị đè lên nhau khi responsive */
+@media (max-width: 768px) {
+  .main-header {
+    position: relative;
+    z-index: 10; /* đảm bảo chữ không bị nút menu đè */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .sidebar-toggle {
+    margin-right: 5px;
   }
 }
 
