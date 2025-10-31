@@ -408,8 +408,8 @@ button {
 
 .hero-logo {
   position: absolute;
-  top: 0.5px;          /* Cách mép trên một chút */
-  right: 1px;        /* Cách mép phải để nhìn cân */
+  top: 0px;          /* Cách mép trên một chút */
+  right: 0.5px;        /* Cách mép phải để nhìn cân */
   width: 183px;       /* Kích thước vừa vặn, có thể chỉnh 160–200 */
   height: auto;
   object-fit: cover;
