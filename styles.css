@@ -444,6 +444,18 @@ button {
     border-bottom-left-radius: 8px;
   }
 }
+/* Đẩy nội dung hero xuống khi ở màn hình nhỏ để tránh bị logo che */
+@media (max-width: 768px) {
+  .hero-inner {
+    padding-top: 100px; /* đẩy chữ xuống một chút */
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-inner {
+    padding-top: 120px; /* đẩy thêm chút nữa cho điện thoại nhỏ */
+  }
+}
 
 
 
