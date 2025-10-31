@@ -18,9 +18,12 @@
         .btn-action {
             transition: all 0.2s;
         }
-        .btn-action:hover {
-            transform: translateY(-3px); /* Tăng độ nảy */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        /* Chỉ áp dụng hiệu ứng hover trên màn hình md trở lên */
+        @media (min-width: 768px) {
+            .btn-action:hover {
+                transform: translateY(-3px); /* Tăng độ nảy */
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
         }
         /* Thẻ câu hỏi cơ bản */
         .question-card {
@@ -63,7 +66,7 @@
         <div id="start-screen" class="screen flex flex-col items-center text-center">
             <h2 class="text-3xl font-bold text-gray-800 mb-4">Chào Mừng! Hãy Sẵn Sàng Trở Thành Người Hùng!</h2>
             <p class="text-7xl mb-8">🛡️</p>
-            <p class="text-gray-600 mb-8 text-lg">Bạn sẽ đối mặt với 10 THỬ THÁCH kỹ năng sống, được chia thành 3 Sứ Mệnh quan trọng. Hãy sẵn sàng!</p>
+            <p class="text-gray-600 mb-8 text-lg">Bạn sẽ đối mặt với **10 THỬ THÁCH** kỹ năng sống, được chia thành 3 Sứ Mệnh quan trọng. Hãy sẵn sàng!</p>
             
             <button onclick="startGame()" class="btn-action bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-xl shadow-md">
                 BẮT ĐẦU NHIỆM VỤ
@@ -432,8 +435,10 @@
                 button.onclick = () => checkAnswer(index);
 
                 // Styling cho nút đáp án (Tailwind Classes)
+                // SỬA LỖI: Chuyển 'hover:bg-yellow-100' thành 'md:hover:bg-yellow-100'
+                // Thêm 'active:bg-yellow-100' để có phản hồi nhấn trên mobile
                 button.className = 'btn-action text-left p-4 rounded-xl font-medium shadow-md transition duration-150 ' + 
-                                   'bg-white text-gray-700 hover:bg-yellow-100 hover:text-blue-800 border-2 border-gray-200';
+                                   'bg-white text-gray-700 md:hover:bg-yellow-100 md:hover:text-blue-800 active:bg-yellow-100 border-2 border-gray-200';
                 
                 answerButtonsContainer.appendChild(button);
             });
@@ -452,7 +457,8 @@
             // Vô hiệu hóa tất cả các nút để ngăn chặn chọn lại
             Array.from(answerButtonsContainer.children).forEach(button => {
                 button.disabled = true;
-                button.classList.remove('hover:bg-yellow-100', 'hover:text-blue-800');
+                // SỬA LỖI: Xóa class active và hover để tránh bị dính màu
+                button.classList.remove('md:hover:bg-yellow-100', 'md:hover:text-blue-800', 'active:bg-yellow-100');
 
                 const index = parseInt(button.getAttribute('data-index'));
                 
@@ -549,4 +555,5 @@
     </script>
 </body>
 </html>
+
 
