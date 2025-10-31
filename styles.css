@@ -365,3 +365,16 @@ body{
   white-space: pre-line;
 }
 
+/* --- Ngăn zoom khi focus input trên iOS Safari --- */
+input,
+textarea,
+button {
+  font-size: 16px !important; /* tối thiểu 16px để tránh Safari auto zoom */
+}
+
+.chat-input {
+  font-size: 16px !important;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
