@@ -4,76 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="pageTitle">Hướng Dẫn Phòng Chống Lũ Lụt</title>
-    <!-- Tải Tailwind CSS cho thiết kế đáp ứng và hiện đại -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+<script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Thiết lập font Inter cho toàn bộ trang web */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7fafc; /* Màu nền nhẹ */
-            color: #1a202c; /* Màu chữ tối */
+            background-color: #f0f2f5; /* Màu nền nhẹ hơn, hiện đại hơn */
+            color: #2d3748; /* Màu chữ tối hơn */
+            /* QUAN TRỌNG: Ngăn cuộn ngang trên mobile do overflow */
+            overflow-x: hidden; 
         }
         /* Đảm bảo scroll mượt khi dùng menu */
         html {
             scroll-behavior: smooth;
         }
         /* Tùy chỉnh màu sắc Tailwind */
-        .primary-color { background-color: #3182ce; } /* Xanh dương */
-        .primary-text { color: #3182ce; }
+        .primary-color { background-color: #1a4a8f; } /* Xanh dương đậm hơn */
+        .primary-text { color: #1a4a8f; }
         .accent-color { background-color: #f6ad55; } /* Cam nhạt */
-        .section-padding { padding: 4rem 1rem; }
+        .section-padding { padding: 5rem 1.5rem; }
         @media (min-width: 640px) {
-            .section-padding { padding: 5rem 2rem; }
+            .section-padding { padding: 6rem 2rem; }
         }
-        /* CSS cho thanh menu cố định (optional but good for UX) */
+        /* CSS cho thanh menu cố định */
         .nav-fixed {
             position: sticky;
             top: 0;
             z-index: 50;
         }
+        /* Hiệu ứng gạch chân cho navigation */
+        .nav-link {
+            position: relative;
+            padding-bottom: 0.25rem;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1a4a8f;
+            transition: width 0.3s ease-in-out;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
         /* Đảm bảo hình ảnh chất lượng cao và dễ nhìn */
         .icon-container {
-            width: 3.5rem;
-            height: 3.5rem;
+            width: 4rem; /* Kích thước icon lớn hơn */
+            height: 4rem;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 9999px;
-            background-color: rgba(49, 130, 206, 0.1);
+            background-color: rgba(26, 74, 143, 0.1); /* Màu nền nhẹ của icon */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        /* Card hiệu ứng hover */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+        .transition-all {
+            transition: all 0.3s ease-in-out;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Header & Navigation Bar -->
-    <header class="bg-white shadow-lg nav-fixed">
+    <!-- Header / Navigation -->
+    <header class="bg-white shadow-md nav-fixed">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Tiêu đề lớn và logo/icon -->
+            <!-- Đã điều chỉnh alignment trên mobile -->
+            <div class="flex items-center h-16">
+                <!-- Logo/Title -->
                 <div class="flex-shrink-0">
-                    <a href="/index.html" class="block transition-opacity duration-300 hover:opacity-75" title="Quay về web chính">
-                        <h1 class="text-2xl font-bold primary-text">
-                            <span data-i18n="headerTitle">AI LIFE SKILLS: PHÒNG CHỐNG LŨ LỤT</span>
-                        </h1>
-                    </a>
+                  <a href="/index.html" class="block transition-opacity duration-300 hover:opacity-75" title="">
+                    <h1 class="text-xl md:text-2xl font-extrabold primary-text whitespace-nowrap mr-4">
+                        <span data-i18n="headerTitle">Phòng Chống Lũ Lụt</span>
+                    </h1>
+                  </a>
                 </div>
 
-                <!-- Thanh menu (dùng cho mobile và desktop) -->
-                <nav class="hidden md:flex space-x-8">
-                    <a href="/index.html" class="text-gray-600 hover:text-blue-700 font-medium transition duration-150 ease-in-out" data-i18n="navHome">Trang chủ</a> <!-- MỚI THÊM -->
-                    <a href="#flood-concept" class="text-gray-600 hover:text-blue-700 font-medium transition duration-150 ease-in-out" data-i18n="navConcept">Khái niệm</a>
-                    <a href="#causes" class="text-gray-600 hover:text-blue-700 font-medium transition duration-150 ease-in-out" data-i18n="navCauses">Nguyên nhân</a>
-                    <a href="#prevention" class="text-gray-600 hover:text-blue-700 font-medium transition duration-150 ease-in-out" data-i18n="navBefore">Trước lũ</a>
-                    <a href="#during" class="text-gray-600 hover:text-blue-700 font-medium transition duration-150 ease-in-out" data-i18n="navDuring">Trong lũ</a>
-                    <a href="#recovery" class="text-gray-600 hover:text-blue-700 font-medium transition duration-150 ease-in-out" data-i18n="navAfter">Khắc phục</a>
+                <!-- Desktop Nav (Hidden on Mobile) -->
+                <nav class="hidden md:flex space-x-8 mr-auto">
+                    <a href="#" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navHome">Trang chủ</a>
+                    <a href="#flood-concept" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navConcept">Khái niệm</a>
+                    <a href="#causes" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navCauses">Nguyên nhân</a>
+                    <a href="#prevention" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navBefore">Trước lũ</a>
+                    <a href="#during" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navDuring">Trong lũ</a>
+                    <a href="#recovery" class="nav-link text-gray-700 hover:text-blue-800 font-medium transition duration-150 ease-in-out" data-i18n="navAfter">Khắc phục</a>
                 </nav>
 
-                <!-- Right-side buttons container -->
-                <div class="flex items-center space-x-2">
-                    <!-- Nút dịch thuật: Tên sẽ được cập nhật bằng JavaScript -->
-                    <button id="translateButton" class="px-3 py-1.5 rounded-full text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150 ease-in-out shadow-md">
-                        VI / EN
+                <!-- Right-side buttons container (dùng ml-auto để đẩy sang phải) -->
+                <div class="flex items-center space-x-2 ml-auto">
+                    <!-- Nút dịch thuật -->
+                    <button id="translateButton" class="px-2 py-1.5 md:px-3 rounded-full text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150 ease-in-out shadow-md whitespace-nowrap">
+                        VI / EN <!-- Text sẽ được JS cập nhật khi tải trang -->
                     </button>
 
                     <!-- Mobile Menu Button (Hamburger) -->
@@ -108,123 +140,129 @@
     </header>
 
     <!-- Hero Section (Phần Giới thiệu) -->
-    <section class="primary-color text-white section-padding rounded-b-3xl shadow-xl">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl sm:text-5xl font-extrabold mb-4" data-i18n="heroHeadline">
-                Bảo vệ Gia Đình và Cộng Đồng khỏi Lũ Lụt
+    <section class="primary-color text-white section-padding rounded-b-[4rem] shadow-2xl relative overflow-hidden">
+        <!-- Background Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900 to-blue-600 opacity-90"></div>
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <div class="mb-8">
+            </div>
+            <!-- Tiêu đề lớn -->
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight" data-i18n="heroHeadline">
+                Bảo Vệ Gia Đình Và Cộng Đồng Khỏi Lũ Lụt
             </h2>
-            <p class="text-xl opacity-90" data-i18n="heroSubtitle">
+            <!-- Phụ đề -->
+            <p class="text-xl sm:text-2xl opacity-90 mb-8" data-i18n="heroSubtitle">
                 Thông tin thiết yếu để chuẩn bị, ứng phó và khắc phục sau thiên tai.
             </p>
-            <div class="mt-8">
-                <a href="#prevention" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-blue-800 bg-white hover:bg-gray-100 transition duration-300 shadow-lg" data-i18n="heroCTA">
-                    Bắt đầu Chuẩn bị Ngay
+            <div>
+                <a href="#prevention" class="inline-flex items-center justify-center px-10 py-4 border-2 border-white text-lg font-semibold rounded-full text-blue-800 bg-white hover:bg-gray-100 transition-all duration-300 shadow-xl transform hover:scale-105" data-i18n="heroCTA">
+                    Bắt đầu Chuẩn bị Ngay &rarr;
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Main Content Sections -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Nội dung chính -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 
-        <!-- 1. Khái niệm về Lũ lụt (Concept of Flooding) -->
-        <section id="flood-concept" class="mb-16 pt-8">
-            <h3 class="text-3xl font-bold primary-text mb-6 border-b-2 border-blue-200 pb-2" data-i18n="conceptTitle">
+        <!-- 1. Khái niệm -->
+        <section id="flood-concept" class="mb-20 pt-8">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="conceptTitle">
                 1. Khái niệm về Lũ lụt 
             </h3>
-            <div class="bg-white p-6 rounded-xl shadow-lg transition duration-300 hover:shadow-xl">
-                <p class="mb-4 text-gray-700" data-i18n="conceptP1">
+            <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover">
+                <p class="mb-4 text-gray-700 leading-relaxed text-lg" data-i18n="conceptP1">
                     Lũ lụt là hiện tượng mực nước dâng cao tạm thời hoặc tràn ngập một khu vực thường khô ráo. Đây là một trong những thảm họa tự nhiên phổ biến và gây thiệt hại nặng nề nhất trên toàn thế giới.
                 </p>
-                <p class="text-gray-700" data-i18n="conceptP2">
+                <p class="text-gray-700 leading-relaxed text-lg" data-i18n="conceptP2">
                     Lũ có thể xảy ra nhanh chóng (lũ quét) hoặc từ từ (lũ sông). Điều quan trọng là phải nhận biết các loại lũ và rủi ro tại khu vực sinh sống của bạn.
                 </p>
             </div>
         </section>
 
-        <!-- 2. Nguyên nhân (Causes) -->
-        <section id="causes" class="mb-16 pt-8">
-            <h3 class="text-3xl font-bold primary-text mb-6 border-b-2 border-blue-200 pb-2" data-i18n="causesTitle">
+        <!-- 2. Nguyên nhân -->
+        <section id="causes" class="mb-20 pt-8">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="causesTitle">
                 2. Nguyên nhân Gây ra Lũ lụt
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Nguyên nhân 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg transition duration-300 hover:shadow-xl">
-                    <div class="icon-container mb-4">
-                        <svg class="w-8 h-8 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-2.828l-4.243 4.243m0 0L9.414 16.657m0 0A1.998 1.998 0 016.586 14L2 9.414m17 0l-4.586 4.586M17.657 16.657l-4.243-4.243m0 0L9.414 16.657"></path></svg>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Cause 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover flex flex-col items-center text-center">
+                    <div class="icon-container mb-6">
+                        <svg class="w-10 h-10 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-2.828l-4.243 4.243m0 0L9.414 16.657m0 0A1.998 1.998 0 016.586 14L2 9.414m17 0l-4.586 4.586M17.657 16.657l-4.243-4.243m0 0L9.414 12.414M9.414 12.414A1.998 1.998 0 016.586 10L2 5.414m17 0l-4.586 4.586m4.243 4.243l-4.243 4.243m0 0A1.998 1.998 0 016.586 14L2 9.414m17 0l-4.586 4.586"></path></svg>
                     </div>
-                    <h4 class="text-xl font-semibold mb-3" data-i18n="causeHeavyRainTitle">Mưa lớn kéo dài</h4>
-                    <p class="text-gray-600" data-i18n="causeHeavyRainDesc">
+                    <h4 class="text-2xl font-bold mb-4" data-i18n="causeHeavyRainTitle">Mưa lớn kéo dài</h4>
+                    <p class="text-gray-600 leading-relaxed" data-i18n="causeHeavyRainDesc">
                         Đây là nguyên nhân phổ biến nhất. Lượng mưa vượt quá khả năng thoát nước của đất và hệ thống thoát nước.
                     </p>
                 </div>
-                <!-- Nguyên nhân 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg transition duration-300 hover:shadow-xl">
-                    <div class="icon-container mb-4">
-                        <svg class="w-8 h-8 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <!-- Cause 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover flex flex-col items-center text-center">
+                    <div class="icon-container mb-6">
+                        <svg class="w-10 h-10 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </div>
-                    <h4 class="text-xl font-semibold mb-3" data-i18n="causeDamTitle">Sự cố đê/đập</h4>
-                    <p class="text-gray-600" data-i18n="causeDamDesc">
+                    <h4 class="text-2xl font-bold mb-4" data-i18n="causeDamTitle">Sự cố đê/đập</h4>
+                    <p class="text-gray-600 leading-relaxed" data-i18n="causeDamDesc">
                         Đê hoặc đập bị vỡ do kết cấu yếu hoặc do lượng nước quá lớn, gây ra lũ quét dữ dội.
                     </p>
                 </div>
-                <!-- Nguyên nhân 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg transition duration-300 hover:shadow-xl">
-                    <div class="icon-container mb-4">
-                        <svg class="w-8 h-8 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <!-- Cause 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover flex flex-col items-center text-center">
+                    <div class="icon-container mb-6">
+                        <svg class="w-10 h-10 primary-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     </div>
-                    <h4 class="text-xl font-semibold mb-3" data-i18n="causeHumanTitle">Tác động của con người</h4>
-                    <p class="text-gray-600" data-i18n="causeHumanDesc">
+                    <h4 class="text-2xl font-bold mb-4" data-i18n="causeHumanTitle">Tác động của con người</h4>
+                    <p class="text-gray-600 leading-relaxed" data-i18n="causeHumanDesc">
                         Phá rừng, đô thị hóa quá mức làm bê tông hóa bề mặt đất, và hệ thống thoát nước bị tắc nghẽn làm giảm khả năng thấm hút nước tự nhiên.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- 3. Phòng chống trước khi xảy ra (Prevention before it happens) -->
-        <section id="prevention" class="mb-16 pt-8 bg-blue-50 p-8 rounded-2xl shadow-inner">
-            <h3 class="text-3xl font-bold primary-text mb-6 border-b-2 border-blue-300 pb-2" data-i18n="beforeTitle">
+        <!-- 3. Chuẩn bị (Trước lũ) -->
+        <section id="prevention" class="mb-20 pt-8 bg-blue-50 p-10 rounded-3xl shadow-inner">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="beforeTitle">
                 3. Chuẩn bị: Trước khi Lũ lụt xảy ra
             </h3>
-            <ul class="space-y-4 text-gray-700">
+            <ul class="space-y-6 text-gray-700 text-lg">
                 <li class="flex items-start">
-                    <span class="font-bold primary-text mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
                     <span data-i18n="beforeP1">
-                        Xây dựng Kế hoạch Gia đình: Thiết lập các tuyến đường sơ tán, nơi gặp mặt an toàn, và đảm bảo mọi người đều biết cách liên lạc trong trường hợp khẩn cấp.
+                        **Xây dựng Kế hoạch Gia đình:** Thiết lập các tuyến đường sơ tán, nơi gặp mặt an toàn, và đảm bảo mọi người đều biết cách liên lạc trong trường hợp khẩn cấp.
                     </span>
                 </li>
                 <li class="flex items-start">
-                    <span class="font-bold primary-text mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
                     <span data-i18n="beforeP2">
-                        Chuẩn bị Túi Cứu sinh (Emergency Kit): Gồm nước uống, thức ăn khô, đèn pin, đài radio chạy bằng pin, pin dự phòng, bộ sơ cứu, thuốc men và bản sao giấy tờ tùy thân quan trọng.
+                        **Chuẩn bị Túi Cứu sinh (Emergency Kit):** Gồm nước uống, thức ăn khô, đèn pin, đài radio chạy bằng pin, pin dự phòng, bộ sơ cứu, thuốc men và bản sao giấy tờ tùy thân quan trọng.
                     </span>
                 </li>
                 <li class="flex items-start">
-                    <span class="font-bold primary-text mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
                     <span data-i18n="beforeP3">
-                        Nâng cấp Nhà ở: Lắp đặt van một chiều trong đường ống thoát nước để ngăn nước lũ trào ngược, di dời thiết bị điện lên cao.
+                        **Nâng cấp Nhà ở:** Lắp đặt van một chiều trong đường ống thoát nước để ngăn nước lũ trào ngược, di dời thiết bị điện lên cao.
                     </span>
                 </li>
                 <li class="flex items-start">
-                    <span class="font-bold primary-text mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
                     <span data-i18n="beforeP4">
-                        Theo dõi Thông tin: Luôn cập nhật tin tức thời tiết và cảnh báo lũ lụt từ các nguồn đáng tin cậy.
+                        **Theo dõi Thông tin:** Luôn cập nhật tin tức thời tiết và cảnh báo lũ lụt từ các nguồn đáng tin cậy.
                     </span>
                 </li>
             </ul>
         </section>
 
-        <!-- 4. Trong lúc xảy ra (During the flood) -->
-        <section id="during" class="mb-16 pt-8">
-            <h3 class="text-3xl font-bold primary-text mb-6 border-b-2 border-blue-200 pb-2" data-i18n="duringTitle">
+        <!-- 4. Ứng phó (Trong lũ) -->
+        <section id="during" class="mb-20 pt-8">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="duringTitle">
                 4. Ứng phó: Trong lúc Lũ lụt xảy ra 
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-lg transition duration-300 hover:shadow-xl">
-                    <h4 class="text-xl font-semibold accent-color mb-3" data-i18n="duringDangerTitle">Nhiệm vụ Quan trọng Nhất: Sơ tán</h4>
-                    <ul class="space-y-3 text-gray-700 list-disc pl-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover">
+                    <h4 class="text-2xl font-bold accent-color mb-4" data-i18n="duringDangerTitle">Nhiệm vụ Quan trọng Nhất: Sơ tán</h4>
+                    <ul class="space-y-4 text-gray-700 list-disc pl-6 text-lg">
                         <li data-i18n="duringP1">
-                            TUYỆT ĐỐI không lái xe hoặc đi bộ qua vùng nước lũ. Chỉ cần 15cm nước chảy xiết có thể làm bạn ngã, và 60cm có thể cuốn trôi xe ô tô.
+                            **TUYỆT ĐỐI** không lái xe hoặc đi bộ qua vùng nước lũ. Chỉ cần 15cm nước chảy xiết có thể làm bạn ngã, và 60cm có thể cuốn trôi xe ô tô.
                         </li>
                         <li data-i18n="duringP2">
                             Nếu được yêu cầu sơ tán, hãy tắt tất cả các thiết bị điện và ga trước khi rời khỏi nhà.
@@ -234,9 +272,9 @@
                         </li>
                     </ul>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg transition duration-300 hover:shadow-xl">
-                    <h4 class="text-xl font-semibold accent-color mb-3" data-i18n="duringInsideTitle">An toàn khi ở trong nhà</h4>
-                    <ul class="space-y-3 text-gray-700 list-disc pl-5">
+                <div class="bg-white p-8 rounded-2xl shadow-lg transition-all card-hover">
+                    <h4 class="text-2xl font-bold accent-color mb-4" data-i18n="duringInsideTitle">An toàn khi ở trong nhà</h4>
+                    <ul class="space-y-4 text-gray-700 list-disc pl-6 text-lg">
                         <li data-i18n="duringP4">
                             Sử dụng đài radio chạy bằng pin để nhận thông tin cập nhật từ cơ quan chức năng.
                         </li>
@@ -251,34 +289,34 @@
             </div>
         </section>
 
-        <!-- 5. Cách khắc phục hậu quả (Post-flood recovery) -->
-        <section id="recovery" class="pt-8 bg-blue-50 p-8 rounded-2xl shadow-inner">
-            <h3 class="text-3xl font-bold primary-text mb-6 border-b-2 border-blue-300 pb-2" data-i18n="afterTitle">
+        <!-- 5. Khắc phục (Sau lũ) -->
+        <section id="recovery" class="pt-8 bg-blue-50 p-10 rounded-3xl shadow-inner">
+            <h3 class="text-4xl font-extrabold primary-text mb-8 text-center" data-i18n="afterTitle">
                 5. Khắc phục: Cách khắc phục Hậu quả sau Lũ lụt 
             </h3>
-            <ul class="space-y-4 text-gray-700">
+            <ul class="space-y-6 text-gray-700 text-lg">
                 <li class="flex items-start">
-                    <span class="font-bold text-red-500 mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
                     <span data-i18n="afterP1">
-                        Kiểm tra An toàn: Không vào nhà nếu chưa được kiểm tra an toàn. Coi chừng các mối nguy hiểm như dây điện đứt, rò rỉ ga, hoặc cấu trúc nhà yếu.
+                        **Kiểm tra An toàn:** Không vào nhà nếu chưa được kiểm tra an toàn. Coi chừng các mối nguy hiểm như dây điện đứt, rò rỉ ga, hoặc cấu trúc nhà yếu.
                     </span>
                 </li>
                 <li class="flex items-start">
-                    <span class="font-bold text-red-500 mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
                     <span data-i18n="afterP2">
-                        Vệ sinh và Khử trùng: Nước lũ mang theo bùn đất và vi khuẩn. Phải đeo găng tay và ủng khi dọn dẹp. Vệ sinh và khử trùng tất cả các bề mặt bị ngập nước để ngăn ngừa nấm mốc và dịch bệnh.
+                        **Vệ sinh và Khử trùng:** Nước lũ mang theo bùn đất và vi khuẩn. Phải đeo găng tay và ủng khi dọn dẹp. Vệ sinh và khử trùng tất cả các bề mặt bị ngập nước để ngăn ngừa nấm mốc và dịch bệnh.
                     </span>
                 </li>
                 <li class="flex items-start">
-                    <span class="font-bold text-red-500 mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
                     <span data-i18n="afterP3">
-                        Ghi lại Thiệt hại: Chụp ảnh mọi thiệt hại cho mục đích bảo hiểm hoặc hỗ trợ. Không vứt bỏ các vật dụng bị hư hỏng nặng cho đến khi đã được cơ quan chức năng kiểm tra.
+                        **Ghi lại Thiệt hại:** Chụp ảnh mọi thiệt hại cho mục đích bảo hiểm hoặc hỗ trợ. Không vứt bỏ các vật dụng bị hư hỏng nặng cho đến khi đã được cơ quan chức năng kiểm tra.
                     </span>
                 </li>
                 <li class="flex items-start">
-                    <span class="font-bold text-red-500 mr-2 text-xl">&bull;</span>
+                    <span class="font-extrabold text-red-600 mr-3 text-2xl">&bull;</span>
                     <span data-i18n="afterP4">
-                        Tìm kiếm Hỗ trợ: Liên hệ với cơ quan cứu trợ địa phương hoặc các tổ chức nhân đạo để được hỗ trợ về lương thực, chỗ ở và y tế.
+                        **Tìm kiếm Hỗ trợ:** Liên hệ với cơ quan cứu trợ địa phương hoặc các tổ chức nhân đạo để được hỗ trợ về lương thực, chỗ ở và y tế.
                     </span>
                 </li>
             </ul>
@@ -287,26 +325,21 @@
     </main>
 
     <!-- Footer -->
-    <footer class="primary-color py-8 mt-12 rounded-t-3xl text-white text-center shadow-2xl">
-        <p data-i18n="footerText">
+    <footer class="primary-color py-10 mt-20 rounded-t-[4rem] text-white text-center shadow-2xl">
+        <p class="text-lg mb-2" data-i18n="footerText">
             Đây là dự án hướng dẫn cộng đồng. Hãy luôn tuân theo hướng dẫn của chính quyền địa phương.
         </p>
-        
-        <div class="mt-8">
-                <a href="/index.html" class="inline-block bg-blue-600 text-white font-medium px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                    &larr; Quay lại Web Chính
-                </a>
-            </div>
+        <p class="mt-4 text-base opacity-80">&copy; 2025 Hướng Dẫn An Toàn. Mọi quyền được bảo lưu.</p>
     </footer>
 
-    <!-- JavaScript for Translation Logic -->
+    <!-- JavaScript logic -->
     <script>
         // Dữ liệu dịch thuật
         const translations = {
             vi: {
                 pageTitle: "Hướng Dẫn Phòng Chống Lũ Lụt",
-                headerTitle: "Phòng Chống Lũ Lụt",
-                navHome: "Trang chủ", // MỚI THÊM
+                headerTitle: "P. Chống Lũ Lụt", // Rút gọn cho mobile
+                navHome: "Trang chủ",
                 navConcept: "Khái niệm",
                 navCauses: "Nguyên nhân",
                 navBefore: "Trước lũ",
@@ -355,12 +388,16 @@
                 afterP3: "**Ghi lại Thiệt hại:** Chụp ảnh mọi thiệt hại cho mục đích bảo hiểm hoặc hỗ trợ. Không vứt bỏ các vật dụng bị hư hỏng nặng cho đến khi đã được cơ quan chức năng kiểm tra.",
                 afterP4: "**Tìm kiếm Hỗ trợ:** Liên hệ với cơ quan cứu trợ địa phương hoặc các tổ chức nhân đạo để được hỗ trợ về lương thực, chỗ ở và y tế.",
                 
-                footerText: "Đây là dự án hướng dẫn cộng đồng. Hãy luôn tuân theo hướng dẫn của chính quyền địa phương."
+                footerText: "Đây là dự án hướng dẫn cộng đồng. Hãy luôn tuân theo hướng dẫn của chính quyền địa phương.",
+                
+                // Text nút dịch thuật trên mobile (ĐÃ RÚT GỌN)
+                translateButtonVI: "EN",
+                translateButtonEN: "VI"
             },
             en: {
                 pageTitle: "Flood Prevention Guide",
                 headerTitle: "Flood Prevention",
-                navHome: "Home", // MỚI THÊM
+                navHome: "Home",
                 navConcept: "Concept",
                 navCauses: "Causes",
                 navBefore: "Before Flood",
@@ -409,7 +446,11 @@
                 afterP3: "**Document Damage:** Take photos of all damage for insurance or aid purposes. Do not discard severely damaged items until they have been inspected by authorities.",
                 afterP4: "**Seek Assistance:** Contact local relief agencies or humanitarian organizations for support with food, shelter, and medical needs.",
 
-                footerText: "This is a community guidance project. Always follow instructions from local authorities."
+                footerText: "This is a community guidance project. Always follow instructions from local authorities.",
+
+                // Text nút dịch thuật trên mobile (ĐÃ RÚT GỌN)
+                translateButtonVI: "VI",
+                translateButtonEN: "EN"
             }
         };
 
@@ -425,12 +466,15 @@
          */
         function setButtonText(lang) {
             if (translateButton) {
+                // Kiểm tra kích thước màn hình để đặt text dài hoặc ngắn
+                const isMobile = window.innerWidth < 768; // Tailwind md breakpoint
+                
                 if (lang === 'vi') {
-                    // Nếu trang đang là Tiếng Việt, nút sẽ mời chuyển sang Tiếng Anh
-                    translateButton.textContent = 'English (EN)';
+                    // Nếu đang là Tiếng Việt, nút sẽ mời chuyển sang Tiếng Anh
+                    translateButton.textContent = isMobile ? translations.vi.translateButtonVI : 'English (EN)';
                 } else {
-                    // Nếu trang đang là Tiếng Anh, nút sẽ mời chuyển sang Tiếng Việt
-                    translateButton.textContent = 'Tiếng Việt (VI)';
+                    // Nếu đang là Tiếng Anh, nút sẽ mời chuyển sang Tiếng Việt
+                    translateButton.textContent = isMobile ? translations.en.translateButtonEN : 'Tiếng Việt (VI)';
                 }
             }
         }
@@ -449,9 +493,12 @@
 
             elements.forEach(element => {
                 const key = element.getAttribute('data-i18n');
-                if (newLangData[key]) {
-                    // Cập nhật nội dung văn bản.
-                    element.innerHTML = newLangData[key];
+                // Chỉ cập nhật nội dung nếu phần tử không phải nút translate
+                if (key !== 'translateButtonVI' && key !== 'translateButtonEN') {
+                    if (newLangData[key]) {
+                        // Cập nhật nội dung văn bản.
+                        element.innerHTML = newLangData[key];
+                    }
                 }
             });
 
@@ -474,6 +521,40 @@
             setButtonText(currentLang); 
         }
 
+        /**
+         * Thêm hiệu ứng active cho các liên kết điều hướng khi cuộn trang.
+         */
+        function setupIntersectionObserver() {
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const options = {
+                root: null, // viewport
+                rootMargin: '-20% 0px -50% 0px', // Đặt ngưỡng cao hơn để kích hoạt sớm hơn
+                threshold: 0.2 // Kích hoạt khi 20% section hiển thị
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Loại bỏ class 'active' khỏi tất cả các liên kết
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        
+                        // Thêm class 'active' cho liên kết tương ứng
+                        const targetId = entry.target.id;
+                        const activeLink = document.querySelector(`.nav-link[href="#${targetId}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                        }
+                    }
+                });
+            }, options);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+
 
         // Khởi tạo trang web và thiết lập sự kiện
         document.addEventListener('DOMContentLoaded', () => {
@@ -485,7 +566,10 @@
             // Khởi tạo trạng thái ngôn ngữ ban đầu
             initializeLanguage(); 
 
-            // --- MỚI: Xử lý Mobile Menu ---
+            // Thiết lập Intersection Observer cho thanh điều hướng
+            setupIntersectionObserver();
+
+            // --- Xử lý Mobile Menu ---
             const menuButton = document.getElementById('mobile-menu-button');
             const menuPanel = document.getElementById('mobile-menu-panel');
             const iconOpen = document.getElementById('icon-open');
@@ -517,11 +601,14 @@
                 });
             }
             // --- Hết: Xử lý Mobile Menu ---
+            
+            // Cập nhật lại text nút dịch thuật khi cửa sổ resize (để xử lý mobile vs desktop text)
+            window.addEventListener('resize', () => {
+                 setButtonText(currentLang);
+            });
         });
 
     </script>
 
 </body>
 </html>
-
-
