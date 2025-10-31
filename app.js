@@ -122,25 +122,63 @@ document.addEventListener("DOMContentLoaded", () => {
     messages.scrollTop = messages.scrollHeight;
   }
 
-  async function getBotReply(prompt) {
-    const API_KEY = "AIzaSyDhzzMsJddVFhqOkTNrPl2blCwbCZRYexk";
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
-      }
-    );
-    const data = await response.json();
-    return (
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Mình chưa hiểu câu hỏi đó."
-    );
+  // Thay nguyên hàm getBotReply bằng đoạn này
+async function getBotReply(prompt) {
+  const API_KEY = "AIzaSyDhzzMsJddVFhqOkTNrPl2blCwbCZRYexk"; // Thay bằng API key thật của em
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+
+  // Bộ lọc từ khóa nhạy cảm
+  const forbidden = ["chính trị", "sex", "bạo lực", "người lớn", "ma túy", "tôn giáo"];
+  const lower = prompt.toLowerCase();
+  if (forbidden.some(word => lower.includes(word))) {
+    return "⚠️ Xin lỗi, mình chỉ hỗ trợ các kỹ năng sống và học tập.";
   }
+
+  // Hướng dẫn ngữ cảnh cho AI (dạng text gộp chung với câu hỏi)
+  const systemPrompt =
+    "Bạn là trợ lý AI giáo dục thân thiện dành cho học sinh. " +
+    "Chỉ được nói về kỹ năng sống, học tập, cảm xúc, sinh tồn, giao tiếp, và xã hội. " +
+    "Nếu bị hỏi ngoài phạm vi, hãy trả lời: 'Xin lỗi, mình chỉ hỗ trợ các kỹ năng sống và học tập.'\n\n" +
+    "Câu hỏi của người dùng: " + prompt;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: systemPrompt }]
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("API error:", response.status, errText);
+      return `⚠️ Lỗi ${response.status}: Yêu cầu không hợp lệ hoặc sai cấu trúc dữ liệu.`;
+    }
+
+    const data = await response.json();
+    console.log("API response:", data);
+
+    // Lấy nội dung phản hồi
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Xin lỗi, mình chưa có câu trả lời phù hợp.";
+
+    // Xóa markdown nếu có
+    return reply
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .replace(/\*(.*?)\*/g, "$1")
+      .replace(/#+\s?(.*)/g, "$1")
+      .replace(/`(.*?)`/g, "$1")
+      .trim();
+  } catch (err) {
+    console.error("Lỗi kết nối API:", err);
+    return "⚠️ Lỗi kết nối máy chủ, vui lòng thử lại sau.";
+  }
+}
 });
-
-
-
