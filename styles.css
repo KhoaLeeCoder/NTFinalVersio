@@ -378,3 +378,57 @@ button {
   -webkit-text-size-adjust: 100%;
 }
 
+/* --- Hero section --- */
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, #007bff, #0099ff);
+  color: white;
+  border-radius: 20px;
+  padding: 50px 30px;
+  overflow: hidden;
+}
+
+/* --- Hero section --- */
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, #007bff, #0099ff);
+  color: white;
+  border-radius: 20px;
+  padding: 50px 30px;
+  overflow: hidden;
+}
+
+/* ===== LOGO TRÊN BANNER ===== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+}
+
+.hero-logo {
+  position: absolute;
+  top: 0.5px;          /* Cách mép trên một chút */
+  right: 1px;        /* Cách mép phải để nhìn cân */
+  width: 183px;       /* Kích thước vừa vặn, có thể chỉnh 160–200 */
+  height: auto;
+  object-fit: cover;
+  border-top-right-radius: 25px;  /* Bo góc khớp với banner */
+  border-bottom-left-radius: 15px; /* Tạo cảm giác mềm mại */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-logo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.35);
+}
+
+
+
+
+
+
+
+
+
