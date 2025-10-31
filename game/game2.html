@@ -50,9 +50,10 @@
         </div>
 
         <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">KỸ NĂNG MỀM CÙNG AI</h1>
+            <a href="/index.html" class="block transition-opacity duration-300 hover:opacity-75" title="Quay về web chính">
+             <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">AI LIFE SKILLS</h1>
+            </a>
             <p class="text-lg text-gray-600 mt-2">Trình Giả Lập & Huấn Luyện Kỹ Năng Mềm Ứng Dụng AI</p>
-            <p class="text-sm text-gray-600 mt-1">Thông tin AI chỉ mang tính chất tham khảo, hãy sử dụng AI có trách nhiệm</p>
         </header>
 
         <main id="main-content" class="w-full max-w-4xl bg-white p-6 md:p-10 rounded-xl shadow-2xl transition duration-500">
@@ -87,11 +88,17 @@
                     <i data-lucide="chevron-left" class="w-4 h-4 mr-1"></i>
                     <span>Chọn Lại Kỹ Năng</span>
                 </button>
+                
                 <!-- Tiêu đề kỹ năng -->
-                <h2 class="text-2xl font-bold text-gray-800 border-b pb-3 mb-4 flex items-center">
+                <h2 class="text-2xl font-bold text-gray-800 border-b pb-1 flex items-center">
                     <i data-lucide="scroll-text" id="skill-icon" class="w-6 h-6 mr-3 text-indigo-500"></i>
                     Huấn Luyện Viên AI: <span id="current-skill-name" class="ml-2 text-indigo-600"></span>
                 </h2>
+                
+                <!-- Dòng chữ tham khảo mới -->
+                <p class="text-sm font-bold text-gray-500 mb-4 pb-2 border-b border-dashed border-gray-200">
+                    Thông tin AI cung cấp chỉ mang tính chất tham khảo
+                </p>
 
                 <!-- Khu vực hiển thị Kịch bản & Phản hồi -->
                 <div id="scenario-output" class="bg-gray-100 p-4 space-y-4 shadow-inner">
@@ -134,9 +141,6 @@
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        // KIỂM TRA MÔI TRƯỜNG: Nếu __app_id không tồn tại, ta đang chạy cục bộ (local).
-        const isLocalEnvironment = typeof __app_id === 'undefined';
-
         let db, auth, userId = 'loading';
         let isAuthReady = false;
 
@@ -172,10 +176,18 @@
 
         // --- 3. LOGIC APP CHÍNH (Gán cho window để có thể gọi từ HTML) ---
         
-        // API Configuration (Đã điều chỉnh để đảm bảo Canvas tự động inject API Key)
-        const API_KEY = ""; 
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+        // API Configuration 
+        // **THAY ĐỔI TẠI ĐÂY:** Người dùng có thể dán API Key của mình vào chuỗi này để chạy chức năng API thật khi đang phát triển cục bộ.
+        // Ví dụ: const CUSTOM_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+        const CUSTOM_API_KEY = "AIzaSyDFLd0f-f90L3BK2csxRqjgODUlZWMIYO4"; // Mặc định là chuỗi rỗng. Nếu chạy trong Canvas, Key sẽ được tự động inject.
+
+        const API_KEY = CUSTOM_API_KEY; 
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
         
+        // Cập nhật điều kiện môi trường cục bộ: Mock chỉ chạy nếu không có __app_id VÀ không có key nào được cung cấp.
+        const isLocalEnvironment = (typeof __app_id === 'undefined' || __app_id === 'default-app-id') && (CUSTOM_API_KEY === "");
+
+
         let currentSkill = '';
         let conversationHistory = [];
 
@@ -258,20 +270,49 @@
         
         // --- CHỨC NĂNG MOCK API ĐỂ CHẠY CỤC BỘ (CẬP NHẬT ĐỊNH DẠNG VĂN BẢN THUẦN) ---
         function mockApiCall(history, skill) {
-            console.warn("Chạy trong môi trường cục bộ: Sử dụng phản hồi giả lập (mock API).");
+            console.warn("Chạy trong môi trường cục bộ: Sử dụng phản ứng giả lập (mock API).");
             return new Promise(resolve => {
-                // Mô phỏng độ trễ mạng 1.5 giây
                 setTimeout(() => {
                     const skillText = skill === 'presentation' ? 'Thuyết trình' : 'Quản lý Cảm xúc';
-                    // Định dạng văn bản thuần, không Markdown
-                    const mockResponseText = `
+                    let mockResponseText = '';
+                    
+                    // Logic mới: Xoay vòng qua 3 phản hồi khác nhau
+                    // Turn 1: history.length = 2 (user's first response) -> turn = 1
+                    // Turn 2: history.length = 4 -> turn = 2
+                    // Turn 3: history.length = 6 -> turn = 3, (3 % 3) = 0
+                    const turn = Math.floor(history.length / 2);
+
+                    switch (turn % 3) {
+                        case 1: // Turn 1, 4, 7...
+                            mockResponseText = `
 Phân tích Phản hồi: Phản hồi của bạn cho thấy bạn đã ưu tiên việc điều chỉnh trạng thái tâm lý trước khi hành động, đây là một bước khởi đầu rất tốt trong tình huống áp lực của bài tập ${skillText}! Hành động "bình tĩnh" là nền tảng vững chắc.
 
 Lời khuyên Chuyên sâu: Hãy xác định mục tiêu cụ thể của lần phản hồi/thuyết trình tiếp theo (VD: mục tiêu cao nhất là gì?). Đồng thời, áp dụng kỹ thuật Tóm tắt (T.A.C): Thông cảm, Áp dụng giải pháp, Cam kết hành động, để tạo ra phản hồi/bài nói chuyên nghiệp.
 
 Kịch bản Tiếp theo: Sau khi đã giữ được sự bình tĩnh, ban lãnh đạo yêu cầu bạn tập trung vào phần Tài chính trong bài thuyết trình 5 phút. Bạn sẽ sử dụng những luận điểm nào và nói như thế nào để gây ấn tượng trong thời gian ngắn ngủi này?
-                    `;
+                            `;
+                            break;
+                        case 2: // Turn 2, 5, 8...
+                            mockResponseText = `
+Phân tích Phản hồi: Phản hồi lần này của bạn rất tập trung vào mục tiêu tài chính, thể hiện sự chuyên nghiệp. Đây là một bước tiến lớn trong việc đối phó với câu hỏi khó.
 
+Lời khuyên Chuyên sâu: Hãy nhớ rằng, bạn cần nhấn mạnh vào "Tác động" (Impact) của con số thay vì chỉ đọc số liệu. Hãy dùng một câu chốt mạnh mẽ về ROI hoặc lợi ích chiến lược. Trong lần trả lời tới, hãy sử dụng cấu trúc "Vấn đề - Giải pháp - Lợi ích".
+
+Kịch bản Tiếp theo: Ban lãnh đạo chấp nhận phần Tài chính nhưng một thành viên đặt câu hỏi thách thức: "Nếu thị trường thay đổi bất ngờ trong 3 tháng tới, đội của bạn có kế hoạch dự phòng nào để đảm bảo dự án không thất bại không?" Bạn sẽ trả lời câu hỏi khó này như thế nào?
+                            `;
+                            break;
+                        case 0: // Turn 3, 6, 9... (The third unique response in the cycle)
+                        default:
+                            mockResponseText = `
+Phân tích Phản hồi: Tuyệt vời! Bạn đã xử lý thành công câu hỏi dự phòng với các giải pháp rõ ràng, cho thấy khả năng suy nghĩ chiến lược dưới áp lực. Đây là một kỹ năng quan trọng trong ${skillText}.
+
+Lời khuyên Chuyên sâu: Lần tới, hãy thêm yếu tố "tính cá nhân" vào phản hồi của bạn, ví dụ: "Là trưởng nhóm, tôi cam kết..." Điều này sẽ củng cố sự tin cậy. Đảm bảo ngôn ngữ cơ thể của bạn (nếu là thuyết trình) cũng truyền tải sự tự tin.
+
+Kịch bản Tiếp theo: Cuộc họp sắp kết thúc, nhưng một đồng nghiệp xen vào và nghi ngờ dữ liệu của bạn, nói rằng "Tôi không tin những con số này, chúng có vẻ quá lạc quan." Bạn sẽ phản ứng lại lời buộc tội này như thế nào để bảo vệ tính chính xác của dữ liệu mà vẫn giữ thái độ hòa nhã?
+                            `;
+                            break;
+                    }
+                    
                     // Cấu trúc phản hồi giả lập giống với cấu trúc API thật
                     resolve({
                         candidates: [{
@@ -352,14 +393,16 @@ Kịch bản Tiếp theo: Sau khi đã giữ được sự bình tĩnh, ban lãn
                 let result;
 
                 if (isLocalEnvironment) {
-                    // SỬ DỤNG MOCK API KHI CHẠY CỤC BỘ
+                    // SỬ DỤNG MOCK API KHI CHẠY CỤC BỘ VÀ KHÔNG CÓ KEY
                     result = await mockApiCall(conversationHistory, currentSkill);
                 } else {
-                    // SỬ DỤNG API THẬT KHI CHẠY TRONG MÔI TRƯỜNG CANVAS/LIVE
+                    // SỬ DỤNG API THẬT (có thể là key tự động inject hoặc key do người dùng cung cấp)
                     const systemInstruction = 
                         `Bạn là một chuyên gia huấn luyện kỹ năng mềm (${currentSkill === 'presentation' ? 'Kỹ Năng Thuyết Trình' : 'Kỹ Năng Quản Lý Cảm Xúc'}). 
                         Nhiệm vụ của bạn là đánh giá phản hồi gần nhất của người dùng, cung cấp lời khuyên chuyên sâu và sau đó tạo ra một kịch bản mới cho họ để tiếp tục luyện tập. 
                         Đảm bảo tính chuyên nghiệp, khích lệ và thân thiện.
+                        
+                        QUAN TRỌNG: TUYỆT ĐỐI CHỈ TRẢ LỜI CÁC CHỦ ĐỀ LIÊN QUAN ĐẾN KỸ NĂNG MỀM (THUYẾT TRÌNH/QUẢN LÝ CẢM XÚC). Nếu người dùng hỏi các câu hỏi về chính trị, nội dung trái đạo đức, hoặc nội dung 18+, bạn PHẢI từ chối trả lời và lịch sự chuyển hướng họ quay lại chủ đề luyện tập kỹ năng mềm.
                         
                         Lưu ý quan trọng: TUYỆT ĐỐI KHÔNG SỬ DỤNG BẤT CỨ CÚ PHÁP MARKDOWN NÀO (bao gồm **in đậm**, *nghiêng*, danh sách gạch đầu dòng -, hoặc số thứ tự 1., 2., 3.). Phản hồi phải là văn bản thuần túy, conversational, được chia thành các đoạn văn rõ ràng. KHÔNG SỬ DỤNG HTML ENTITY.
 
@@ -406,7 +449,8 @@ Kịch bản Tiếp theo: Sau khi đã giữ được sự bình tĩnh, ban lãn
 
             } catch (e) {
                 console.error("Lỗi trong quá trình giao tiếp/gọi API AI:", e);
-                errorMsg.textContent = "Không thể kết nối với Huấn luyện viên AI. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.";
+                // Cung cấp hướng dẫn rõ ràng nếu người dùng cần thêm key
+                errorMsg.textContent = "Không thể kết nối với Huấn luyện viên AI. Nếu bạn đang chạy cục bộ, vui lòng đảm bảo đã dán API Key Gemini của bạn vào biến CUSTOM_API_KEY trong file index.html.";
                 errorMsg.classList.remove('hidden');
             } finally {
                 // Khôi phục trạng thái nút và loading
