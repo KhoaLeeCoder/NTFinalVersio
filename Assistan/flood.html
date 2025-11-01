@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tiêu đề trang (tab trình duyệt) vẫn được dịch -->
     <title data-i18n="pageTitle">Hướng Dẫn Phòng Chống Lũ Lụt</title>
     
 <script src="https://cdn.tailwindcss.com"></script>
@@ -11,19 +12,17 @@
         /* Thiết lập font Inter cho toàn bộ trang web */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5; /* Màu nền nhẹ hơn, hiện đại hơn */
-            color: #2d3748; /* Màu chữ tối hơn */
-            /* QUAN TRỌNG: Ngăn cuộn ngang trên mobile do overflow */
+            background-color: #f0f2f5;
+            color: #2d3748;
             overflow-x: hidden; 
         }
-        /* Đảm bảo scroll mượt khi dùng menu */
         html {
             scroll-behavior: smooth;
         }
         /* Tùy chỉnh màu sắc Tailwind */
-        .primary-color { background-color: #1a4a8f; } /* Xanh dương đậm hơn */
+        .primary-color { background-color: #1a4a8f; }
         .primary-text { color: #1a4a8f; }
-        .accent-color { background-color: #f6ad55; } /* Cam nhạt */
+        .accent-color { background-color: #f6ad55; }
         .section-padding { padding: 5rem 1.5rem; }
         @media (min-width: 640px) {
             .section-padding { padding: 6rem 2rem; }
@@ -54,18 +53,17 @@
         .nav-link.active::after {
             width: 100%;
         }
-        /* Đảm bảo hình ảnh chất lượng cao và dễ nhìn */
+        /* Icon và Card styles */
         .icon-container {
-            width: 4rem; /* Kích thước icon lớn hơn */
+            width: 4rem;
             height: 4rem;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 9999px;
-            background-color: rgba(26, 74, 143, 0.1); /* Màu nền nhẹ của icon */
+            background-color: rgba(26, 74, 143, 0.1);
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        /* Card hiệu ứng hover */
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
@@ -80,15 +78,13 @@
     <!-- Header / Navigation -->
     <header class="bg-white shadow-md nav-fixed">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Đã điều chỉnh alignment trên mobile -->
             <div class="flex items-center h-16">
-                <!-- Logo/Title -->
+                <!-- Logo/Title: CỐ ĐỊNH "AI LIFE SKILLS" - KHÔNG DỊCH -->
                 <div class="flex-shrink-0">
-                  <a href="/index.html" class="block transition-opacity duration-300 hover:opacity-75" title="web chính">
+                    <!-- Đã bỏ data-i18n để đảm bảo Tiêu đề này không bị thay đổi khi dịch -->
                     <h1 class="text-xl md:text-2xl font-extrabold primary-text whitespace-nowrap mr-4">
                         AI LIFE SKILLS
                     </h1>
-                  </a>
                 </div>
 
                 <!-- Desktop Nav (Hidden on Mobile) -->
@@ -105,7 +101,8 @@
                 <div class="flex items-center space-x-2 ml-auto">
                     <!-- Nút dịch thuật -->
                     <button id="translateButton" class="px-2 py-1.5 md:px-3 rounded-full text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150 ease-in-out shadow-md whitespace-nowrap">
-                        VI / EN <!-- Text sẽ được JS cập nhật khi tải trang -->
+                        <!-- Text ban đầu sẽ được JS cập nhật khi tải trang -->
+                        VI / EN
                     </button>
 
                     <!-- Mobile Menu Button (Hamburger) -->
@@ -148,7 +145,7 @@
             </div>
             <!-- Tiêu đề lớn -->
             <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight" data-i18n="heroHeadline">
-                Bảo Vệ Gia Đình Và Cộng Đồng Khỏi Lũ Lụt
+                Bảo vệ Gia Đình và Cộng Đồng khỏi Lũ Lụt
             </h2>
             <!-- Phụ đề -->
             <p class="text-xl sm:text-2xl opacity-90 mb-8" data-i18n="heroSubtitle">
@@ -228,7 +225,7 @@
                 <li class="flex items-start">
                     <span class="font-extrabold primary-text mr-3 text-2xl">&bull;</span>
                     <span data-i18n="beforeP1">
-                        Xây dựng Kế hoạch Gia đình: Thiết lập các tuyến đường sơ tán, nơi gặp mặt an toàn, và đảm bảo mọi người đều biết cách liên lạc trong trường hợp khẩn cấp.
+                        Xây dựng Kế hoạch Gia đình:** Thiết lập các tuyến đường sơ tán, nơi gặp mặt an toàn, và đảm bảo mọi người đều biết cách liên lạc trong trường hợp khẩn cấp.
                     </span>
                 </li>
                 <li class="flex items-start">
@@ -329,7 +326,7 @@
         <p class="text-lg mb-2" data-i18n="footerText">
             Đây là dự án hướng dẫn cộng đồng. Hãy luôn tuân theo hướng dẫn của chính quyền địa phương.
         </p>
-        <p class="mt-4 text-base opacity-80">&copy; 2025 Mọi quyền được bảo lưu.</p>
+        <p class="mt-4 text-base opacity-80">&copy; 2025 Hướng Dẫn An Toàn. Mọi quyền được bảo lưu.</p>
     </footer>
 
     <!-- JavaScript logic -->
@@ -338,7 +335,6 @@
         const translations = {
             vi: {
                 pageTitle: "Hướng Dẫn Phòng Chống Lũ Lụt",
-                headerTitle: "P. Chống Lũ Lụt", // Rút gọn cho mobile
                 navHome: "Trang chủ",
                 navConcept: "Khái niệm",
                 navCauses: "Nguyên nhân",
@@ -390,12 +386,11 @@
                 
                 footerText: "Đây là dự án hướng dẫn cộng đồng. Hãy luôn tuân theo hướng dẫn của chính quyền địa phương.",
                 
-                // Text nút dịch thuật trên mobile (ĐÃ RÚT GỌN)
+                // Khóa mới: Nút chuyển sang EN (Khi đang ở VI, nút phải hiện EN)
                 buttonTextSwitchToEN: "EN"
             },
             en: {
                 pageTitle: "Flood Prevention Guide",
-                headerTitle: "Flood Prevention",
                 navHome: "Home",
                 navConcept: "Concept",
                 navCauses: "Causes",
@@ -447,7 +442,7 @@
 
                 footerText: "This is a community guidance project. Always follow instructions from local authorities.",
 
-                // Text nút dịch thuật trên mobile (ĐÃ RÚT GỌN)
+                // Khóa mới: Nút chuyển sang VI (Khi đang ở EN, nút phải hiện VI)
                 buttonTextSwitchToVI: "VI"
             }
         };
@@ -455,7 +450,7 @@
         // Biến lưu trữ trạng thái ngôn ngữ hiện tại, mặc định là Tiếng Việt
         let currentLang = 'vi';
         
-        // Lấy tham chiếu đến nút (đảm bảo nút đã được tạo trong DOM)
+        // Lấy tham chiếu đến nút 
         const translateButton = document.getElementById('translateButton');
 
         /**
@@ -468,11 +463,11 @@
                 const isMobile = window.innerWidth < 768; // Tailwind md breakpoint
                 
                 if (lang === 'vi') {
-                    // Nếu đang là Tiếng Việt, nút sẽ mời chuyển sang Tiếng Anh
-                    translateButton.textContent = isMobile ? translations.vi.translateButtonVI : 'English (EN)';
+                    // Đang ở VI, nút phải hiện EN (ngôn ngữ chuyển đến)
+                    translateButton.textContent = isMobile ? translations.vi.buttonTextSwitchToEN : 'English (EN)';
                 } else {
-                    // Nếu đang là Tiếng Anh, nút sẽ mời chuyển sang Tiếng Việt
-                    translateButton.textContent = isMobile ? translations.en.translateButtonEN : 'Tiếng Việt (VI)';
+                    // Đang ở EN, nút phải hiện VI (ngôn ngữ chuyển đến)
+                    translateButton.textContent = isMobile ? translations.en.buttonTextSwitchToVI : 'Tiếng Việt (VI)';
                 }
             }
         }
@@ -491,8 +486,8 @@
 
             elements.forEach(element => {
                 const key = element.getAttribute('data-i18n');
-                // Chỉ cập nhật nội dung nếu phần tử không phải nút translate
-                if (key !== 'translateButtonVI' && key !== 'translateButtonEN') {
+                // Loại bỏ các key liên quan đến nút dịch thuật vì chúng được xử lý riêng
+                if (key !== 'buttonTextSwitchToEN' && key !== 'buttonTextSwitchToVI') { 
                     if (newLangData[key]) {
                         // Cập nhật nội dung văn bản.
                         element.innerHTML = newLangData[key];
@@ -503,7 +498,7 @@
             // Cập nhật thuộc tính lang của HTML
             document.documentElement.lang = currentLang;
 
-            // Cập nhật text của nút để người dùng biết họ có thể chuyển sang ngôn ngữ nào.
+            // Cập nhật text của nút để người dùng biết họ có thể chuyển sang ngôn ngữ nào (Vấn đề 2 đã được giải quyết ở đây)
             setButtonText(currentLang);
         }
 
@@ -527,18 +522,16 @@
             const navLinks = document.querySelectorAll('.nav-link');
 
             const options = {
-                root: null, // viewport
-                rootMargin: '-20% 0px -50% 0px', // Đặt ngưỡng cao hơn để kích hoạt sớm hơn
-                threshold: 0.2 // Kích hoạt khi 20% section hiển thị
+                root: null, 
+                rootMargin: '-20% 0px -50% 0px', 
+                threshold: 0.2
             };
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // Loại bỏ class 'active' khỏi tất cả các liên kết
                         navLinks.forEach(link => link.classList.remove('active'));
                         
-                        // Thêm class 'active' cho liên kết tương ứng
                         const targetId = entry.target.id;
                         const activeLink = document.querySelector(`.nav-link[href="#${targetId}"]`);
                         if (activeLink) {
